@@ -32,8 +32,8 @@ flutter run -d chrome
 Flutter 웹에서 `localhost:3000`의 JSON Server를 사용합니다. Android 에뮬레이터에서는 템플릿의 `10.0.2.2:3000` 설정을 사용합니다.
 
 ## 데모 영상 또는 배포 URL
-- 1분 데모 영상:** TODO — 녹화 후 링크 입력
-- 배포 URL:** TODO — 배포했다면 URL 입력
+- 1분 데모 영상: TODO — https://drive.google.com/file/d/1GcZCoI2VISxBMF445PMPQqvMuczyzweF/view?usp=sharing
+- 배포 URL: TODO — https://drive.google.com/file/d/1GcZCoI2VISxBMF445PMPQqvMuczyzweF/view?usp=sharing
 
 ## 데이터와 제한
 - `mock_server/db.json`의 여행과 기록은 프로젝트용 모의 데이터입니다.
