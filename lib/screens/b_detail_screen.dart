@@ -77,7 +77,14 @@ class _DetailScreenState extends State<DetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
+    return PopScope<String>(
+      canPop: false,
+      onPopInvokedWithResult: (didPop, result) {
+        if (!didPop) {
+          Navigator.of(context).pop(_title);
+        }
+     },
+    child: DefaultTabController(
       length: 2,
       child: Scaffold(
         appBar: AppBar(
@@ -114,6 +121,7 @@ class _DetailScreenState extends State<DetailScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

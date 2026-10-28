@@ -34,16 +34,50 @@ class _ListScreenState extends State<ListScreen> {
     });
   }
 
-  void _open(Item item) {
-    Navigator.of(context).push(
-      MaterialPageRoute<void>(
-        builder: (_) => DetailScreen(
-          item: item,
-          loadNotes: widget.loadNotes,
-        ),
+  Future<void> _open(Item item) async {
+  final newTitle = await Navigator.of(context).push<String>(
+    MaterialPageRoute<String>(
+      builder: (_) => DetailScreen(
+        item: item,
+        loadNotes: widget.loadNotes,
       ),
+    ),
+  );
+
+  if (newTitle == null || !mounted) return;
+
+  setState(() {
+    final addedIndex = _addedItems.indexWhere(
+      (element) => element.id == item.id,
     );
-  }
+
+    if (addedIndex != -1) {
+      final oldItem = _addedItems[addedIndex];
+
+      _addedItems[addedIndex] = Item(
+        id: oldItem.id,
+        title: newTitle,
+        subtitle: oldItem.subtitle,
+        image: oldItem.image,
+        tags: oldItem.tags,
+      );
+    } else {
+      _future = _future.then((items) {
+        return items.map((element) {
+          if (element.id != item.id) return element;
+
+          return Item(
+            id: element.id,
+            title: newTitle,
+            subtitle: element.subtitle,
+            image: element.image,
+            tags: element.tags,
+          );
+        }).toList();
+      });
+    }
+  });
+}
   Future<void> _addTrip() async {
   final titleController = TextEditingController();
   final destinationController = TextEditingController();
