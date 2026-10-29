@@ -65,6 +65,7 @@ void main() {
     expect(find.byType(GridView), findsNothing);
 
     await tester.ensureVisible(find.text('항목 1'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('항목 1'));
     await tester.pumpAndSettle();
     expect(find.byType(BackButton), findsOneWidget); // push

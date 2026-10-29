@@ -706,67 +706,7 @@ class TripCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final image = ClipRRect(
       borderRadius: BorderRadius.circular(17),
-      child: Stack(
-        fit: StackFit.expand,
-        children: [
-          NetImage(item.photoUrl),
-          Positioned(
-            right: 4,
-            bottom: 4,
-            child: Material(
-              color: Colors.white.withValues(alpha: .95),
-              borderRadius: BorderRadius.circular(24),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (onFavorite != null)
-                    IconButton(
-                      // A-9 P03
-                      key: ValueKey('favorite-${item.id}'),
-                      tooltip: favorite ? '즐겨찾기 해제' : '즐겨찾기 추가',
-                      isSelected: favorite,
-                      onPressed: onFavorite,
-                      color: const Color(0xFF2D7770),
-                      icon: Icon(
-                        favorite ? Icons.bookmark : Icons.bookmark_border,
-                      ),
-                    ),
-                  if (onDelete != null)
-                    IconButton(
-                      key: ValueKey('delete-${item.id}'),
-                      tooltip: '여행 삭제',
-                      onPressed: onDelete,
-                      icon: const Icon(
-                        Icons.delete_outline,
-                        color: Color(0xFF687775),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-          Positioned(
-            left: 12,
-            top: 12,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: .92),
-                borderRadius: BorderRadius.circular(20),
-              ),
-              child: const Text(
-                'TRIP MEMORY',
-                style: TextStyle(
-                  fontSize: 9,
-                  letterSpacing: 1,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF183B3A),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
+      child: NetImage(item.photoUrl),
     );
 
     final info = Padding(
@@ -774,13 +714,39 @@ class TripCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            item.title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: Theme.of(
-              context,
-            ).textTheme.titleMedium?.copyWith(fontSize: 17),
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  item.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.titleMedium?.copyWith(fontSize: 17),
+                ),
+              ),
+              if (onFavorite != null)
+                IconButton(
+                  // A-9 P03
+                  key: ValueKey('favorite-${item.id}'),
+                  tooltip: favorite ? '즐겨찾기 해제' : '즐겨찾기 추가',
+                  isSelected: favorite,
+                  onPressed: onFavorite,
+                  color: const Color(0xFF2D7770),
+                  icon: Icon(favorite ? Icons.bookmark : Icons.bookmark_border),
+                ),
+              if (onDelete != null)
+                IconButton(
+                  key: ValueKey('delete-${item.id}'),
+                  tooltip: '여행 삭제',
+                  onPressed: onDelete,
+                  icon: const Icon(
+                    Icons.delete_outline,
+                    color: Color(0xFF687775),
+                  ),
+                ),
+            ],
           ),
           const SizedBox(height: 5),
           Row(
@@ -849,16 +815,11 @@ class TripCard extends StatelessWidget {
                     info,
                   ],
                 )
-              : Row(
+              : Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
                   children: [
-                    SizedBox(width: 128, height: 128, child: image),
-                    const SizedBox(width: 14),
-                    Expanded(child: info),
-                    const Icon(
-                      Icons.arrow_forward_ios_rounded,
-                      size: 15,
-                      color: Color(0xFF78908A),
-                    ),
+                    AspectRatio(aspectRatio: 16 / 9, child: image),
+                    info,
                   ],
                 ),
         ),
