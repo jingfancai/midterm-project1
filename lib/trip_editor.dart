@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'api.dart';
 import 'models.dart';
 import 'trip_insights.dart';
+import 'destinations.dart';
 
 /// The same form and server validation are used for creating and editing trips.
 class TripEditor extends StatefulWidget {
@@ -18,7 +19,6 @@ class _TripEditorState extends State<TripEditor> {
   final _form = GlobalKey<FormState>();
   late final TextEditingController _title;
   late final TextEditingController _destination;
-  late final TextEditingController _country;
   late final TextEditingController _start;
   late final TextEditingController _end;
   bool _saving = false;
@@ -33,19 +33,14 @@ class _TripEditorState extends State<TripEditor> {
     final dates = item == null ? null : TripDates.fromItem(item);
     final start = dates?.start ?? DateTime.now().add(const Duration(days: 7));
     _title = TextEditingController(text: item?.title ?? '');
-    _destination = TextEditingController(
-      text: item?.destination.isNotEmpty == true
-          ? item!.destination
-          : item?.subtitle.split('·').last.trim() ?? '',
-    );
-    _country = TextEditingController(text: item?.countryCode ?? '');
+    _destination = TextEditingController(text: item?.destinationName ?? '');
     _start = TextEditingController(text: _iso(start));
     _end = TextEditingController(text: _iso(dates?.end ?? start));
   }
 
   @override
   void dispose() {
-    for (final c in [_title, _destination, _country, _start, _end]) {
+    for (final c in [_title, _destination, _start, _end]) {
       c.dispose();
     }
     super.dispose();
@@ -75,19 +70,15 @@ class _TripEditorState extends State<TripEditor> {
     });
     final original =
         widget.item ??
-        const Item(
-          id: 0,
-          title: '',
-          subtitle: '',
-          image:
-              'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1000&q=85',
-        );
+        Item(id: 0, title: '', subtitle: '', image: defaultTripPhoto);
+    final destination = resolveDestination(_destination.text);
     try {
       final saved = await widget.save(
         original.copyWith(
           title: _title.text.trim(),
           destination: _destination.text.trim(),
-          countryCode: _country.text.trim().toUpperCase(),
+          countryCode: destination?.countryCode ?? '',
+          image: destination?.photoUrl ?? defaultTripPhoto,
           startDate: _start.text.trim(),
           endDate: _end.text.trim(),
         ),
@@ -109,13 +100,15 @@ class _TripEditorState extends State<TripEditor> {
     TextEditingController controller, {
     String? Function(String?)? validator,
     Widget? suffix,
+    ValueChanged<String>? onChanged,
   }) => Padding(
     padding: const EdgeInsets.only(bottom: 12),
     child: TextFormField(
       key: ValueKey(key),
       controller: controller,
       enabled: !_saving,
-      maxLength: key == 'country-code' ? 2 : 100,
+      maxLength: 100,
+      onChanged: onChanged,
       decoration: InputDecoration(
         labelText: label,
         counterText: '',
@@ -148,15 +141,27 @@ class _TripEditorState extends State<TripEditor> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 _field('trip-title', '여행 이름', _title),
-                _field('trip-destination', '목적지', _destination),
                 _field(
-                  'country-code',
-                  '국가 코드 (예: KR, JP, US)',
-                  _country,
-                  validator: (value) =>
-                      validCountryCodes.contains(value?.trim().toUpperCase())
-                      ? null
-                      : 'ISO 국가 코드를 입력해 주세요.',
+                  'trip-destination',
+                  '목적지',
+                  _destination,
+                  // STATE: 목적지 → 자동 인식 국가·안내문 (추가 입력 불필요)
+                  onChanged: (_) => setState(() {}),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 12),
+                  child: Text(
+                    _destination.text.trim().isEmpty
+                        ? '도시 이름을 입력하면 국가를 자동으로 인식해요.'
+                        : resolveDestination(_destination.text) == null
+                        ? '국가를 인식하지 못했어요. 도시 이름을 확인해 주세요. 방문 국가 통계에서 제외됩니다.'
+                        : '자동 인식 국가: ${resolveDestination(_destination.text)!.countryName}',
+                    key: const ValueKey('destination-country'),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF687775),
+                    ),
+                  ),
                 ),
                 _field(
                   'trip-start',

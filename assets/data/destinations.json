@@ -1,0 +1,658 @@
+{
+  "schemaVersion": 1,
+  "defaultPhotoUrl": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1000&q=85",
+  "cities": [
+    {
+      "id": "tokyo",
+      "countryCode": "JP",
+      "countryName": "일본",
+      "names": {
+        "en": "Tokyo",
+        "ko": "도쿄",
+        "zh": "东京"
+      },
+      "aliases": [
+        "東京",
+        "东京都",
+        "東京都",
+        "일본 도쿄",
+        "日本东京",
+        "日本 東京",
+        "Tokyo, Japan",
+        "Japan Tokyo"
+      ],
+      "photoUrl": "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1000&q=85"
+    },
+    {
+      "id": "osaka",
+      "countryCode": "JP",
+      "countryName": "일본",
+      "names": {
+        "en": "Osaka",
+        "ko": "오사카",
+        "zh": "大阪"
+      },
+      "aliases": [
+        "일본 오사카",
+        "日本大阪",
+        "Osaka, Japan"
+      ],
+      "photoUrl": "https://images.unsplash.com/photo-1590559899731-a382839e5549?w=1000&q=85"
+    },
+    {
+      "id": "kyoto",
+      "countryCode": "JP",
+      "countryName": "일본",
+      "names": {
+        "en": "Kyoto",
+        "ko": "교토",
+        "zh": "京都"
+      },
+      "aliases": [
+        "일본 교토",
+        "日本京都",
+        "Kyoto, Japan"
+      ],
+      "photoUrl": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1000&q=85"
+    },
+    {
+      "id": "seoul",
+      "countryCode": "KR",
+      "countryName": "대한민국",
+      "names": {
+        "en": "Seoul",
+        "ko": "서울",
+        "zh": "首尔"
+      },
+      "aliases": [
+        "서울특별시",
+        "首爾",
+        "대한민국 서울",
+        "한국 서울",
+        "韩国首尔",
+        "Seoul, South Korea"
+      ],
+      "photoUrl": "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=1000&q=85"
+    },
+    {
+      "id": "busan",
+      "countryCode": "KR",
+      "countryName": "대한민국",
+      "names": {
+        "en": "Busan",
+        "ko": "부산",
+        "zh": "釜山"
+      },
+      "aliases": [
+        "부산광역시",
+        "한국 부산",
+        "Busan, South Korea"
+      ]
+    },
+    {
+      "id": "paris",
+      "countryCode": "FR",
+      "countryName": "프랑스",
+      "names": {
+        "en": "Paris",
+        "ko": "파리",
+        "zh": "巴黎"
+      },
+      "aliases": [
+        "프랑스 파리",
+        "法国巴黎",
+        "法國巴黎",
+        "Paris, France"
+      ],
+      "photoUrl": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1000&q=85"
+    },
+    {
+      "id": "lyon",
+      "countryCode": "FR",
+      "countryName": "프랑스",
+      "names": {
+        "en": "Lyon",
+        "ko": "리옹",
+        "zh": "里昂"
+      }
+    },
+    {
+      "id": "london",
+      "countryCode": "GB",
+      "countryName": "영국",
+      "names": {
+        "en": "London",
+        "ko": "런던",
+        "zh": "伦敦"
+      },
+      "aliases": [
+        "倫敦",
+        "영국 런던",
+        "英国伦敦",
+        "London, UK"
+      ],
+      "photoUrl": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=85"
+    },
+    {
+      "id": "new-york",
+      "countryCode": "US",
+      "countryName": "미국",
+      "names": {
+        "en": "New York",
+        "ko": "뉴욕",
+        "zh": "纽约"
+      },
+      "aliases": [
+        "New York City",
+        "NYC",
+        "紐約",
+        "미국 뉴욕",
+        "美国纽约"
+      ],
+      "photoUrl": "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000&q=85"
+    },
+    {
+      "id": "los-angeles",
+      "countryCode": "US",
+      "countryName": "미국",
+      "names": {
+        "en": "Los Angeles",
+        "ko": "로스앤젤레스",
+        "zh": "洛杉矶"
+      },
+      "aliases": [
+        "洛杉磯"
+      ]
+    },
+    {
+      "id": "beijing",
+      "countryCode": "CN",
+      "countryName": "중국",
+      "names": {
+        "en": "Beijing",
+        "ko": "베이징",
+        "zh": "北京"
+      },
+      "aliases": [
+        "중국 베이징",
+        "中国北京"
+      ]
+    },
+    {
+      "id": "shanghai",
+      "countryCode": "CN",
+      "countryName": "중국",
+      "names": {
+        "en": "Shanghai",
+        "ko": "상하이",
+        "zh": "上海"
+      },
+      "aliases": [
+        "중국 상하이",
+        "中国上海"
+      ]
+    },
+    {
+      "id": "singapore",
+      "countryCode": "SG",
+      "countryName": "싱가포르",
+      "names": {
+        "en": "Singapore",
+        "ko": "싱가포르",
+        "zh": "新加坡"
+      }
+    },
+    {
+      "id": "bangkok",
+      "countryCode": "TH",
+      "countryName": "태국",
+      "names": {
+        "en": "Bangkok",
+        "ko": "방콕",
+        "zh": "曼谷"
+      }
+    },
+    {
+      "id": "hanoi",
+      "countryCode": "VN",
+      "countryName": "베트남",
+      "names": {
+        "en": "Hanoi",
+        "ko": "하노이",
+        "zh": "河内"
+      },
+      "aliases": [
+        "河內"
+      ]
+    },
+    {
+      "id": "da-nang",
+      "countryCode": "VN",
+      "countryName": "베트남",
+      "names": {
+        "en": "Da Nang",
+        "ko": "다낭",
+        "zh": "岘港"
+      },
+      "aliases": [
+        "Danang",
+        "峴港"
+      ]
+    },
+    {
+      "id": "rome",
+      "countryCode": "IT",
+      "countryName": "이탈리아",
+      "names": {
+        "en": "Rome",
+        "ko": "로마",
+        "zh": "罗马"
+      },
+      "aliases": [
+        "Roma",
+        "羅馬"
+      ]
+    },
+    {
+      "id": "barcelona",
+      "countryCode": "ES",
+      "countryName": "스페인",
+      "names": {
+        "en": "Barcelona",
+        "ko": "바르셀로나",
+        "zh": "巴塞罗那"
+      },
+      "aliases": [
+        "巴塞羅那"
+      ]
+    },
+    {
+      "id": "berlin",
+      "countryCode": "DE",
+      "countryName": "독일",
+      "names": {
+        "en": "Berlin",
+        "ko": "베를린",
+        "zh": "柏林"
+      }
+    },
+    {
+      "id": "sydney",
+      "countryCode": "AU",
+      "countryName": "호주",
+      "names": {
+        "en": "Sydney",
+        "ko": "시드니",
+        "zh": "悉尼"
+      },
+      "aliases": [
+        "雪梨"
+      ]
+    },
+    {
+      "id": "amsterdam",
+      "countryCode": "NL",
+      "countryName": "네덜란드",
+      "names": {
+        "en": "Amsterdam",
+        "ko": "암스테르담",
+        "zh": "阿姆斯特丹"
+      }
+    },
+    {
+      "id": "brussels",
+      "countryCode": "BE",
+      "countryName": "벨기에",
+      "names": {
+        "en": "Brussels",
+        "ko": "브뤼셀",
+        "zh": "布鲁塞尔"
+      }
+    },
+    {
+      "id": "zurich",
+      "countryCode": "CH",
+      "countryName": "스위스",
+      "names": {
+        "en": "Zurich",
+        "ko": "취리히",
+        "zh": "苏黎世"
+      },
+      "aliases": [
+        "Zürich"
+      ]
+    },
+    {
+      "id": "vienna",
+      "countryCode": "AT",
+      "countryName": "오스트리아",
+      "names": {
+        "en": "Vienna",
+        "ko": "빈",
+        "zh": "维也纳"
+      },
+      "aliases": [
+        "Wien",
+        "비엔나"
+      ]
+    },
+    {
+      "id": "prague",
+      "countryCode": "CZ",
+      "countryName": "체코",
+      "names": {
+        "en": "Prague",
+        "ko": "프라하",
+        "zh": "布拉格"
+      },
+      "aliases": [
+        "Praha"
+      ]
+    },
+    {
+      "id": "budapest",
+      "countryCode": "HU",
+      "countryName": "헝가리",
+      "names": {
+        "en": "Budapest",
+        "ko": "부다페스트",
+        "zh": "布达佩斯"
+      }
+    },
+    {
+      "id": "lisbon",
+      "countryCode": "PT",
+      "countryName": "포르투갈",
+      "names": {
+        "en": "Lisbon",
+        "ko": "리스본",
+        "zh": "里斯本"
+      }
+    },
+    {
+      "id": "athens",
+      "countryCode": "GR",
+      "countryName": "그리스",
+      "names": {
+        "en": "Athens",
+        "ko": "아테네",
+        "zh": "雅典"
+      }
+    },
+    {
+      "id": "istanbul",
+      "countryCode": "TR",
+      "countryName": "튀르키예",
+      "names": {
+        "en": "Istanbul",
+        "ko": "이스탄불",
+        "zh": "伊斯坦布尔"
+      },
+      "aliases": [
+        "İstanbul"
+      ]
+    },
+    {
+      "id": "copenhagen",
+      "countryCode": "DK",
+      "countryName": "덴마크",
+      "names": {
+        "en": "Copenhagen",
+        "ko": "코펜하겐",
+        "zh": "哥本哈根"
+      }
+    },
+    {
+      "id": "stockholm",
+      "countryCode": "SE",
+      "countryName": "스웨덴",
+      "names": {
+        "en": "Stockholm",
+        "ko": "스톡홀름",
+        "zh": "斯德哥尔摩"
+      }
+    },
+    {
+      "id": "auckland",
+      "countryCode": "NZ",
+      "countryName": "뉴질랜드",
+      "names": {
+        "en": "Auckland",
+        "ko": "오클랜드",
+        "zh": "奥克兰"
+      }
+    },
+    {
+      "id": "kuala-lumpur",
+      "countryCode": "MY",
+      "countryName": "말레이시아",
+      "names": {
+        "en": "Kuala Lumpur",
+        "ko": "쿠알라룸푸르",
+        "zh": "吉隆坡"
+      }
+    },
+    {
+      "id": "dublin",
+      "countryCode": "IE",
+      "countryName": "아일랜드",
+      "names": {
+        "en": "Dublin",
+        "ko": "더블린",
+        "zh": "都柏林"
+      }
+    },
+    {
+      "id": "reykjavik",
+      "countryCode": "IS",
+      "countryName": "아이슬란드",
+      "names": {
+        "en": "Reykjavik",
+        "ko": "레이캬비크",
+        "zh": "雷克雅未克"
+      },
+      "aliases": [
+        "Reykjavík"
+      ]
+    },
+    {
+      "id": "denpasar",
+      "countryCode": "ID",
+      "countryName": "인도네시아",
+      "names": {
+        "en": "Denpasar",
+        "ko": "덴파사르",
+        "zh": "登巴萨"
+      }
+    },
+    {
+      "id": "dubai",
+      "countryCode": "AE",
+      "countryName": "아랍에미리트",
+      "names": {
+        "en": "Dubai",
+        "ko": "두바이",
+        "zh": "迪拜"
+      }
+    },
+    {
+      "id": "cairo",
+      "countryCode": "EG",
+      "countryName": "이집트",
+      "names": {
+        "en": "Cairo",
+        "ko": "카이로",
+        "zh": "开罗"
+      }
+    },
+    {
+      "id": "marrakesh",
+      "countryCode": "MA",
+      "countryName": "모로코",
+      "names": {
+        "en": "Marrakesh",
+        "ko": "마라케시",
+        "zh": "马拉喀什"
+      },
+      "aliases": [
+        "Marrakech"
+      ]
+    },
+    {
+      "id": "cape-town",
+      "countryCode": "ZA",
+      "countryName": "남아프리카공화국",
+      "names": {
+        "en": "Cape Town",
+        "ko": "케이프타운",
+        "zh": "开普敦"
+      }
+    },
+    {
+      "id": "toronto",
+      "countryCode": "CA",
+      "countryName": "캐나다",
+      "names": {
+        "en": "Toronto",
+        "ko": "토론토",
+        "zh": "多伦多"
+      }
+    },
+    {
+      "id": "mexico-city",
+      "countryCode": "MX",
+      "countryName": "멕시코",
+      "names": {
+        "en": "Mexico City",
+        "ko": "멕시코시티",
+        "zh": "墨西哥城"
+      }
+    },
+    {
+      "id": "madrid",
+      "countryCode": "ES",
+      "countryName": "스페인",
+      "names": {
+        "en": "Madrid",
+        "ko": "마드리드",
+        "zh": "马德里"
+      }
+    },
+    {
+      "id": "florence",
+      "countryCode": "IT",
+      "countryName": "이탈리아",
+      "names": {
+        "en": "Florence",
+        "ko": "피렌체",
+        "zh": "佛罗伦萨"
+      },
+      "aliases": [
+        "Firenze"
+      ]
+    },
+    {
+      "id": "venice",
+      "countryCode": "IT",
+      "countryName": "이탈리아",
+      "names": {
+        "en": "Venice",
+        "ko": "베네치아",
+        "zh": "威尼斯"
+      },
+      "aliases": [
+        "Venezia",
+        "베니스"
+      ]
+    },
+    {
+      "id": "munich",
+      "countryCode": "DE",
+      "countryName": "독일",
+      "names": {
+        "en": "Munich",
+        "ko": "뮌헨",
+        "zh": "慕尼黑"
+      },
+      "aliases": [
+        "München"
+      ]
+    },
+    {
+      "id": "melbourne",
+      "countryCode": "AU",
+      "countryName": "호주",
+      "names": {
+        "en": "Melbourne",
+        "ko": "멜버른",
+        "zh": "墨尔本"
+      }
+    },
+    {
+      "id": "san-francisco",
+      "countryCode": "US",
+      "countryName": "미국",
+      "names": {
+        "en": "San Francisco",
+        "ko": "샌프란시스코",
+        "zh": "旧金山"
+      },
+      "aliases": [
+        "三藩市"
+      ]
+    },
+    {
+      "id": "vancouver",
+      "countryCode": "CA",
+      "countryName": "캐나다",
+      "names": {
+        "en": "Vancouver",
+        "ko": "밴쿠버",
+        "zh": "温哥华"
+      }
+    },
+    {
+      "id": "porto",
+      "countryCode": "PT",
+      "countryName": "포르투갈",
+      "names": {
+        "en": "Porto",
+        "ko": "포르투",
+        "zh": "波尔图"
+      }
+    }
+  ],
+  "regions": [
+    {
+      "id": "jeju-island",
+      "countryCode": "KR",
+      "countryName": "대한민국",
+      "names": {
+        "en": "Jeju",
+        "ko": "제주",
+        "zh": "济州"
+      },
+      "aliases": [
+        "Jeju Island",
+        "제주도",
+        "제주특별자치도",
+        "济州岛",
+        "濟州島"
+      ]
+    },
+    {
+      "id": "gangwon",
+      "countryCode": "KR",
+      "countryName": "대한민국",
+      "names": {
+        "en": "Gangwon",
+        "ko": "강원도",
+        "zh": "江原道"
+      },
+      "aliases": [
+        "Gangwon-do",
+        "강원특별자치도"
+      ]
+    }
+  ]
+}

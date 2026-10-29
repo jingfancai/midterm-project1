@@ -1,4 +1,5 @@
 import 'models.dart';
+import 'destinations.dart';
 
 enum TripSort { newest, oldest, title }
 
@@ -113,19 +114,14 @@ class TripSummary {
       unknown = items
           .where((item) => tripStatus(item, today) == TripStatus.unknown)
           .length,
-      visitedCountries = items
-          .where(
-            (item) =>
-                !item.deleted &&
-                [
-                  TripStatus.ongoing,
-                  TripStatus.past,
-                ].contains(tripStatus(item, today)),
-          )
-          .map((item) => item.countryCode.trim().toUpperCase())
-          .where((code) => validCountryCodes.contains(code))
-          .toSet()
-          .length,
+      visitedCountries = _visitedDestinations(
+        items,
+        today,
+      ).map((destination) => destination.countryCode).toSet().length,
+      visitedCities = _visitedDestinations(
+        items,
+        today,
+      ).map((destination) => destination.cityKey).nonNulls.toSet().length,
       days = items.fold(
         0,
         (sum, item) => sum + (TripDates.fromItem(item)?.days ?? 0),
@@ -139,4 +135,21 @@ class TripSummary {
   final int unknown;
   final int days;
   final int visitedCountries;
+  final int visitedCities;
 }
+
+// City and country counts must use identical visit eligibility rules.
+Iterable<DestinationInfo> _visitedDestinations(
+  List<Item> items,
+  DateTime today,
+) => items
+    .where(
+      (item) =>
+          !item.deleted &&
+          [
+            TripStatus.ongoing,
+            TripStatus.past,
+          ].contains(tripStatus(item, today)),
+    )
+    .map((item) => item.destinationInfo)
+    .nonNulls;
