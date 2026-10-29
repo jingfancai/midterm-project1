@@ -70,7 +70,7 @@ class _TripEditorState extends State<TripEditor> {
     });
     final original =
         widget.item ??
-        const Item(id: 0, title: '', subtitle: '', image: defaultTripPhoto);
+        Item(id: 0, title: '', subtitle: '', image: defaultTripPhoto);
     final destination = resolveDestination(_destination.text);
     try {
       final saved = await widget.save(
