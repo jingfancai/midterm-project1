@@ -133,9 +133,14 @@ class _ListScreenState extends State<ListScreen> {
     if (!await _action(item.copyWith(deleted: true)) || !mounted) return;
     setState(() => _hadDeletion = true);
     final messenger = ScaffoldMessenger.of(context);
-    messenger.hideCurrentSnackBar();
+    messenger.clearSnackBars();
     messenger.showSnackBar(
       SnackBar(
+        // Action snack bars persist by default in this Flutter version.
+        persist: false,
+        duration: MediaQuery.accessibleNavigationOf(context)
+            ? const Duration(seconds: 10)
+            : const Duration(seconds: 4),
         content: Text('${item.title} 여행이 삭제되었습니다.'),
         action: SnackBarAction(
           label: '실행 취소',
