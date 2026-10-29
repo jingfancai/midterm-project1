@@ -31,7 +31,11 @@ Future<void> open(
   addTearDown(tester.view.reset);
   await tester.pumpWidget(
     MaterialApp(
-      home: ListScreen(load: () async => items, loadNotes: (_) async => []),
+      home: ListScreen(
+        load: () async => items,
+        loadNotes: (_) async => [],
+        update: (item) async => item,
+      ),
     ),
   );
   await tester.pumpAndSettle();

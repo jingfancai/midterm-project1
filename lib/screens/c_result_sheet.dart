@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../widgets.dart';
+import '../trip_insights.dart';
 
 class ResultSheet extends StatelessWidget {
-  const ResultSheet({
-    super.key,
-    required this.items,
-    required this.onSelect,
-  });
+  const ResultSheet({super.key, required this.items, required this.onSelect});
 
   final List<Item> items;
   final ValueChanged<Item> onSelect;
@@ -17,7 +14,11 @@ class ResultSheet extends StatelessWidget {
     final text = Theme.of(context).textTheme;
 
     // 从现有旅行数据中统计标签种类
-    final allTags = items.expand((item) => item.tags).toSet();
+    final summary = TripSummary(
+      items,
+      items.where((item) => item.favorite).map((item) => item.id).toSet(),
+      DateTime.now(),
+    );
 
     // 使用第一条旅行作为精选回忆
     final featuredItem = items.isNotEmpty ? items.first : null;
@@ -31,10 +32,7 @@ class ResultSheet extends StatelessWidget {
           children: [
             const Row(
               children: [
-                Icon(
-                  Icons.auto_awesome,
-                  color: Color(0xFF2D7770),
-                ),
+                Icon(Icons.auto_awesome, color: Color(0xFF2D7770)),
                 SizedBox(width: 8),
                 Text(
                   'TRAVEL RECAP',
@@ -57,10 +55,7 @@ class ResultSheet extends StatelessWidget {
 
             const Text(
               '지금까지 기록한 여행의 순간들을 다시 만나 보세요.',
-              style: TextStyle(
-                color: Color(0xFF687775),
-                fontSize: 13,
-              ),
+              style: TextStyle(color: Color(0xFF687775), fontSize: 13),
             ),
             const SizedBox(height: 18),
 
@@ -70,16 +65,16 @@ class ResultSheet extends StatelessWidget {
                 Expanded(
                   child: _StatCard(
                     icon: Icons.luggage_outlined,
-                    number: '${items.length}',
+                    number: '${summary.total}',
                     label: '총 여행',
                   ),
                 ),
                 const SizedBox(width: 10),
                 Expanded(
                   child: _StatCard(
-                    icon: Icons.local_offer_outlined,
-                    number: '${allTags.length}',
-                    label: '여행 태그 종류',
+                    icon: Icons.public,
+                    number: '${summary.visitedCountries}',
+                    label: '방문 국가',
                   ),
                 ),
               ],
@@ -120,8 +115,7 @@ class ResultSheet extends StatelessWidget {
                           children: [
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     featuredItem.title,
@@ -175,8 +169,7 @@ class ResultSheet extends StatelessWidget {
               child: ListView.separated(
                 shrinkWrap: true,
                 itemCount: items.length,
-                separatorBuilder: (_, _) =>
-                    const SizedBox(height: 10),
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
                 itemBuilder: (context, index) {
                   final item = items[index];
 
@@ -201,8 +194,7 @@ class ResultSheet extends StatelessWidget {
                             const SizedBox(width: 12),
                             Expanded(
                               child: Column(
-                                crossAxisAlignment:
-                                    CrossAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
                                     item.title,
@@ -269,10 +261,7 @@ class _StatCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 12,
-        vertical: 14,
-      ),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
         color: const Color(0xFFF0F3EF),
         borderRadius: BorderRadius.circular(14),

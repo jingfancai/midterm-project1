@@ -11,6 +11,16 @@ class TripDates {
   final DateTime start;
   final DateTime end;
 
+  static TripDates? fromItem(Item item) {
+    if (item.startDate.isEmpty && item.endDate.isEmpty) {
+      return parse(item.subtitle);
+    }
+    if (item.startDate.isEmpty || item.endDate.isEmpty) return null;
+    return parse(
+      '${item.startDate.replaceAll('-', '.')} – ${item.endDate.replaceAll('-', '.')}',
+    );
+  }
+
   int get days => end.difference(start).inDays + 1;
 
   static TripDates? parse(String subtitle) {
@@ -44,7 +54,7 @@ class TripDates {
 }
 
 TripStatus tripStatus(Item item, DateTime today) {
-  final dates = TripDates.parse(item.subtitle);
+  final dates = TripDates.fromItem(item);
   if (dates == null) return TripStatus.unknown;
   final date = DateTime.utc(today.year, today.month, today.day);
   if (dates.start.isAfter(date)) return TripStatus.upcoming;
@@ -63,7 +73,8 @@ List<Item> selectTrips(
   final selected = items.where((item) {
     final text = '${item.title} ${item.subtitle} ${item.tags.join(' ')}'
         .toLowerCase();
-    return (!favoritesOnly || favorites.contains(item.id)) &&
+    return !item.deleted &&
+        (!favoritesOnly || favorites.contains(item.id)) &&
         terms.every(text.contains);
   }).toList();
   selected.sort((a, b) {
@@ -71,8 +82,8 @@ List<Item> selectTrips(
     if (sort == TripSort.title) {
       order = a.title.toLowerCase().compareTo(b.title.toLowerCase());
     } else {
-      final aDate = TripDates.parse(a.subtitle)?.start;
-      final bDate = TripDates.parse(b.subtitle)?.start;
+      final aDate = TripDates.fromItem(a)?.start;
+      final bDate = TripDates.fromItem(b)?.start;
       if (aDate == null && bDate != null) return 1;
       if (bDate == null && aDate != null) return -1;
       order = aDate == null ? 0 : aDate.compareTo(bDate!);
@@ -85,6 +96,9 @@ List<Item> selectTrips(
 
 class TripSummary {
   TripSummary(List<Item> items, Set<int> favorites, DateTime today)
+    : this._(items.where((item) => !item.deleted).toList(), favorites, today);
+
+  TripSummary._(List<Item> items, Set<int> favorites, DateTime today)
     : total = items.length,
       favoriteCount = items.where((item) => favorites.contains(item.id)).length,
       upcoming = items
@@ -99,9 +113,22 @@ class TripSummary {
       unknown = items
           .where((item) => tripStatus(item, today) == TripStatus.unknown)
           .length,
+      visitedCountries = items
+          .where(
+            (item) =>
+                !item.deleted &&
+                [
+                  TripStatus.ongoing,
+                  TripStatus.past,
+                ].contains(tripStatus(item, today)),
+          )
+          .map((item) => item.countryCode.trim().toUpperCase())
+          .where((code) => validCountryCodes.contains(code))
+          .toSet()
+          .length,
       days = items.fold(
         0,
-        (sum, item) => sum + (TripDates.parse(item.subtitle)?.days ?? 0),
+        (sum, item) => sum + (TripDates.fromItem(item)?.days ?? 0),
       );
 
   final int total;
@@ -111,4 +138,5 @@ class TripSummary {
   final int past;
   final int unknown;
   final int days;
+  final int visitedCountries;
 }

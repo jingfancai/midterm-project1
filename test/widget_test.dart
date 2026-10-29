@@ -68,7 +68,16 @@ void main() {
     await tester.pumpAndSettle();
     expect(find.byType(BackButton), findsOneWidget); // push
 
-    await tester.ensureVisible(find.text('여행 추억 카드 만들기'));
+    await tester.scrollUntilVisible(
+      find.text('여행 추억 카드 만들기'),
+      250,
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView).first,
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
     await tester.tap(find.text('여행 추억 카드 만들기'));
     await tester.pumpAndSettle();
     expect(find.text('MY TRAVEL MEMORY'), findsOneWidget); // modal

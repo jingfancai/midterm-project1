@@ -9,7 +9,13 @@
         "제주도",
         "바다",
         "3박 4일"
-      ]
+      ],
+      "destination": "제주특별자치도",
+      "countryCode": "KR",
+      "startDate": "2026-09-12",
+      "endDate": "2026-09-15",
+      "favorite": false,
+      "deleted": false
     },
     {
       "id": 2,
@@ -20,7 +26,13 @@
         "서울",
         "카페",
         "주말 여행"
-      ]
+      ],
+      "destination": "서울특별시",
+      "countryCode": "KR",
+      "startDate": "2026-08-20",
+      "endDate": "2026-08-22",
+      "favorite": false,
+      "deleted": false
     },
     {
       "id": 3,
@@ -30,7 +42,13 @@
       "tags": [
         "자연",
         "산책"
-      ]
+      ],
+      "destination": "강원도",
+      "countryCode": "KR",
+      "startDate": "2026-07-05",
+      "endDate": "2026-07-05",
+      "favorite": false,
+      "deleted": false
     },
     {
       "id": 4,
@@ -41,7 +59,13 @@
         "도쿄",
         "일본",
         "5일"
-      ]
+      ],
+      "destination": "일본 도쿄",
+      "countryCode": "JP",
+      "startDate": "2026-06-14",
+      "endDate": "2026-06-18",
+      "favorite": false,
+      "deleted": false
     }
   ],
   "notes": [
