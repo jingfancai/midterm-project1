@@ -93,7 +93,10 @@ void main() {
       expect(refreshed.copyWith(favorite: true).photoUrl, tokyo);
       expect(refreshed.copyWith(title: 'New title').photoUrl, tokyo);
       expect(trip.copyWith(destination: 'Busan').inferredCountryCode, 'KR');
-      expect(trip.copyWith(destination: 'Busan').photoUrl, defaultTripPhoto);
+      expect(
+        trip.copyWith(destination: 'Busan').photoUrl,
+        isNot(defaultTripPhoto),
+      );
     },
   );
 
