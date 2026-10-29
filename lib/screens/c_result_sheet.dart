@@ -4,10 +4,13 @@
 // C-3 Row + _StatCard · 여행 통계 카드 · P01
 // C-4 Text · 전체 여행 제목 · P06
 // C-5 Material + NetImage · 여행 회고 선택 카드 · P04 · P06
+// C-6 VisitedPlacesMap · 방문 장소 지도 · P02 · P06
+// C-7 AlertDialog · 방문 도시와 여행 목록 · P03 · P10
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../widgets.dart';
 import '../trip_insights.dart';
+import '../visited_places_map.dart';
 
 class ResultSheet extends StatelessWidget {
   const ResultSheet({super.key, required this.items, required this.onSelect});
@@ -26,235 +29,173 @@ class ResultSheet extends StatelessWidget {
       DateTime.now(),
     );
 
-    // 使用第一条旅行作为精选回忆
-    final featuredItem = items.isNotEmpty ? items.first : null;
+    final activeItems = items.where((item) => !item.deleted).toList();
 
     return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Row(
+      child: ConstrainedBox(
+        constraints: BoxConstraints(
+          maxHeight: MediaQuery.sizeOf(context).height * .85,
+        ),
+        child: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Icon(Icons.auto_awesome, color: Color(0xFF2D7770)),
-                SizedBox(width: 8),
+                const Row(
+                  children: [
+                    Icon(Icons.auto_awesome, color: Color(0xFF2D7770)),
+                    SizedBox(width: 8),
+                    Text(
+                      'TRAVEL RECAP',
+                      style: TextStyle(
+                        letterSpacing: 1.4,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w800,
+                        color: Color(0xFF2D7770),
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+
                 Text(
-                  'TRAVEL RECAP',
+                  '나의 여행 돌아보기',
+                  style: text.headlineMedium?.copyWith(fontSize: 25),
+                ),
+                const SizedBox(height: 6),
+
+                const Text(
+                  '지금까지 기록한 여행의 순간들을 다시 만나 보세요.',
+                  style: TextStyle(color: Color(0xFF687775), fontSize: 13),
+                ),
+                const SizedBox(height: 18),
+
+                // 여행 통계
+                Row(
+                  children: [
+                    Expanded(
+                      child: _StatCard(
+                        icon: Icons.luggage_outlined,
+                        number: '${summary.total}',
+                        label: '총 여행',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _StatCard(
+                        icon: Icons.public,
+                        number: '${summary.visitedCountries}',
+                        label: '방문 국가',
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: _StatCard(
+                        icon: Icons.location_city_outlined,
+                        number: '${summary.visitedCities}',
+                        label: '방문 도시 수',
+                      ),
+                    ),
+                  ],
+                ),
+
+                const SizedBox(height: 20),
+
+                // C-6 P02 · P06
+                VisitedPlacesMap(items: activeItems),
+                const SizedBox(height: 20),
+
+                const Text(
+                  'ALL MY TRIPS',
                   style: TextStyle(
-                    letterSpacing: 1.4,
                     fontSize: 11,
+                    letterSpacing: 1.2,
                     fontWeight: FontWeight.w800,
                     color: Color(0xFF2D7770),
                   ),
                 ),
-              ],
-            ),
-            const SizedBox(height: 8),
+                const SizedBox(height: 10),
 
-            Text(
-              '나의 여행 돌아보기',
-              style: text.headlineMedium?.copyWith(fontSize: 25),
-            ),
-            const SizedBox(height: 6),
+                // 全部旅行列表
+                ListView.separated(
+                  physics: const NeverScrollableScrollPhysics(),
+                  shrinkWrap: true,
+                  itemCount: activeItems.length,
+                  separatorBuilder: (_, _) => const SizedBox(height: 10),
+                  itemBuilder: (context, index) {
+                    final item = activeItems[index];
 
-            const Text(
-              '지금까지 기록한 여행의 순간들을 다시 만나 보세요.',
-              style: TextStyle(color: Color(0xFF687775), fontSize: 13),
-            ),
-            const SizedBox(height: 18),
-
-            // 여행 통계
-            Row(
-              children: [
-                Expanded(
-                  child: _StatCard(
-                    icon: Icons.luggage_outlined,
-                    number: '${summary.total}',
-                    label: '총 여행',
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _StatCard(
-                    icon: Icons.public,
-                    number: '${summary.visitedCountries}',
-                    label: '방문 국가',
-                  ),
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: _StatCard(
-                    icon: Icons.location_city_outlined,
-                    number: '${summary.visitedCities}',
-                    label: '방문 도시 수',
-                  ),
-                ),
-              ],
-            ),
-
-            const SizedBox(height: 20),
-
-            if (featuredItem != null) ...[
-              const Text(
-                'FEATURED MEMORY',
-                style: TextStyle(
-                  fontSize: 11,
-                  letterSpacing: 1.2,
-                  fontWeight: FontWeight.w800,
-                  color: Color(0xFF2D7770),
-                ),
-              ),
-              const SizedBox(height: 10),
-
-              // 精选旅行卡片
-              Material(
-                color: const Color(0xFFF0F3EF),
-                borderRadius: BorderRadius.circular(16),
-                clipBehavior: Clip.antiAlias,
-                child: InkWell(
-                  onTap: () => onSelect(featuredItem),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 155,
-                        width: double.infinity,
-                        child: NetImage(featuredItem.photoUrl),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(14),
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    featuredItem.title,
-                                    style: const TextStyle(
-                                      fontSize: 17,
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xFF183B3A),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    featuredItem.subtitle,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Color(0xFF687775),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            const Icon(
-                              Icons.arrow_forward_rounded,
-                              color: Color(0xFF2D7770),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ],
-
-            const SizedBox(height: 20),
-
-            const Text(
-              'ALL MY TRIPS',
-              style: TextStyle(
-                fontSize: 11,
-                letterSpacing: 1.2,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF2D7770),
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            // 全部旅行列表
-            Flexible(
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: items.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 10),
-                itemBuilder: (context, index) {
-                  final item = items[index];
-
-                  return Material(
-                    color: const Color(0xFFF0F3EF),
-                    borderRadius: BorderRadius.circular(14),
-                    child: InkWell(
+                    return Material(
+                      color: const Color(0xFFF0F3EF),
                       borderRadius: BorderRadius.circular(14),
-                      onTap: () => onSelect(item),
-                      child: Padding(
-                        padding: const EdgeInsets.all(9),
-                        child: Row(
-                          children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: SizedBox(
-                                width: 64,
-                                height: 64,
-                                child: NetImage(item.photoUrl),
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(14),
+                        onTap: () => onSelect(item),
+                        child: Padding(
+                          padding: const EdgeInsets.all(9),
+                          child: Row(
+                            children: [
+                              ClipRRect(
+                                borderRadius: BorderRadius.circular(10),
+                                child: SizedBox(
+                                  width: 64,
+                                  height: 64,
+                                  child: NetImage(item.photoUrl),
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-                            Expanded(
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    item.title,
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      color: Color(0xFF183B3A),
+                              const SizedBox(width: 12),
+                              Expanded(
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      item.title,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xFF183B3A),
+                                      ),
                                     ),
-                                  ),
-                                  const SizedBox(height: 5),
-                                  Text(
-                                    item.subtitle,
-                                    maxLines: 2,
-                                    overflow: TextOverflow.ellipsis,
-                                    style: const TextStyle(
-                                      fontSize: 11,
-                                      color: Color(0xFF687775),
+                                    const SizedBox(height: 5),
+                                    Text(
+                                      item.subtitle,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 11,
+                                        color: Color(0xFF687775),
+                                      ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
-                            ),
-                            const Icon(
-                              Icons.chevron_right,
-                              color: Color(0xFF2D7770),
-                            ),
-                          ],
+                              const Icon(
+                                Icons.chevron_right,
+                                color: Color(0xFF2D7770),
+                              ),
+                            ],
+                          ),
                         ),
                       ),
-                    ),
-                  );
-                },
-              ),
-            ),
+                    );
+                  },
+                ),
 
-            const SizedBox(height: 8),
+                const SizedBox(height: 8),
 
-            Align(
-              alignment: Alignment.centerRight,
-              child: TextButton(
-                onPressed: () => Navigator.of(context).pop(),
-                child: const Text('닫기'),
-              ),
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: TextButton(
+                    onPressed: () => Navigator.of(context).pop(),
+                    child: const Text('닫기'),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
     );

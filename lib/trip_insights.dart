@@ -145,13 +145,32 @@ Iterable<DestinationInfo> _visitedDestinations(
   List<Item> items,
   DateTime today,
 ) => items
-    .where(
-      (item) =>
-          !item.deleted &&
-          [
-            TripStatus.ongoing,
-            TripStatus.past,
-          ].contains(tripStatus(item, today)),
-    )
+    .where((item) => isVisitedTrip(item, today))
     .map((item) => item.destinationInfo)
     .nonNulls;
+
+/// Shared by statistics and the local map: valid dates, already started, not deleted.
+bool isVisitedTrip(Item item, DateTime today) =>
+    !item.deleted &&
+    [TripStatus.ongoing, TripStatus.past].contains(tripStatus(item, today));
+
+class VisitedCity {
+  VisitedCity(this.destination);
+  final DestinationInfo destination;
+  final List<Item> trips = [];
+}
+
+/// One marker per canonical city; aliases share a key, regions stay excluded.
+List<VisitedCity> visitedCities(List<Item> items, DateTime today) {
+  final cities = <String, VisitedCity>{};
+  for (final item in items.where((item) => isVisitedTrip(item, today))) {
+    final destination = item.destinationInfo;
+    final key = destination?.cityKey;
+    if (destination == null || key == null || !destination.hasCoordinates) {
+      continue;
+    }
+    (cities[key] ??= VisitedCity(destination)).trips.add(item);
+  }
+  return cities.values.toList()
+    ..sort((a, b) => a.destination.cityName.compareTo(b.destination.cityName));
+}

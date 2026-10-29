@@ -7,6 +7,7 @@
 - `defaultPhotoUrl`: 사진 대응이 없는 목적지의 공통 HTTPS 사진.
 - `cities`: 도시별 고유 `id`, ISO `countryCode`, 한국어 `countryName`, `names.en/ko/zh` 필수.
 - `regions`: 같은 구조지만 도시 수에는 포함하지 않는 도/섬 단위 목적지.
+- `latitude` / `longitude`: 도시별 대략적인 도심 좌표. C 로컬 지도에 사용하며 범위/쌍을 검증한다. 지역 항목은 도시 Marker에서 제외한다.
 - `aliases`: 선택 사항. 명확한 다른 표기만 추가하며 다른 목적지의 별칭과 충돌하면 안 됩니다.
 - `photoSource`: 사진 제목, 원본 페이지, 라이선스 링크와 확인일. 가능한 경우 작성자명도 보관합니다.
 - `photoUrl`: 선택 사항. 실제 목적지와 일치하는 고정 HTTPS 사진만 지정합니다. 생략 시 기본 사진.

@@ -10,12 +10,18 @@ class DestinationInfo {
     this.aliases, {
     required this.photoUrl,
     this.cityId,
+    this.latitude,
+    this.longitude,
   });
 
   final String countryCode;
   final String countryName;
   final List<String> aliases;
   final String photoUrl;
+  final double? latitude;
+  final double? longitude;
+  String get cityName => aliases[1];
+  bool get hasCoordinates => latitude != null && longitude != null;
   // Regions/islands have no city ID and do not inflate visited city counts.
   final String? cityId;
   String? get cityKey => cityId == null ? null : '$countryCode/$cityId';
@@ -63,10 +69,25 @@ class DestinationCatalog {
           for (final language in ['en', 'ko', 'zh']) _text(names[language]),
           for (final alias in _list(row['aliases'] ?? [])) _text(alias),
         ];
+        final latitude = row['latitude'];
+        final longitude = row['longitude'];
+        if ((latitude != null || longitude != null) &&
+            (latitude is! num ||
+                longitude is! num ||
+                !latitude.isFinite ||
+                !longitude.isFinite ||
+                latitude < -90 ||
+                latitude > 90 ||
+                longitude < -180 ||
+                longitude > 180)) {
+          throw const FormatException('Invalid destination coordinates');
+        }
         final destination = DestinationInfo(
           code,
           country,
           List.unmodifiable(aliases),
+          latitude: (latitude as num?)?.toDouble(),
+          longitude: (longitude as num?)?.toDouble(),
           cityId: section == 'cities' ? id : null,
           photoUrl: row.containsKey('photoUrl')
               ? _photo(row['photoUrl'])
