@@ -23,32 +23,28 @@ void main() {
       'http://example.test/notes?itemId=1',
     ]);
   });
-  test(
-    'sample records load unchanged, including display-only classification',
-    () async {
-      final api = TripApi(
-        client: MockClient(
-          (request) async => http.Response(
-            jsonEncode([
-              {
-                'id': 1,
-                'title': 'Trip',
-                'subtitle': '2026.09.12 · Tokyo',
-                'image': '',
-                'demoStatus': 'upcoming',
-              },
-            ]),
-            200,
-            headers: {'content-type': 'application/json; charset=utf-8'},
-          ),
+  test('sample records load unchanged on every GET', () async {
+    final api = TripApi(
+      client: MockClient(
+        (request) async => http.Response(
+          jsonEncode([
+            {
+              'id': 1,
+              'title': 'Trip',
+              'subtitle': '2026.09.12 · Tokyo',
+              'image': '',
+            },
+          ]),
+          200,
+          headers: {'content-type': 'application/json; charset=utf-8'},
         ),
-      );
-      final first = await api.load();
-      final refreshed = await api.load();
-      expect(first.single.title, refreshed.single.title);
-      expect(first.single.demoStatus, 'upcoming');
-    },
-  );
+      ),
+    );
+    final first = await api.load();
+    final refreshed = await api.load();
+    expect(first.single.title, refreshed.single.title);
+    expect(first.single.destinationName, 'Tokyo');
+  });
   test(
     'GET HTTP, network and malformed-response errors remain visible',
     () async {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mid_project_template/models.dart';
 import 'package:mid_project_template/screens/a_list_screen.dart';
-import 'package:mid_project_template/widgets.dart';
 
 const samples = [
   Item(
@@ -11,7 +10,6 @@ const samples = [
     subtitle: '2000.01.01 · Tokyo',
     image: '',
     destination: 'Tokyo',
-    demoStatus: 'past',
   ),
   Item(
     id: 2,
@@ -19,7 +17,6 @@ const samples = [
     subtitle: '2000.02.01 · Osaka',
     image: '',
     destination: 'Osaka',
-    demoStatus: 'past',
   ),
 ];
 Future<void> mount(
@@ -74,7 +71,7 @@ Future<void> elapse(WidgetTester t, int seconds) async {
 }
 
 void main() {
-  testWidgets('delete demo toast expires after four seconds', (t) async {
+  testWidgets('delete toast expires after four seconds', (t) async {
     await mount(t);
     await delete(t, 1);
     expect(find.text('실행 취소'), findsOneWidget);
@@ -82,28 +79,27 @@ void main() {
     expect(find.text('실행 취소'), findsOneWidget);
     await elapse(t, 1);
     expect(find.byType(SnackBar), findsNothing);
-    expect(find.text('First trip'), findsOneWidget);
+    expect(find.text('First trip'), findsNothing);
   });
-  testWidgets('undo demonstrates feedback without changing records', (t) async {
+  testWidgets('undo restores the deleted session record', (t) async {
     await mount(t);
     await delete(t, 1);
     await tap(t, find.text('실행 취소'));
-    expect(find.text(prototypeNotice), findsOneWidget);
     expect(find.text('First trip'), findsOneWidget);
   });
-  testWidgets('repeat demo deletions clear old queued messages', (t) async {
+  testWidgets('repeat deletions clear old queued messages', (t) async {
     await mount(t);
     await delete(t, 1);
     ScaffoldMessenger.of(
       t.element(find.byType(ListScreen)),
     ).showSnackBar(const SnackBar(content: Text('Old queued notice')));
     await delete(t, 2);
-    expect(find.textContaining('Second trip 삭제 시연'), findsOneWidget);
+    expect(find.textContaining('Second trip 여행이 삭제되었습니다.'), findsOneWidget);
     expect(find.text('Old queued notice'), findsNothing);
     await elapse(t, 5);
     expect(find.byType(SnackBar), findsNothing);
   });
-  testWidgets('accessibility demo offers a longer bounded undo window', (
+  testWidgets('accessibility mode offers a longer bounded undo window', (
     t,
   ) async {
     await mount(t, accessible: true);
@@ -111,7 +107,6 @@ void main() {
     await elapse(t, 5);
     expect(find.text('실행 취소'), findsOneWidget);
     await tap(t, find.text('실행 취소'));
-    expect(find.text(prototypeNotice), findsOneWidget);
     await delete(t, 2);
     await elapse(t, 10);
     expect(find.byType(SnackBar), findsNothing);

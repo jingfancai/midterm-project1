@@ -3,10 +3,10 @@
 // B-2 TabBar + TabBarView · 여행 정보·여행 기록 탭 · P04
 // B-3 NetImage + Text · 대표 사진·여행 제목 · P02 · P08
 // B-4 Wrap(Chip) · 여행 태그 · P06
-// B-5 OutlinedButton · 여행 보관하기 시연 · P05 · P10
+// B-5 OutlinedButton · 여행 즐겨찾기 · P03
 // B-6 FilledButton + AlertDialog · 여행 추억 카드 만들기 · P07
 // B-7 FutureBuilder + ListView · 여행 기록 타임라인 · P01 · P09
-// B-8 IconButton + TripEditor · 여행 정보 수정 · P05 · P10
+// B-8 IconButton + TripEditor · 여행 정보 수정 · P05
 import 'package:flutter/material.dart';
 import '../api.dart';
 import '../models.dart';
@@ -18,23 +18,49 @@ class DetailScreen extends StatefulWidget {
     super.key,
     required this.item,
     this.loadNotes = fetchNotes,
+    this.save = previewTripChange,
   });
 
   final Item item;
   final NotesLoader loadNotes;
+  final TripChange save;
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
-  Item get _item => widget.item;
-  // STATE: 여행 수정·즐겨찾기 → B-1/B-3/B-5 (구현하지 않음)
-  Future<void> _editTrip() => showDialog<void>(
-    context: context,
-    builder: (_) => TripEditor(item: _item),
-  );
-  void _favorite() => showPrototypeNotice(context);
+  // STATE: 상세 편집·즐겨찾기 → A에 전달한 메모리 콜백과 상세 표시만 갱신.
+  late Item _item = widget.item;
+  bool _saving = false;
+
+  Future<void> _editTrip() async {
+    final saved = await showDialog<Item>(
+      context: context,
+      barrierDismissible: false,
+      builder: (_) => TripEditor(item: _item, save: widget.save),
+    );
+    if (saved != null && mounted) setState(() => _item = saved);
+  }
+
+  Future<void> _favorite() async {
+    if (_saving) return;
+    setState(() => _saving = true);
+    try {
+      final saved = await widget.save(
+        _item.copyWith(favorite: !_item.favorite),
+      );
+      if (mounted) setState(() => _item = saved);
+    } catch (error) {
+      if (mounted) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('$error')));
+      }
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +68,6 @@ class _DetailScreenState extends State<DetailScreen> {
       length: 2,
       child: Scaffold(
         appBar: AppBar(
-          // B-1 P03
           title: Text(
             _item.title,
             maxLines: 1,
@@ -50,13 +75,12 @@ class _DetailScreenState extends State<DetailScreen> {
           ),
           actions: [
             IconButton(
-              onPressed: _editTrip, // B-8 P05
+              onPressed: _saving ? null : _editTrip, // B-8 P05
               icon: const Icon(Icons.edit_outlined),
               tooltip: '여행 정보 수정',
             ),
           ],
           bottom: const TabBar(
-            // B-2 P04
             tabs: [
               Tab(text: '여행 정보'),
               Tab(text: '여행 기록'),
@@ -65,7 +89,11 @@ class _DetailScreenState extends State<DetailScreen> {
         ),
         body: TabBarView(
           children: [
-            _InfoTab(item: _item, title: _item.title, onFavorite: _favorite),
+            _InfoTab(
+              item: _item,
+              title: _item.title,
+              onFavorite: _saving ? null : _favorite,
+            ),
             _NotesTab(itemId: widget.item.id, load: widget.loadNotes),
           ],
         ),
@@ -186,7 +214,7 @@ class _InfoTab extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         OutlinedButton.icon(
-          onPressed: onFavorite, // B-5 P05 P10
+          onPressed: onFavorite, // B-5 P03
           icon: Icon(item.favorite ? Icons.bookmark : Icons.bookmark_border),
           label: Text(item.favorite ? '즐겨찾기 해제' : '이 여행 보관하기'),
         ),
@@ -255,6 +283,7 @@ class _NotesTabState extends State<_NotesTab> {
   }
 
   Future<void> _addNote() async {
+    // STATE: 기록 입력 → 현재 상세 탭의 임시 기록. 다시 조회하면 복구.
     var draft = '';
 
     final result = await showDialog<String>(
@@ -286,8 +315,30 @@ class _NotesTabState extends State<_NotesTab> {
 
     if (!mounted || result == null || result.isEmpty) return;
 
-    // STATE: 새 기록 → B-7 타임라인 (구현하지 않음)
-    showPrototypeNotice(context);
+    final now = DateTime.now();
+    final date =
+        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+    setState(() {
+      _future = _future.then(
+        (notes) => [
+          ...notes,
+          Note(
+            id: notes.isEmpty
+                ? 1
+                : notes.map((note) => note.id).reduce((a, b) => a > b ? a : b) +
+                      1,
+            itemId: widget.itemId,
+            text: result,
+            date: date,
+          ),
+        ],
+      );
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('여행 기록이 추가되었습니다. 이 화면에서만 유지됩니다.')),
+    );
   }
 
   @override

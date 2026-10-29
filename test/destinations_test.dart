@@ -69,9 +69,9 @@ void main() {
       ]) {
         expect(resolveDestination(name), isNull, reason: name);
         final unknown = trip.copyWith(destination: name);
-        expect(unknown.inferredCountryCode, 'US');
+        expect(unknown.inferredCountryCode, isEmpty);
         expect(unknown.photoUrl, defaultTripPhoto);
-        expect(unknown.toJson()['countryCode'], 'US');
+        expect(unknown.toJson()['countryCode'], '');
       }
     },
   );
@@ -87,12 +87,12 @@ void main() {
       expect(trip.copyWith(destination: '도쿄').photoUrl, tokyo);
       final saved = trip.toJson();
       expect(saved['image'], tokyo);
-      expect(saved['countryCode'], 'US');
+      expect(saved['countryCode'], 'JP');
       final refreshed = Item.fromJson(saved)!;
       expect(refreshed.photoUrl, tokyo);
       expect(refreshed.copyWith(favorite: true).photoUrl, tokyo);
       expect(refreshed.copyWith(title: 'New title').photoUrl, tokyo);
-      expect(trip.copyWith(destination: 'Busan').inferredCountryCode, 'US');
+      expect(trip.copyWith(destination: 'Busan').inferredCountryCode, 'KR');
       expect(
         trip.copyWith(destination: 'Busan').photoUrl,
         isNot(defaultTripPhoto),
@@ -109,7 +109,7 @@ void main() {
         subtitle: '2000.01.01 · 일본 도쿄',
         image: 'wrong',
       );
-      expect(legacy.inferredCountryCode, isEmpty);
+      expect(legacy.inferredCountryCode, 'JP');
       expect(legacy.photoUrl, trip.photoUrl);
       const unknown = Item(
         id: 2,
@@ -127,10 +127,47 @@ void main() {
     },
   );
 
-  test('country display metadata is not inferred from edits', () {
-    expect(trip.copyWith(destination: 'Paris').countryCode, 'US');
-    const summary = TripSummary();
-    expect(summary.visitedCities, 4);
-    expect(summary.visitedCountries, 2);
-  });
+  test(
+    'country statistics use recognition, deduplicate cities and exclude future/deleted trips',
+    () {
+      final items = [
+        trip,
+        trip.copyWith(destination: '오사카'),
+        trip.copyWith(destination: '东京'),
+        trip.copyWith(
+          destination: 'Paris',
+          startDate: '2100-01-01',
+          endDate: '2100-01-03',
+        ),
+        trip.copyWith(destination: 'London', deleted: true),
+        trip.copyWith(destination: 'Unknown city', countryCode: 'FR'),
+      ];
+      expect(
+        TripSummary(items, {}, DateTime(2026, 10, 29)).visitedCountries,
+        1,
+      );
+      expect(
+        TripSummary(
+          [...items, trip.copyWith(destination: '파리')],
+          {},
+          DateTime(2026, 10, 29),
+        ).visitedCountries,
+        2,
+      );
+      expect(
+        TripSummary(
+          [
+            trip.copyWith(
+              destination: 'Paris',
+              startDate: '2026-10-29',
+              endDate: '2026-10-30',
+            ),
+          ],
+          {},
+          DateTime(2026, 10, 29),
+        ).visitedCountries,
+        1,
+      );
+    },
+  );
 }

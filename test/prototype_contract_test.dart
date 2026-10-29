@@ -32,6 +32,16 @@ void main() {
         isFalse,
       );
       expect(source, contains('// STATE:'));
+      expect(
+        RegExp(r'\.(post|put|patch|delete|send)\s*\(').hasMatch(source),
+        isFalse,
+      );
+      expect(
+        RegExp(
+          r'\b(writeAsString|writeAsBytes|openWrite)\s*\(',
+        ).hasMatch(source),
+        isFalse,
+      );
     },
   );
   test(
@@ -43,6 +53,34 @@ void main() {
       for (final marker in ['A-12', 'B-8', 'C-5', 'P01', 'P10', 'GET 전용']) {
         expect(guide, contains(marker));
       }
+    },
+  );
+  test(
+    'screen headers agree with guide element names, widgets and principles',
+    () {
+      final guide = File('docs/디자인가이드.md').readAsStringSync();
+      for (final name in [
+        'a_list_screen',
+        'b_detail_screen',
+        'c_result_sheet',
+      ]) {
+        final source = File('lib/screens/$name.dart').readAsStringSync();
+        final headers = RegExp(
+          r'^// ([ABC]-\d+) (.+?) · (.+?) · (P\d+(?: · P\d+)*)$',
+          multiLine: true,
+        ).allMatches(source);
+        expect(headers, isNotEmpty);
+        for (final header in headers) {
+          final row = guide
+              .split('\n')
+              .singleWhere((line) => line.startsWith('| ${header[1]} |'));
+          final cells = row.split('|').map((value) => value.trim()).toList();
+          expect(cells[2], header[2]);
+          expect(cells[3], header[3]);
+          expect(cells[5], header[4]);
+        }
+      }
+      expect(guide, contains('**위험 있음**'));
     },
   );
 }

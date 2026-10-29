@@ -3,7 +3,10 @@ import 'destinations.dart';
 // 여행 데이터 — 구조화된 필드와 기존 subtitle 데이터를 함께 지원한다.
 // 형식이 틀린 항목은 null을 돌려준다 → 목록에서 빠질 뿐 앱이 멈추지 않는다 (Dart 3 패턴 매칭).
 //
-// Item: 여행 카드 GET 표시 모델 · Note: 여행 기록 GET 표시 모델
+// Item / Note는 GET 데이터와 세션 내 여행/기록 표시 모델이다.
+// STATE: 변경은 메모리에서만 유지하며 서버·기기에 저장하지 않는다.
+typedef TripChange = Future<Item> Function(Item item);
+Future<Item> previewTripChange(Item item) async => item;
 
 class Item {
   const Item({
@@ -18,7 +21,6 @@ class Item {
     this.endDate = '',
     this.favorite = false,
     this.deleted = false,
-    this.demoStatus = 'unknown',
   }) : _subtitle = subtitle;
 
   final int id;
@@ -30,7 +32,6 @@ class Item {
   final String endDate;
   final bool favorite;
   final bool deleted;
-  final String demoStatus;
 
   String get subtitle => startDate.isNotEmpty && endDate.isNotEmpty
       ? '${startDate.replaceAll('-', '.')} – ${endDate.replaceAll('-', '.')} · $destination'
@@ -41,10 +42,11 @@ class Item {
       ? destination.trim()
       : (_subtitle.contains('·') ? _subtitle.split('·').last.trim() : '');
   DestinationInfo? get destinationInfo => resolveDestination(destinationName);
-  String get inferredCountryCode => countryCode; // GET 예시 메타데이터; 자동 인식 없음
+  String get inferredCountryCode => destinationInfo?.countryCode ?? '';
   String get photoUrl => destinationInfo?.photoUrl ?? defaultTripPhoto;
 
   Item copyWith({
+    int? id,
     String? title,
     String? destination,
     String? countryCode,
@@ -54,7 +56,7 @@ class Item {
     bool? favorite,
     bool? deleted,
   }) => Item(
-    id: id,
+    id: id ?? this.id,
     title: title ?? this.title,
     subtitle: _subtitle,
     image: image ?? this.image,
@@ -65,7 +67,6 @@ class Item {
     endDate: endDate ?? this.endDate,
     favorite: favorite ?? this.favorite,
     deleted: deleted ?? this.deleted,
-    demoStatus: demoStatus,
   );
 
   Map<String, Object> toJson({bool includeId = true}) => {
@@ -80,7 +81,6 @@ class Item {
     'endDate': endDate,
     'favorite': favorite,
     'deleted': deleted,
-    'demoStatus': demoStatus,
   };
   final String image;
   final List<String> tags;
@@ -112,9 +112,6 @@ class Item {
           endDate: json['endDate'] is String ? json['endDate'] as String : '',
           favorite: json['favorite'] == true,
           deleted: json['deleted'] == true,
-          demoStatus: json['demoStatus'] is String
-              ? json['demoStatus'] as String
-              : 'unknown',
           tags: switch (json['tags']) {
             List<Object?> t => t.whereType<String>().toList(),
             _ => const [],

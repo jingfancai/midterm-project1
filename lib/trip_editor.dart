@@ -1,13 +1,15 @@
-// B-8 TripEditor · 여행 정보 수정 · P05 · P10
-// A-11 TripEditor · 여행 추가 시연 · P05 · P10
+// B-8 TripEditor · 여행 정보 수정 · P05
+// A-11 TripEditor · 여행 추가 · P05
 import 'package:flutter/material.dart';
 import 'models.dart';
-import 'widgets.dart';
+import 'trip_insights.dart';
+import 'destinations.dart';
 
-/// The same form and server validation are used for creating and editing trips.
+/// The same form and input validation are used for creating and editing trips.
 class TripEditor extends StatefulWidget {
-  const TripEditor({super.key, this.item});
+  const TripEditor({super.key, this.item, required this.save});
   final Item? item;
+  final TripChange save;
 
   @override
   State<TripEditor> createState() => _TripEditorState();
@@ -19,8 +21,8 @@ class _TripEditorState extends State<TripEditor> {
   late final TextEditingController _destination;
   late final TextEditingController _start;
   late final TextEditingController _end;
-  static const _saving = false;
-  static const String? _error = null;
+  bool _saving = false;
+  String? _error;
 
   String _iso(DateTime value) => value.toIso8601String().substring(0, 10);
 
@@ -28,14 +30,12 @@ class _TripEditorState extends State<TripEditor> {
   void initState() {
     super.initState();
     final item = widget.item;
+    final dates = item == null ? null : TripDates.fromItem(item);
+    final start = dates?.start ?? DateTime.now().add(const Duration(days: 7));
     _title = TextEditingController(text: item?.title ?? '');
     _destination = TextEditingController(text: item?.destinationName ?? '');
-    _start = TextEditingController(
-      text: item?.startDate.isNotEmpty == true ? item!.startDate : '2026-09-12',
-    );
-    _end = TextEditingController(
-      text: item?.endDate.isNotEmpty == true ? item!.endDate : '2026-09-15',
-    );
+    _start = TextEditingController(text: _iso(start));
+    _end = TextEditingController(text: _iso(dates?.end ?? start));
   }
 
   @override
@@ -47,7 +47,7 @@ class _TripEditorState extends State<TripEditor> {
   }
 
   Future<void> _pick(TextEditingController controller) async {
-    final parsed = DateTime.tryParse(controller.text) ?? DateTime(2026, 9, 12);
+    final parsed = DateTime.tryParse(controller.text) ?? DateTime.now();
     final initial = parsed.isBefore(DateTime(1900))
         ? DateTime(1900)
         : parsed.isAfter(DateTime(2200))
@@ -62,10 +62,37 @@ class _TripEditorState extends State<TripEditor> {
     if (value != null && mounted) setState(() => controller.text = _iso(value));
   }
 
-  void _save() {
-    // STATE: 입력 정보 → 생성/수정된 여행 (구현하지 않음)
-    Navigator.pop(context);
-    showPrototypeNotice(context);
+  // STATE: 입력 → 세션의 여행; 서버 전송·영구 저장 없음.
+  Future<void> _save() async {
+    if (_saving || !_form.currentState!.validate()) return;
+    setState(() {
+      _saving = true;
+      _error = null;
+    });
+    final original =
+        widget.item ??
+        Item(id: 0, title: '', subtitle: '', image: defaultTripPhoto);
+    final destination = resolveDestination(_destination.text);
+    try {
+      final saved = await widget.save(
+        original.copyWith(
+          title: _title.text.trim(),
+          destination: _destination.text.trim(),
+          countryCode: destination?.countryCode ?? '',
+          image: destination?.photoUrl ?? defaultTripPhoto,
+          startDate: _start.text.trim(),
+          endDate: _end.text.trim(),
+        ),
+      );
+      if (mounted) Navigator.pop(context, saved);
+    } catch (error) {
+      if (mounted) {
+        setState(() {
+          _saving = false;
+          _error = '$error';
+        });
+      }
+    }
   }
 
   Widget _field(
@@ -94,7 +121,12 @@ class _TripEditorState extends State<TripEditor> {
     ),
   );
 
-  String? _date(String? value) => null; // 입력 형식 UI 예시만 제공
+  String? _date(String? value) =>
+      value == null ||
+          !RegExp(r'^\d{4}-\d{2}-\d{2}$').hasMatch(value.trim()) ||
+          TripDates.parse(value.trim().replaceAll('-', '.')) == null
+      ? '올바른 날짜를 입력해 주세요 (YYYY-MM-DD).'
+      : null;
 
   @override
   Widget build(BuildContext context) => PopScope(
@@ -114,13 +146,17 @@ class _TripEditorState extends State<TripEditor> {
                   'trip-destination',
                   '목적지',
                   _destination,
-                  // STATE: 목적지 → 국가 인식 결과 (구현하지 않음; 고정 시연 안내)
+                  // STATE: 목적지 → 자동 인식 국가·안내문 (추가 입력 불필요)
                   onChanged: (_) => setState(() {}),
                 ),
                 Padding(
                   padding: const EdgeInsets.only(bottom: 12),
                   child: Text(
-                    '국가·사진 자동 인식은 시연 예시입니다. 실제 인식·계산은 하지 않습니다.',
+                    _destination.text.trim().isEmpty
+                        ? '도시 이름을 입력하면 국가를 자동으로 인식해요.'
+                        : resolveDestination(_destination.text) == null
+                        ? '국가를 인식하지 못했어요. 도시 이름을 확인해 주세요. 방문 국가 통계에서 제외됩니다.'
+                        : '자동 인식 국가: ${resolveDestination(_destination.text)!.countryName}',
                     key: const ValueKey('destination-country'),
                     style: const TextStyle(
                       fontSize: 12,
@@ -145,6 +181,10 @@ class _TripEditorState extends State<TripEditor> {
                   validator: (value) {
                     final error = _date(value);
                     if (error != null) return error;
+                    if (_date(_start.text) == null &&
+                        value!.trim().compareTo(_start.text.trim()) < 0) {
+                      return '종료일은 출발일보다 빠를 수 없어요.';
+                    }
                     return null;
                   },
                   suffix: IconButton(

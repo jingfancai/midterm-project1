@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mid_project_template/models.dart';
 import 'package:mid_project_template/screens/a_list_screen.dart';
-import 'package:mid_project_template/widgets.dart';
 
 const samples = [
   Item(
@@ -11,7 +10,6 @@ const samples = [
     subtitle: '2000.01.01 · Tokyo',
     image: '',
     destination: 'Tokyo',
-    demoStatus: 'past',
   ),
   Item(
     id: 2,
@@ -19,7 +17,6 @@ const samples = [
     subtitle: '2000.02.01 · Osaka',
     image: '',
     destination: 'Osaka',
-    demoStatus: 'past',
   ),
 ];
 Future<void> mount(
@@ -69,22 +66,22 @@ Future<void> delete(WidgetTester tester, int id) async {
 }
 
 void main() {
-  testWidgets('search shows the same prewritten result for arbitrary input', (
+  testWidgets('search matches actual data and shows empty for unknown input', (
     t,
   ) async {
     await mount(t);
-    for (final q in ['Tokyo', 'no-match']) {
-      await fill(t, 'trip-search', q);
-      expect(find.text('First trip'), findsOneWidget);
-      expect(find.text('Second trip'), findsNothing);
-    }
+    await fill(t, 'trip-search', 'Tokyo');
+    expect(find.text('First trip'), findsOneWidget);
+    expect(find.text('Second trip'), findsNothing);
+    await fill(t, 'trip-search', 'no-match');
+    expect(find.text('First trip'), findsNothing);
+    expect(find.text('검색 조건에 맞는 여행이 없어요.'), findsOneWidget);
     await tap(t, find.byTooltip('검색어 지우기'));
     expect(find.text('Second trip'), findsOneWidget);
   });
-  testWidgets('favorite filter is a sample scene not business filtering', (
-    t,
-  ) async {
+  testWidgets('favorite filter uses current session toggles', (t) async {
     await mount(t);
+    await tap(t, find.byKey(const ValueKey('favorite-1')));
     await tap(t, find.text('즐겨찾기만'));
     expect(find.text('First trip'), findsOneWidget);
     expect(find.text('Second trip'), findsNothing);
@@ -97,17 +94,22 @@ void main() {
     await tap(t, find.text('취소'));
     expect(find.text('First trip'), findsOneWidget);
   });
-  testWidgets('delete and undo do not change example statistics', (t) async {
+  testWidgets('delete and undo update current city and country statistics', (
+    t,
+  ) async {
     await mount(t);
     await delete(t, 1);
-    expect(find.text('총 여행 4'), findsOneWidget);
+    expect(find.text('총 여행 1'), findsOneWidget);
+    expect(find.text('방문 도시 수 1개'), findsOneWidget);
+    expect(find.text('방문 국가 1개'), findsOneWidget);
     await tap(t, find.text('실행 취소'));
-    expect(find.text('방문 도시 수 4개'), findsOneWidget);
+    expect(find.text('방문 도시 수 2개'), findsOneWidget);
+    expect(find.text('총 여행 2'), findsOneWidget);
   });
-  testWidgets('sort selection retains sample order', (t) async {
+  testWidgets('sort changes the displayed order within a group', (t) async {
     await mount(t);
     await tap(t, find.byKey(const ValueKey('trip-sort')));
-    await tap(t, find.text('이름순').last);
+    await tap(t, find.text('오래된 출발일순').last);
     expect(
       t.getTopLeft(find.text('First trip')).dy,
       lessThan(t.getTopLeft(find.text('Second trip')).dy),
@@ -117,7 +119,7 @@ void main() {
     testWidgets('demo controls fit $width dp', (t) async {
       await mount(t, width: width, height: 800);
       await tap(t, find.byKey(const ValueKey('favorite-1')));
-      expect(find.text(prototypeNotice), findsOneWidget);
+      expect(find.byTooltip('즐겨찾기 해제'), findsOneWidget);
       expect(t.takeException(), isNull);
     });
   }

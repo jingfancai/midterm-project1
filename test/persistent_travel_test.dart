@@ -11,7 +11,6 @@ const samples = [
     subtitle: '2000.01.01 · Tokyo',
     image: '',
     destination: 'Tokyo',
-    demoStatus: 'past',
   ),
   Item(
     id: 2,
@@ -19,7 +18,6 @@ const samples = [
     subtitle: '2000.02.01 · Osaka',
     image: '',
     destination: 'Osaka',
-    demoStatus: 'past',
   ),
 ];
 Future<void> mount(
@@ -68,42 +66,54 @@ Future<void> delete(WidgetTester tester, int id) async {
   await tap(tester, find.text('삭제'));
 }
 
-// Former persistence regressions now assert that prototype actions never mutate data.
+// Session interactions work, but every fresh GET restores the original fixture.
 void main() {
-  testWidgets('favorite demo leaves the card unchanged after refresh', (
-    t,
-  ) async {
-    await mount(t);
-    await tap(t, find.byKey(const ValueKey('favorite-1')));
-    expect(find.text(prototypeNotice), findsOneWidget);
-    expect(find.byTooltip('즐겨찾기 해제'), findsNothing);
-    await mount(t);
-    expect(find.text('First trip'), findsOneWidget);
-  });
-  testWidgets('delete confirmation and undo are demonstrations only', (
-    t,
-  ) async {
-    await mount(t);
-    await delete(t, 1);
-    expect(find.text('First trip'), findsOneWidget);
-    await tap(t, find.text('실행 취소'));
-    expect(find.text(prototypeNotice), findsOneWidget);
-    await mount(t);
-    expect(find.text('First trip'), findsOneWidget);
-  });
-  testWidgets('edit form keeps current data after demo save', (t) async {
-    await mount(t);
-    await tap(t, find.text('First trip'));
-    await tap(t, find.byTooltip('여행 정보 수정'));
-    await fill(t, 'trip-title', 'Changed');
-    await fill(t, 'trip-destination', 'Paris');
-    await tap(t, find.text('저장'));
-    expect(find.text('Changed'), findsNothing);
-    expect(find.text('First trip'), findsWidgets);
-    await tap(t, find.byType(BackButton));
-    expect(find.text('First trip'), findsOneWidget);
-  });
-  testWidgets('new trip form demonstrates save without creating a record', (
+  testWidgets(
+    'favorite changes only in the session and resets on GET refresh',
+    (t) async {
+      await mount(t);
+      await tap(t, find.byKey(const ValueKey('favorite-1')));
+      expect(find.byTooltip('즐겨찾기 해제'), findsOneWidget);
+      await tap(t, find.byKey(const ValueKey('refresh-trips')));
+      expect(find.byTooltip('즐겨찾기 해제'), findsNothing);
+      await mount(t);
+      expect(find.text('First trip'), findsOneWidget);
+    },
+  );
+  testWidgets(
+    'delete removes a card and undo restores it without changing GET data',
+    (t) async {
+      await mount(t);
+      await delete(t, 1);
+      expect(find.text('First trip'), findsNothing);
+      await tap(t, find.text('실행 취소'));
+      expect(find.text('First trip'), findsOneWidget);
+      await mount(t);
+      expect(find.text('First trip'), findsOneWidget);
+    },
+  );
+  testWidgets(
+    'edit synchronizes detail and home then GET refresh restores original',
+    (t) async {
+      await mount(t);
+      await tap(t, find.text('First trip'));
+      await tap(t, find.byTooltip('여행 정보 수정'));
+      await fill(t, 'trip-title', 'Changed');
+      await fill(t, 'trip-destination', 'Paris');
+      await fill(t, 'trip-start', '2000-03-01');
+      await fill(t, 'trip-end', '2000-03-05');
+      await tap(t, find.text('저장'));
+      expect(find.text('Changed'), findsWidgets);
+      expect(find.textContaining('Paris'), findsOneWidget);
+      await tap(t, find.byType(BackButton));
+      expect(find.text('Changed'), findsOneWidget);
+      expect(find.text('방문 국가 2개'), findsOneWidget);
+      await tap(t, find.byKey(const ValueKey('refresh-trips')));
+      expect(find.text('First trip'), findsOneWidget);
+      expect(find.text('Changed'), findsNothing);
+    },
+  );
+  testWidgets('new trips get unique session IDs and vanish after GET refresh', (
     t,
   ) async {
     await mount(t);
@@ -111,10 +121,28 @@ void main() {
     await fill(t, 'trip-title', 'New trip');
     await fill(t, 'trip-destination', 'Paris');
     await tap(t, find.text('여행 추가'));
+    await tap(t, find.byKey(const ValueKey('trip-search')));
+    await fill(t, 'trip-search', 'New trip');
+    expect(
+      find.descendant(
+        of: find.byType(TripCard),
+        matching: find.text('New trip'),
+      ),
+      findsOneWidget,
+    );
+    expect(find.byKey(const ValueKey('delete--1')), findsOneWidget);
+    await tap(t, find.byType(FloatingActionButton));
+    await fill(t, 'trip-title', 'New trip two');
+    await fill(t, 'trip-destination', 'Osaka');
+    await tap(t, find.text('여행 추가'));
+    expect(find.byKey(const ValueKey('delete--1')), findsOneWidget);
+    expect(find.byKey(const ValueKey('delete--2')), findsOneWidget);
+    expect(find.text('총 여행 4'), findsOneWidget);
+    await tap(t, find.byKey(const ValueKey('refresh-trips')));
+    await fill(t, 'trip-search', '');
     expect(find.text('New trip'), findsNothing);
-    expect(find.text(prototypeNotice), findsOneWidget);
-    await mount(t);
-    expect(find.text('New trip'), findsNothing);
+    expect(find.text('New trip two'), findsNothing);
+    expect(find.text('총 여행 2'), findsOneWidget);
   });
   testWidgets('canceling editor preserves all data', (t) async {
     await mount(t);
@@ -124,28 +152,30 @@ void main() {
     expect(find.text('Canceled'), findsNothing);
     expect(find.text('First trip'), findsOneWidget);
   });
-  testWidgets('country field is explanatory rather than actual recognition', (
-    t,
-  ) async {
-    await mount(t);
-    await tap(t, find.byType(FloatingActionButton));
-    await fill(t, 'trip-destination', 'Tokyo');
-    expect(find.textContaining('실제 인식·계산은 하지 않습니다'), findsOneWidget);
-    expect(find.byKey(const ValueKey('country-code')), findsNothing);
-    await fill(t, 'trip-destination', 'Unknown');
-    expect(find.textContaining('실제 인식·계산은 하지 않습니다'), findsOneWidget);
-  });
-  testWidgets('record creation shows feedback without changing timeline', (
-    t,
-  ) async {
+  testWidgets(
+    'country resolves multilingual destinations with an honest unknown hint',
+    (t) async {
+      await mount(t);
+      await tap(t, find.byType(FloatingActionButton));
+      await fill(t, 'trip-destination', 'Tokyo');
+      expect(find.textContaining('자동 인식 국가:'), findsOneWidget);
+      expect(find.byKey(const ValueKey('country-code')), findsNothing);
+      await fill(t, 'trip-destination', 'Unknown');
+      expect(find.textContaining('국가를 인식하지 못했어요'), findsOneWidget);
+    },
+  );
+  testWidgets('record creation updates temporary timeline only', (t) async {
     await mount(t);
     await tap(t, find.text('First trip'));
     await tap(t, find.text('여행 기록'));
     await tap(t, find.text('여행 기록 추가'));
     await t.enterText(find.byType(TextField), 'My note');
     await tap(t, find.text('저장'));
+    expect(find.text('My note'), findsOneWidget);
+    await tap(t, find.byType(BackButton));
+    await tap(t, find.text('First trip'));
+    await tap(t, find.text('여행 기록'));
     expect(find.text('My note'), findsNothing);
-    expect(find.text(prototypeNotice), findsOneWidget);
   });
   testWidgets('avatar opens a local explanation instead of another page', (
     t,
@@ -161,7 +191,15 @@ void main() {
     t,
   ) async {
     await mount(t);
-    final photo = t.widget<NetImage>(find.byType(NetImage).first).url;
+    final card = find.ancestor(
+      of: find.text('First trip'),
+      matching: find.byType(TripCard),
+    );
+    final photo = t
+        .widget<NetImage>(
+          find.descendant(of: card, matching: find.byType(NetImage)),
+        )
+        .url;
     await tap(t, find.text('First trip'));
     expect(t.widget<NetImage>(find.byType(NetImage).first).url, photo);
   });
