@@ -311,6 +311,7 @@ class _ListScreenState extends State<ListScreen> {
     required String title,
     required List<Item> items,
     required bool wide,
+    double titleFontSize = 24,
   }) {
     if (items.isEmpty) return const SizedBox.shrink();
 
@@ -325,8 +326,8 @@ class _ListScreenState extends State<ListScreen> {
               children: [
                 Text(
                   title,
-                  style: const TextStyle(
-                    fontSize: 19,
+                  style: TextStyle(
+                    fontSize: titleFontSize,
                     fontWeight: FontWeight.w800,
                     color: Color(0xFF183B3A),
                   ),
@@ -649,6 +650,7 @@ class _ListScreenState extends State<ListScreen> {
                           ),
                           _buildTripSection(
                             title: '날짜 미정',
+                            titleFontSize: 19,
                             items: visible
                                 .where(
                                   (item) =>
