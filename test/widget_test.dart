@@ -7,6 +7,7 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:mid_project_template/api.dart';
 import 'package:mid_project_template/models.dart';
+import 'package:mid_project_template/widgets.dart';
 import 'package:mid_project_template/screens/a_list_screen.dart';
 
 const _items = [
@@ -64,9 +65,18 @@ void main() {
     expect(find.byType(GridView), findsNothing);
 
     await tester.ensureVisible(find.text('항목 1'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('항목 1'));
     await tester.pumpAndSettle();
     expect(find.byType(BackButton), findsOneWidget); // push
+    expect(find.byType(NetImage), findsOneWidget); // Current trip cover only.
+    expect(
+      tester
+          .widgetList<ListView>(find.byType(ListView))
+          .where((list) => list.scrollDirection == Axis.horizontal),
+      isEmpty,
+    );
+    expect(find.byTooltip('여행 정보 수정'), findsOneWidget);
 
     await tester.scrollUntilVisible(
       find.text('여행 추억 카드 만들기'),
