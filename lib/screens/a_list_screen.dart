@@ -179,12 +179,8 @@ class _ListScreenState extends State<ListScreen> {
 
   Future<void> _open(Item item) => Navigator.of(context).push<void>(
     MaterialPageRoute<void>(
-      builder: (_) => DetailScreen(
-        item: item,
-        loadNotes: widget.loadNotes,
-        loadItems: () async => _items,
-        save: _persist,
-      ),
+      builder: (_) =>
+          DetailScreen(item: item, loadNotes: widget.loadNotes, save: _persist),
     ),
   );
 

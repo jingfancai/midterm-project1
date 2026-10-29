@@ -12,13 +12,11 @@ class DetailScreen extends StatefulWidget {
     super.key,
     required this.item,
     this.loadNotes = fetchNotes,
-    this.loadItems = fetchItems,
     this.save = updateItem,
   });
 
   final Item item;
   final NotesLoader loadNotes;
-  final ItemsLoader loadItems;
   final ItemSaver save;
 
   @override
@@ -87,10 +85,7 @@ class _DetailScreenState extends State<DetailScreen> {
             _InfoTab(
               item: _item,
               title: _item.title,
-              save: widget.save,
               onFavorite: _saving ? null : _favorite,
-              loadItems: widget.loadItems,
-              loadNotes: widget.loadNotes,
             ),
             _NotesTab(itemId: widget.item.id, load: widget.loadNotes),
           ],
@@ -104,17 +99,11 @@ class _InfoTab extends StatelessWidget {
   const _InfoTab({
     required this.item,
     required this.title,
-    required this.loadItems,
-    required this.loadNotes,
-    required this.save,
     required this.onFavorite,
   });
 
   final Item item;
   final String title;
-  final ItemsLoader loadItems;
-  final NotesLoader loadNotes;
-  final ItemSaver save;
   final VoidCallback? onFavorite;
   @override
   Widget build(BuildContext context) {
@@ -124,79 +113,11 @@ class _InfoTab extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(22),
-          child: AspectRatio(aspectRatio: 4 / 3, child: NetImage(item.photoUrl)),
+          child: AspectRatio(
+            aspectRatio: 4 / 3,
+            child: NetImage(item.photoUrl),
+          ),
         ),
-        const SizedBox(height: 12),
-        FutureBuilder<List<Item>>(
-          future: loadItems(),
-          builder: (context, snap) {
-            if (snap.connectionState != ConnectionState.done ||
-                !snap.hasData ||
-                snap.data!.isEmpty) {
-              return const SizedBox.shrink();
-            }
-            final trips = snap.data!;
-            return SizedBox(
-              height: 112,
-              child: ListView.separated(
-                scrollDirection: Axis.horizontal,
-                itemCount: trips.length,
-                separatorBuilder: (_, _) => const SizedBox(width: 10),
-                itemBuilder: (context, index) {
-                  final trip = trips[index];
-                  return SizedBox(
-                    width: 140,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(12),
-                      onTap: () {
-                        if (trip.id != item.id) {
-                          Navigator.of(context).pushReplacement(
-                            MaterialPageRoute<void>(
-                              builder: (_) => DetailScreen(
-                                item: trip,
-                                loadNotes: loadNotes,
-                                loadItems: loadItems,
-                                save: save,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Stack(
-                          fit: StackFit.expand,
-                          children: [
-                            NetImage(trip.photoUrl),
-                            Positioned(
-                              left: 0,
-                              right: 0,
-                              bottom: 0,
-                              child: Container(
-                                padding: const EdgeInsets.all(6),
-                                color: Colors.black54,
-                                child: Text(
-                                  trip.title,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 11,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-            );
-          },
-        ),
-        const SizedBox(height: 8),
         const SizedBox(height: 20),
         const Row(
           children: [
