@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "defaultPhotoUrl": "https://images.unsplash.com/photo-1476514525535-07fb3b4ae5f1?w=1000&q=85",
+  "defaultPhotoUrl": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1000&q=85",
   "cities": [
     {
       "id": "tokyo",
@@ -21,7 +21,14 @@
         "Tokyo, Japan",
         "Japan Tokyo"
       ],
-      "photoUrl": "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1000&q=85"
+      "photoUrl": "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1000&q=85",
+      "photoSource": {
+        "title": "Tokyo fixed city photograph",
+        "pageUrl": "https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1000&q=85",
+        "license": "Unsplash License",
+        "licenseUrl": "https://unsplash.com/license",
+        "verifiedOn": "2026-10-29"
+      }
     },
     {
       "id": "osaka",
@@ -37,7 +44,14 @@
         "日本大阪",
         "Osaka, Japan"
       ],
-      "photoUrl": "https://images.unsplash.com/photo-1590559899731-a382839e5549?w=1000&q=85"
+      "photoUrl": "https://images.unsplash.com/photo-1590559899731-a382839e5549?w=1000&q=85",
+      "photoSource": {
+        "title": "Osaka fixed city photograph",
+        "pageUrl": "https://images.unsplash.com/photo-1590559899731-a382839e5549?w=1000&q=85",
+        "license": "Unsplash License",
+        "licenseUrl": "https://unsplash.com/license",
+        "verifiedOn": "2026-10-29"
+      }
     },
     {
       "id": "kyoto",
@@ -53,7 +67,14 @@
         "日本京都",
         "Kyoto, Japan"
       ],
-      "photoUrl": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1000&q=85"
+      "photoUrl": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1000&q=85",
+      "photoSource": {
+        "title": "Kyoto fixed city photograph",
+        "pageUrl": "https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1000&q=85",
+        "license": "Unsplash License",
+        "licenseUrl": "https://unsplash.com/license",
+        "verifiedOn": "2026-10-29"
+      }
     },
     {
       "id": "seoul",
@@ -72,7 +93,14 @@
         "韩国首尔",
         "Seoul, South Korea"
       ],
-      "photoUrl": "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=1000&q=85"
+      "photoUrl": "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=1000&q=85",
+      "photoSource": {
+        "title": "Seoul fixed city photograph",
+        "pageUrl": "https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=1000&q=85",
+        "license": "Unsplash License",
+        "licenseUrl": "https://unsplash.com/license",
+        "verifiedOn": "2026-10-29"
+      }
     },
     {
       "id": "busan",
@@ -87,7 +115,16 @@
         "부산광역시",
         "한국 부산",
         "Busan, South Korea"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/Busan_beach.jpg/960px-Busan_beach.jpg",
+      "photoSource": {
+        "title": "Busan beach.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Busan_beach.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Syced"
+      }
     },
     {
       "id": "paris",
@@ -104,7 +141,14 @@
         "法國巴黎",
         "Paris, France"
       ],
-      "photoUrl": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1000&q=85"
+      "photoUrl": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1000&q=85",
+      "photoSource": {
+        "title": "Paris fixed city photograph",
+        "pageUrl": "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1000&q=85",
+        "license": "Unsplash License",
+        "licenseUrl": "https://unsplash.com/license",
+        "verifiedOn": "2026-10-29"
+      }
     },
     {
       "id": "lyon",
@@ -114,6 +158,15 @@
         "en": "Lyon",
         "ko": "리옹",
         "zh": "里昂"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/06/Lyon_1er_-_Place_Bellevue_-_Vue_sur_le_quartier_de_La_Part-Dieu_et_les_Alpes.jpg/960px-Lyon_1er_-_Place_Bellevue_-_Vue_sur_le_quartier_de_La_Part-Dieu_et_les_Alpes.jpg",
+      "photoSource": {
+        "title": "Lyon 1er - Place Bellevue - Vue sur le quartier de La Part-Dieu et les Alpes.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Lyon_1er_-_Place_Bellevue_-_Vue_sur_le_quartier_de_La_Part-Dieu_et_les_Alpes.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Romainbehar"
       }
     },
     {
@@ -131,7 +184,14 @@
         "英国伦敦",
         "London, UK"
       ],
-      "photoUrl": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=85"
+      "photoUrl": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=85",
+      "photoSource": {
+        "title": "London fixed city photograph",
+        "pageUrl": "https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=85",
+        "license": "Unsplash License",
+        "licenseUrl": "https://unsplash.com/license",
+        "verifiedOn": "2026-10-29"
+      }
     },
     {
       "id": "new-york",
@@ -149,7 +209,14 @@
         "미국 뉴욕",
         "美国纽约"
       ],
-      "photoUrl": "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000&q=85"
+      "photoUrl": "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000&q=85",
+      "photoSource": {
+        "title": "New York fixed city photograph",
+        "pageUrl": "https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000&q=85",
+        "license": "Unsplash License",
+        "licenseUrl": "https://unsplash.com/license",
+        "verifiedOn": "2026-10-29"
+      }
     },
     {
       "id": "los-angeles",
@@ -162,7 +229,16 @@
       },
       "aliases": [
         "洛杉磯"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a0/Los_Angeles_Skyline%3B_August_30%2C_2022.jpg/960px-Los_Angeles_Skyline%3B_August_30%2C_2022.jpg",
+      "photoSource": {
+        "title": "Los Angeles Skyline; August 30, 2022.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Los_Angeles_Skyline;_August_30,_2022.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "ItzAPotato2009"
+      }
     },
     {
       "id": "beijing",
@@ -176,7 +252,16 @@
       "aliases": [
         "중국 베이징",
         "中国北京"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/ca/The_Birds%27_Nest%2C_Beijing%2C_Jan_1_2023.jpg/960px-The_Birds%27_Nest%2C_Beijing%2C_Jan_1_2023.jpg",
+      "photoSource": {
+        "title": "The Birds' Nest, Beijing, Jan 1 2023.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:The_Birds%27_Nest,_Beijing,_Jan_1_2023.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "P. K. Koo"
+      }
     },
     {
       "id": "shanghai",
@@ -190,7 +275,16 @@
       "aliases": [
         "중국 상하이",
         "中国上海"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bc/Shanghai_skyline_waterfront_pudong_5166168_69_70.jpg/960px-Shanghai_skyline_waterfront_pudong_5166168_69_70.jpg",
+      "photoSource": {
+        "title": "Shanghai skyline waterfront pudong 5166168 69 70.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Shanghai_skyline_waterfront_pudong_5166168_69_70.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Ermell"
+      }
     },
     {
       "id": "singapore",
@@ -200,6 +294,15 @@
         "en": "Singapore",
         "ko": "싱가포르",
         "zh": "新加坡"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/b6/Skyline_of_Singapore_Central_Business_District_20250903.jpg/960px-Skyline_of_Singapore_Central_Business_District_20250903.jpg",
+      "photoSource": {
+        "title": "Skyline of Singapore Central Business District 20250903.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Skyline_of_Singapore_Central_Business_District_20250903.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "DvTor8303"
       }
     },
     {
@@ -210,6 +313,15 @@
         "en": "Bangkok",
         "ko": "방콕",
         "zh": "曼谷"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0a/A_Bangkok_Skyline._%2828200943426%29.jpg/960px-A_Bangkok_Skyline._%2828200943426%29.jpg",
+      "photoSource": {
+        "title": "A Bangkok Skyline. (28200943426).jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:A_Bangkok_Skyline._(28200943426).jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Bernard Spragg. NZ from Christchurch, New Zealand"
       }
     },
     {
@@ -223,7 +335,16 @@
       },
       "aliases": [
         "河內"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/August_2003_Hanoi_2.jpg/960px-August_2003_Hanoi_2.jpg",
+      "photoSource": {
+        "title": "August 2003 Hanoi 2.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:August_2003_Hanoi_2.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Syced"
+      }
     },
     {
       "id": "da-nang",
@@ -237,7 +358,16 @@
       "aliases": [
         "Danang",
         "峴港"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/3e/Da_Nang%2C_Vietnam.jpg/960px-Da_Nang%2C_Vietnam.jpg",
+      "photoSource": {
+        "title": "Da Nang, Vietnam.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Da_Nang,_Vietnam.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Quangpraha"
+      }
     },
     {
       "id": "rome",
@@ -251,7 +381,16 @@
       "aliases": [
         "Roma",
         "羅馬"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/21/Er_Cuppolone_%28179597823%29.jpeg/960px-Er_Cuppolone_%28179597823%29.jpeg",
+      "photoSource": {
+        "title": "Er Cuppolone (179597823).jpeg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Er_Cuppolone_(179597823).jpeg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Emiliano Carchia"
+      }
     },
     {
       "id": "barcelona",
@@ -264,7 +403,16 @@
       },
       "aliases": [
         "巴塞羅那"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/1e/Barcelona_-_Skyline_del_Diagonal_Mar_i_el_Front_Mar%C3%ADtim_del_Poblenou%2C_Hotel_Barcelona_Princess%2C_CCIB%2C_Hotel_AC_Barcelona_Forum%2C_Consorci_de_la_Zona_Franca_%2CHotel_Hilton_Diagonal_Mar_y_Torre_B_Diagonal_Mar.jpg/960px-thumbnail.jpg",
+      "photoSource": {
+        "title": "Barcelona - Skyline del Diagonal Mar i el Front Marítim del Poblenou, Hotel Barcelona Princess, CCIB, Hotel AC Barcelona Forum, Consorci de la Zona Franca ,Hotel Hilton Diagonal Mar y Torre B Diagonal Mar.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Barcelona_-_Skyline_del_Diagonal_Mar_i_el_Front_Mar%C3%ADtim_del_Poblenou,_Hotel_Barcelona_Princess,_CCIB,_Hotel_AC_Barcelona_Forum,_Consorci_de_la_Zona_Franca_,Hotel_Hilton_Diagonal_Mar_y_Torre_B_Diagonal_Mar.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Zarateman"
+      }
     },
     {
       "id": "berlin",
@@ -274,6 +422,15 @@
         "en": "Berlin",
         "ko": "베를린",
         "zh": "柏林"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/58/Berlin_TV_tower_city_skyline_%2841610209475%29.jpg/960px-Berlin_TV_tower_city_skyline_%2841610209475%29.jpg",
+      "photoSource": {
+        "title": "Berlin TV tower city skyline (41610209475).jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Berlin_TV_tower_city_skyline_(41610209475).jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Markus Spiske from Forchheim, Bavaria Upper Franconia"
       }
     },
     {
@@ -287,7 +444,16 @@
       },
       "aliases": [
         "雪梨"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/89/Sydney_Central_Station.jpg/960px-Sydney_Central_Station.jpg",
+      "photoSource": {
+        "title": "Sydney Central Station.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Sydney_Central_Station.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Kanzcech"
+      }
     },
     {
       "id": "amsterdam",
@@ -297,6 +463,16 @@
         "en": "Amsterdam",
         "ko": "암스테르담",
         "zh": "阿姆斯特丹"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/5f/Amsterdam_Centraal_Station2.jpg/960px-Amsterdam_Centraal_Station2.jpg",
+      "photoSource": {
+        "title": "Amsterdam Centraal Station2.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Amsterdam_Centraal_Station2.jpg",
+        "license": "Public domain",
+        "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+        "verifiedOn": "2026-10-29",
+        "author": "Unknown authorUnknown author",
+        "note": "Historical view of Amsterdam Centraal Station."
       }
     },
     {
@@ -307,6 +483,15 @@
         "en": "Brussels",
         "ko": "브뤼셀",
         "zh": "布鲁塞尔"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8e/Night_skyline_above_Rue_de_la_Fourche%2C_Brussels%2C_2013.jpg/960px-Night_skyline_above_Rue_de_la_Fourche%2C_Brussels%2C_2013.jpg",
+      "photoSource": {
+        "title": "Night skyline above Rue de la Fourche, Brussels, 2013.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Night_skyline_above_Rue_de_la_Fourche,_Brussels,_2013.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "DimiTalen"
       }
     },
     {
@@ -320,7 +505,16 @@
       },
       "aliases": [
         "Zürich"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/42/Zurich_city_center.jpg/960px-Zurich_city_center.jpg",
+      "photoSource": {
+        "title": "Zurich city center.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Zurich_city_center.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Lovasoa"
+      }
     },
     {
       "id": "vienna",
@@ -334,7 +528,16 @@
       "aliases": [
         "Wien",
         "비엔나"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/9f/Vienna_Austria_Skyline_Aerial%2C_October_2024.jpg/960px-Vienna_Austria_Skyline_Aerial%2C_October_2024.jpg",
+      "photoSource": {
+        "title": "Vienna Austria Skyline Aerial, October 2024.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Vienna_Austria_Skyline_Aerial,_October_2024.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Spicypepper999"
+      }
     },
     {
       "id": "prague",
@@ -347,7 +550,16 @@
       },
       "aliases": [
         "Praha"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/50/Prague_skyline_view.jpg/960px-Prague_skyline_view.jpg",
+      "photoSource": {
+        "title": "Prague skyline view.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Prague_skyline_view.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "MurderousPass"
+      }
     },
     {
       "id": "budapest",
@@ -357,6 +569,15 @@
         "en": "Budapest",
         "ko": "부다페스트",
         "zh": "布达佩斯"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/75/View_from_Buda_Castle_2014_01.jpg/960px-View_from_Buda_Castle_2014_01.jpg",
+      "photoSource": {
+        "title": "View from Buda Castle 2014 01.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:View_from_Buda_Castle_2014_01.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Perituss"
       }
     },
     {
@@ -367,6 +588,15 @@
         "en": "Lisbon",
         "ko": "리스본",
         "zh": "里斯本"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/a/a9/Lisbon_W_Ponte_25_De_Abril_%28256368647%29.jpeg/960px-Lisbon_W_Ponte_25_De_Abril_%28256368647%29.jpeg",
+      "photoSource": {
+        "title": "Lisbon W Ponte 25 De Abril (256368647).jpeg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Lisbon_W_Ponte_25_De_Abril_(256368647).jpeg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Stephan"
       }
     },
     {
@@ -377,6 +607,15 @@
         "en": "Athens",
         "ko": "아테네",
         "zh": "雅典"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/30/From_Temple_of_Olympian_Zeus_to_Lycabetus_Athens_Greece.jpg/960px-From_Temple_of_Olympian_Zeus_to_Lycabetus_Athens_Greece.jpg",
+      "photoSource": {
+        "title": "From Temple of Olympian Zeus to Lycabetus Athens Greece.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:From_Temple_of_Olympian_Zeus_to_Lycabetus_Athens_Greece.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Jebulon"
       }
     },
     {
@@ -390,7 +629,16 @@
       },
       "aliases": [
         "İstanbul"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/cb/Historical_peninsula_and_modern_skyline_of_Istanbul.jpg/960px-Historical_peninsula_and_modern_skyline_of_Istanbul.jpg",
+      "photoSource": {
+        "title": "Historical peninsula and modern skyline of Istanbul.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Historical_peninsula_and_modern_skyline_of_Istanbul.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Hunanuk"
+      }
     },
     {
       "id": "copenhagen",
@@ -400,6 +648,15 @@
         "en": "Copenhagen",
         "ko": "코펜하겐",
         "zh": "哥本哈根"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c8/January_2008_Copenhagen_skyline.jpg/960px-January_2008_Copenhagen_skyline.jpg",
+      "photoSource": {
+        "title": "January 2008 Copenhagen skyline.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:January_2008_Copenhagen_skyline.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Syced"
       }
     },
     {
@@ -410,6 +667,15 @@
         "en": "Stockholm",
         "ko": "스톡홀름",
         "zh": "斯德哥尔摩"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/Nationalmuseum_stockholm_20050902_001.jpg/960px-Nationalmuseum_stockholm_20050902_001.jpg",
+      "photoSource": {
+        "title": "Nationalmuseum stockholm 20050902 001.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Nationalmuseum_stockholm_20050902_001.jpg",
+        "license": "Public domain",
+        "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+        "verifiedOn": "2026-10-29",
+        "author": "Jonas Bergsten"
       }
     },
     {
@@ -420,6 +686,15 @@
         "en": "Auckland",
         "ko": "오클랜드",
         "zh": "奥克兰"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d8/Skyline_-_Auckland%2C_NZ_-_DSC07092.jpg/960px-Skyline_-_Auckland%2C_NZ_-_DSC07092.jpg",
+      "photoSource": {
+        "title": "Skyline - Auckland, NZ - DSC07092.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Skyline_-_Auckland,_NZ_-_DSC07092.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Daderot"
       }
     },
     {
@@ -430,6 +705,15 @@
         "en": "Kuala Lumpur",
         "ko": "쿠알라룸푸르",
         "zh": "吉隆坡"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/6/63/Kuala_Lumpur_skyline_long_exposure.jpg/960px-Kuala_Lumpur_skyline_long_exposure.jpg",
+      "photoSource": {
+        "title": "Kuala Lumpur skyline long exposure.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Kuala_Lumpur_skyline_long_exposure.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Unknown authorUnknown author"
       }
     },
     {
@@ -440,6 +724,15 @@
         "en": "Dublin",
         "ko": "더블린",
         "zh": "都柏林"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/1/13/Dublin_with_Spire_%2823698542464%29.jpg/960px-Dublin_with_Spire_%2823698542464%29.jpg",
+      "photoSource": {
+        "title": "Dublin with Spire (23698542464).jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Dublin_with_Spire_(23698542464).jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "www.Pixel.la Free Stock Photos"
       }
     },
     {
@@ -453,7 +746,16 @@
       },
       "aliases": [
         "Reykjavík"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/c/c7/August_2006_in_Reykjavik_27.jpg/960px-August_2006_in_Reykjavik_27.jpg",
+      "photoSource": {
+        "title": "August 2006 in Reykjavik 27.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:August_2006_in_Reykjavik_27.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Syced"
+      }
     },
     {
       "id": "denpasar",
@@ -463,6 +765,16 @@
         "en": "Denpasar",
         "ko": "덴파사르",
         "zh": "登巴萨"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/9/92/Denpasar_Museum_by_Sosialist_Denpasar%2C_Melantjong_ka_Bali_%281935%29%2C_np.jpg/960px-Denpasar_Museum_by_Sosialist_Denpasar%2C_Melantjong_ka_Bali_%281935%29%2C_np.jpg",
+      "photoSource": {
+        "title": "Denpasar Museum by Sosialist Denpasar, Melantjong ka Bali (1935), np.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Denpasar_Museum_by_Sosialist_Denpasar,_Melantjong_ka_Bali_(1935),_np.jpg",
+        "license": "Public domain",
+        "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
+        "verifiedOn": "2026-10-29",
+        "author": "Sosialist Denpasar",
+        "note": "Historical photograph of Denpasar Museum, published in 1935; not a contemporary street view."
       }
     },
     {
@@ -473,6 +785,15 @@
         "en": "Dubai",
         "ko": "두바이",
         "zh": "迪拜"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/e4/Dubai_skyline_unsplash.jpg/960px-Dubai_skyline_unsplash.jpg",
+      "photoSource": {
+        "title": "Dubai skyline unsplash.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Dubai_skyline_unsplash.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Robert Bock"
       }
     },
     {
@@ -483,6 +804,15 @@
         "en": "Cairo",
         "ko": "카이로",
         "zh": "开罗"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/2/2d/Cairo_Tower%2C_al-Q%C4%81hirah%2C_CG%2C_EGY_%2840942425723%29.jpg/960px-Cairo_Tower%2C_al-Q%C4%81hirah%2C_CG%2C_EGY_%2840942425723%29.jpg",
+      "photoSource": {
+        "title": "Cairo Tower, al-Qāhirah, CG, EGY (40942425723).jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Cairo_Tower,_al-Q%C4%81hirah,_CG,_EGY_(40942425723).jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Warren LeMay from Chicago, IL, United States"
       }
     },
     {
@@ -496,7 +826,16 @@
       },
       "aliases": [
         "Marrakech"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/d/d3/Mosque_El_Mansour_%E2%80%93_Marrakesh_-_01.jpg/960px-Mosque_El_Mansour_%E2%80%93_Marrakesh_-_01.jpg",
+      "photoSource": {
+        "title": "Mosque El Mansour – Marrakesh - 01.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Mosque_El_Mansour_%E2%80%93_Marrakesh_-_01.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Maesi64"
+      }
     },
     {
       "id": "cape-town",
@@ -506,6 +845,15 @@
         "en": "Cape Town",
         "ko": "케이프타운",
         "zh": "开普敦"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/0/0c/Cape-town-port-boats.jpg/960px-Cape-town-port-boats.jpg",
+      "photoSource": {
+        "title": "Cape-town-port-boats.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Cape-town-port-boats.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "HPBotha"
       }
     },
     {
@@ -516,6 +864,15 @@
         "en": "Toronto",
         "ko": "토론토",
         "zh": "多伦多"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/73/Toronto_Skyline%2C_Ontario_Canada.jpg/960px-Toronto_Skyline%2C_Ontario_Canada.jpg",
+      "photoSource": {
+        "title": "Toronto Skyline, Ontario Canada.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Toronto_Skyline,_Ontario_Canada.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Peter_Glyn"
       }
     },
     {
@@ -526,6 +883,15 @@
         "en": "Mexico City",
         "ko": "멕시코시티",
         "zh": "墨西哥城"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/4/40/Santa_Fe_Skyline_2017_CDMX.jpg/960px-Santa_Fe_Skyline_2017_CDMX.jpg",
+      "photoSource": {
+        "title": "Santa Fe Skyline 2017 CDMX.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Santa_Fe_Skyline_2017_CDMX.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Gobierno CDMX  * https://www.flickr.com/photos/140660272@N07/"
       }
     },
     {
@@ -536,6 +902,15 @@
         "en": "Madrid",
         "ko": "마드리드",
         "zh": "马德里"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/5/51/Puerta_de_Alcal%C3%A1%2C_Madrid%2C_illuminated_with_the_rainbow_colours_during_the_celebrations_of_WorldPride_2017.jpg/960px-Puerta_de_Alcal%C3%A1%2C_Madrid%2C_illuminated_with_the_rainbow_colours_during_the_celebrations_of_WorldPride_2017.jpg",
+      "photoSource": {
+        "title": "Puerta de Alcalá, Madrid, illuminated with the rainbow colours during the celebrations of WorldPride 2017.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Puerta_de_Alcal%C3%A1,_Madrid,_illuminated_with_the_rainbow_colours_during_the_celebrations_of_WorldPride_2017.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Wikier 2017"
       }
     },
     {
@@ -549,7 +924,16 @@
       },
       "aliases": [
         "Firenze"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/7/72/Perseus_Medusa_Cellini_Lanzi_Florence.jpg/960px-Perseus_Medusa_Cellini_Lanzi_Florence.jpg",
+      "photoSource": {
+        "title": "Perseus Medusa Cellini Lanzi Florence.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Perseus_Medusa_Cellini_Lanzi_Florence.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Jebulon"
+      }
     },
     {
       "id": "venice",
@@ -563,7 +947,16 @@
       "aliases": [
         "Venezia",
         "베니스"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/f/f6/Alejandro_Franco_2015_%28Unsplash%29.jpg/960px-Alejandro_Franco_2015_%28Unsplash%29.jpg",
+      "photoSource": {
+        "title": "Alejandro Franco 2015 (Unsplash).jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Alejandro_Franco_2015_(Unsplash).jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Alejandro Franco alejo1996"
+      }
     },
     {
       "id": "munich",
@@ -576,7 +969,16 @@
       },
       "aliases": [
         "München"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/8/8f/Marianische_M%C3%A4nnerkongregation_Munich.jpg/960px-Marianische_M%C3%A4nnerkongregation_Munich.jpg",
+      "photoSource": {
+        "title": "Marianische Männerkongregation Munich.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Marianische_M%C3%A4nnerkongregation_Munich.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Jebulon"
+      }
     },
     {
       "id": "melbourne",
@@ -586,6 +988,15 @@
         "en": "Melbourne",
         "ko": "멜버른",
         "zh": "墨尔本"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/e/ec/City_of_Melbourne_Skyline_From_Docklands.JPG/960px-City_of_Melbourne_Skyline_From_Docklands.JPG",
+      "photoSource": {
+        "title": "City of Melbourne Skyline From Docklands.JPG",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:City_of_Melbourne_Skyline_From_Docklands.JPG",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Maximus Lu"
       }
     },
     {
@@ -599,7 +1010,16 @@
       },
       "aliases": [
         "三藩市"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/b/bf/Golden_Gate_Bridge%2C_San_Francisco%2C_2017.jpg/960px-Golden_Gate_Bridge%2C_San_Francisco%2C_2017.jpg",
+      "photoSource": {
+        "title": "Golden Gate Bridge, San Francisco, 2017.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Golden_Gate_Bridge,_San_Francisco,_2017.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Dsdugan"
+      }
     },
     {
       "id": "vancouver",
@@ -609,6 +1029,15 @@
         "en": "Vancouver",
         "ko": "밴쿠버",
         "zh": "温哥华"
+      },
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/31/Vancouver_Skyline_September.jpg/960px-Vancouver_Skyline_September.jpg",
+      "photoSource": {
+        "title": "Vancouver Skyline September.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Vancouver_Skyline_September.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Suspencewl"
       }
     },
     {
@@ -619,6 +1048,15 @@
         "en": "Porto",
         "ko": "포르투",
         "zh": "波尔图"
+      },
+      "photoUrl": "https://upload.wikimedia.org/wikipedia/commons/2/2f/Porto.png",
+      "photoSource": {
+        "title": "Porto.png",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Porto.png",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "WissensWolke"
       }
     }
   ],
@@ -638,7 +1076,16 @@
         "제주특별자치도",
         "济州岛",
         "濟州島"
-      ]
+      ],
+      "photoUrl": "https://thumb.wikimedia.org/wikipedia/commons/thumb/3/37/Lighthouse_in_Jeju_Island.jpg/960px-Lighthouse_in_Jeju_Island.jpg",
+      "photoSource": {
+        "title": "Lighthouse in Jeju Island.jpg",
+        "pageUrl": "https://commons.wikimedia.org/wiki/File:Lighthouse_in_Jeju_Island.jpg",
+        "license": "CC0",
+        "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
+        "verifiedOn": "2026-10-29",
+        "author": "Bernard Gagnon"
+      }
     },
     {
       "id": "gangwon",
@@ -654,5 +1101,12 @@
         "강원특별자치도"
       ]
     }
-  ]
+  ],
+  "defaultPhotoSource": {
+    "title": "Airplane wing above clouds (neutral travel cover)",
+    "pageUrl": "https://images.unsplash.com/photo-1436491865332-7a61a109cc05?w=1000&q=85",
+    "license": "Unsplash License",
+    "licenseUrl": "https://unsplash.com/license",
+    "verifiedOn": "2026-10-29"
+  }
 }

@@ -4,6 +4,7 @@
 //   EmptyView    빈 목록 안내   P01 (예)
 // TODO: 문구는 디자인 가이드 글의 명칭 그대로 바꾼다.
 import 'package:flutter/material.dart';
+import 'destinations.dart';
 
 /// 로딩 상태
 class LoadingView extends StatelessWidget {
@@ -101,16 +102,27 @@ class NetImage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Widget unavailable() => SizedBox(
+      width: width,
+      height: height,
+      child: const Icon(Icons.image_outlined, size: 40),
+    );
+
     return Image.network(
       url,
       width: width,
       height: height,
       fit: BoxFit.cover,
-      errorBuilder: (context, error, stack) => SizedBox(
-        width: width,
-        height: height,
-        child: const Icon(Icons.image_outlined, size: 40),
-      ),
+      // Never substitute a different city's photo or retry indefinitely.
+      errorBuilder: (context, error, stack) => url == defaultTripPhoto
+          ? unavailable()
+          : Image.network(
+              defaultTripPhoto,
+              width: width,
+              height: height,
+              fit: BoxFit.cover,
+              errorBuilder: (context, error, stack) => unavailable(),
+            ),
     );
   }
 }
