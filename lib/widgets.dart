@@ -126,3 +126,17 @@ class NetImage extends StatelessWidget {
     );
   }
 }
+
+// Presentation feedback only: no data mutation or persistence.
+const prototypeNotice = 'UI 시연입니다. 실제 데이터는 변경하거나 저장하지 않습니다.';
+void showPrototypeNotice(BuildContext context) {
+  ScaffoldMessenger.of(context)
+    ..clearSnackBars()
+    ..showSnackBar(
+      const SnackBar(
+        content: Text(prototypeNotice),
+        duration: Duration(seconds: 4),
+        persist: false,
+      ),
+    );
+}

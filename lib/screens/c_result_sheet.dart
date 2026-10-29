@@ -1,3 +1,9 @@
+// 화면 C — 여행 추억 카드 · 디자인 가이드 대응표
+// C-1 showModalBottomSheet + SafeArea · 여행 회고 모달 · P03
+// C-2 Text · 여행 제목과 회고 안내 · P02
+// C-3 Row + _StatCard · 여행 통계 예시 카드 · P01
+// C-4 Text · 예시 결과 고지 · P10
+// C-5 Material + NetImage · 여행 회고 선택 카드 · P04 · P06
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../widgets.dart';
@@ -13,17 +19,14 @@ class ResultSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
 
-    // 从现有旅行数据中统计标签种类
-    final summary = TripSummary(
-      items,
-      items.where((item) => item.favorite).map((item) => item.id).toSet(),
-      DateTime.now(),
-    );
+    // STATE: 여행 데이터 → 통계 (구현하지 않음; 고정 예시)
+    const summary = TripSummary();
 
     // 使用第一条旅行作为精选回忆
     final featuredItem = items.isNotEmpty ? items.first : null;
 
     return SafeArea(
+      // C-1 P03
       child: Padding(
         padding: const EdgeInsets.fromLTRB(20, 0, 20, 20),
         child: Column(
@@ -54,7 +57,7 @@ class ResultSheet extends StatelessWidget {
             const SizedBox(height: 6),
 
             const Text(
-              '지금까지 기록한 여행의 순간들을 다시 만나 보세요.',
+              '시연용 예시 통계입니다. 실제 데이터에서 계산하지 않습니다.',
               style: TextStyle(color: Color(0xFF687775), fontSize: 13),
             ),
             const SizedBox(height: 18),

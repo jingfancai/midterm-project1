@@ -3,8 +3,7 @@ import 'destinations.dart';
 // 여행 데이터 — 구조화된 필드와 기존 subtitle 데이터를 함께 지원한다.
 // 형식이 틀린 항목은 null을 돌려준다 → 목록에서 빠질 뿐 앱이 멈추지 않는다 (Dart 3 패턴 매칭).
 //
-// TODO: Item / Note를 내 앱의 비즈니스 명칭으로 바꾼다 (예: Item → Product, Note → Review).
-//           필드 이름은 db.json의 키와 같아야 한다.
+// Item: 여행 카드 GET 표시 모델 · Note: 여행 기록 GET 표시 모델
 
 class Item {
   const Item({
@@ -19,6 +18,7 @@ class Item {
     this.endDate = '',
     this.favorite = false,
     this.deleted = false,
+    this.demoStatus = 'unknown',
   }) : _subtitle = subtitle;
 
   final int id;
@@ -30,6 +30,7 @@ class Item {
   final String endDate;
   final bool favorite;
   final bool deleted;
+  final String demoStatus;
 
   String get subtitle => startDate.isNotEmpty && endDate.isNotEmpty
       ? '${startDate.replaceAll('-', '.')} – ${endDate.replaceAll('-', '.')} · $destination'
@@ -40,7 +41,7 @@ class Item {
       ? destination.trim()
       : (_subtitle.contains('·') ? _subtitle.split('·').last.trim() : '');
   DestinationInfo? get destinationInfo => resolveDestination(destinationName);
-  String get inferredCountryCode => destinationInfo?.countryCode ?? '';
+  String get inferredCountryCode => countryCode; // GET 예시 메타데이터; 자동 인식 없음
   String get photoUrl => destinationInfo?.photoUrl ?? defaultTripPhoto;
 
   Item copyWith({
@@ -64,6 +65,7 @@ class Item {
     endDate: endDate ?? this.endDate,
     favorite: favorite ?? this.favorite,
     deleted: deleted ?? this.deleted,
+    demoStatus: demoStatus,
   );
 
   Map<String, Object> toJson({bool includeId = true}) => {
@@ -78,6 +80,7 @@ class Item {
     'endDate': endDate,
     'favorite': favorite,
     'deleted': deleted,
+    'demoStatus': demoStatus,
   };
   final String image;
   final List<String> tags;
@@ -109,6 +112,9 @@ class Item {
           endDate: json['endDate'] is String ? json['endDate'] as String : '',
           favorite: json['favorite'] == true,
           deleted: json['deleted'] == true,
+          demoStatus: json['demoStatus'] is String
+              ? json['demoStatus'] as String
+              : 'unknown',
           tags: switch (json['tags']) {
             List<Object?> t => t.whereType<String>().toList(),
             _ => const [],

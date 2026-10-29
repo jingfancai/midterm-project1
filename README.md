@@ -1,47 +1,48 @@
-<<<<<<< HEAD
-# Polarsteps v2 — 여행 기록 UI 프로토타입
+# Polarsteps v2 — Flutter UI/UX Prototype
 
-## 앱 소개
-- 앱 이름: Polarsteps v2
-- 부제: 여행 경로와 사진, 기록을 한곳에서 돌아보는 여행 일기
-- 카테고리: 여행
-- 대상 사용자: 여행 중 사진과 장소를 기록하고, 여행 후 추억을 정리하고 싶은 대학생 및 여행자
-- 개선 방향: 여행 기록을 카드와 시간선으로 더 쉽게 탐색하고, 여행 회고 진입점을 명확하게 제공한다.
-- AI 기능 제안: 여행 사진과 메모를 바탕으로 회고 문장을 제안한다. 현재 화면의 결과는 고정된 시연용 데이터이며 실제 AI 호출은 없다.
+중간 제출용 여행 기록 화면 시연입니다. A 나의 여행 목록, B 여행 상세, C 여행 추억 카드와 기존 사진·테마를 유지합니다.
+실제 로그인·결제·저장·국가 추론·추천·통계 계산은 구현하지 않습니다.
 
-## 화면 목록
-1. A — 나의 여행: 여행 카드 목록, 로딩/오류/빈 상태, 600dp 이상 넓은 화면 격자
-2. B — 여행 상세: 여행 정보와 여행 기록 탭
-3. C — 여행 추억 카드: 미리 정한 회고 제안 결과를 보여 주는 모달
+## 실행
 
-## 실행 방법
-### 1. JSON Server 실행
 ```bash
 cd mock_server
-npm install
+npm ci
 npm start
 ```
-서버 기본 주소는 `http://localhost:3000`입니다.
 
-### 2. Flutter 실행
-프로젝트 루트에서 별도 터미널을 열고 실행합니다.
+다른 터미널에서:
+
 ```bash
-flutter pub get
-flutter run -d chrome
+export PATH=/workspace/toolchains/flutter/bin:$PATH
+export PUB_CACHE=/workspace/.pub-cache
+flutter pub get --enforce-lockfile
+flutter run -d web-server --web-hostname 0.0.0.0 --web-port 8080
 ```
-Flutter 웹에서 `localhost:3000`의 JSON Server를 사용합니다. Android 에뮬레이터에서는 템플릿의 `10.0.2.2:3000` 설정을 사용합니다.
 
-## 데모 영상 또는 배포 URL
-- 1분 데모 영상: TODO — https://drive.google.com/file/d/1GcZCoI2VISxBMF445PMPQqvMuczyzweF/view?usp=sharing
-- 배포 URL: TODO — https://drive.google.com/file/d/1GcZCoI2VISxBMF445PMPQqvMuczyzweF/view?usp=sharing
+API는 GET /items 및 /notes?itemId=만 사용합니다. npm start는 읽기 전용 메모리 라우터를 실행합니다.
+추가·수정·즐겨찾기·삭제·실행 취소·기록 추가는 Dialog/SnackBar 시연이며 GET 데이터를 변경하지 않습니다.
+검색/필터는 고정된 첫 항목 예시, 정렬은 선택 표시만 제공합니다. 통계는 예시 상수이고 분류는 샘플 demoStatus 표시입니다.
 
-## 데이터와 제한
-- `mock_server/db.json`의 여행과 기록은 프로젝트용 모의 데이터입니다.
-- 앱은 JSON Server에서 GET 요청만 사용합니다.
-- 로그인, 결제, 영구 저장, 실제 GPS 추적 및 실제 AI API는 구현하지 않습니다.
+## Demo 순서
 
-## 문서
-`docs/` 폴더에는 디자인 가이드, 원칙 카드, AI prompt-log, 셀프 논증 기록, 자가평가가 있습니다. 제출 전 각 문서를 실제 리뷰 근거와 본인의 결정으로 업데이트해야 합니다.
-=======
-# midterm-project
->>>>>>> 53b2b4dad4cd56e25429e5758e6788990237e47b
+1. A에서 표지·날짜·태그와 창 너비별 목록/격자를 확인한다.
+2. 검색어 입력 → 첫 예시 결과 → 검색어 지우기로 원래 목록 복귀. 정렬·필터는 예시 안내와 함께 시연한다.
+3. 즐겨찾기·추가·삭제 확인·실행 취소: 저장되지 않는다는 안내와 원본 카드가 남는지 확인한다.
+4. 카드 선택 → B 표지·제목·날짜·장소 → 정보 수정 입력/취소/완료 안내.
+5. B 여행 기록 탭 → GET 목록 또는 빈 상태 → 기록 추가는 안내만 보여 준다.
+6. A 기록 모아보기 → C의 예시 통계·회고 사진 → 카드 선택/닫기.
+7. 서버 중단/GET 빈 배열/지연으로 Error·Empty·Loading을 확인하고 다시 시도한다.
+
+## 검증과 제출 범위
+
+```bash
+flutter analyze
+flutter test
+node --test mock_server/test/persistence.test.js
+flutter build web
+```
+
+기존 테스트 파일은 유지하되 서버 쓰기·영구 저장·실제 계산을 요구하던 단언을 GET-only/원본 불변의 원형 계약으로 변경했습니다.
+디자인 기준은 docs/디자인가이드.md, P01–P10은 docs/원칙카드.md를 참고하세요. 업무 상태 계획은 // STATE:에 표시합니다.
+실제 PPT/PDF·앱 리뷰·발표 영상은 저장소에 제공되지 않아 최종 일치 여부와 점수를 보증하지 않습니다.

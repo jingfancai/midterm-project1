@@ -1,64 +1,57 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mid_project_template/models.dart';
-import 'package:mid_project_template/destinations.dart';
-import 'package:mid_project_template/widgets.dart';
 import 'package:mid_project_template/screens/a_list_screen.dart';
-import 'package:mid_project_template/trip_insights.dart';
+import 'package:mid_project_template/widgets.dart';
 
-const original = Item(
-  id: 1,
-  title: 'Original trip',
-  subtitle: '',
-  image: '',
-  destination: 'Seoul',
-  countryCode: 'KR',
-  startDate: '2000-01-01',
-  endDate: '2000-01-03',
-);
-
-class Store {
-  final Map<int, Item> rows = {1: original};
-  bool fail = false;
-  int saves = 0;
-  Completer<void>? pending;
-  Future<List<Item>> load() async =>
-      rows.values.where((item) => !item.deleted).toList();
-  Future<Item> update(Item item) async {
-    saves++;
-    if (pending != null) await pending!.future;
-    if (fail) throw Exception('저장 실패');
-    rows[item.id] = item;
-    return item;
-  }
-
-  Future<Item> create(Item item) async {
-    if (fail) throw Exception('저장 실패');
-    final saved = Item.fromJson({...item.toJson(), 'id': rows.length + 1})!;
-    rows[saved.id] = saved;
-    return saved;
-  }
-}
-
-Future<void> mount(WidgetTester tester, Store store) async {
-  tester.view.physicalSize = const Size(500, 1400);
+const samples = [
+  Item(
+    id: 1,
+    title: 'First trip',
+    subtitle: '2000.01.01 · Tokyo',
+    image: '',
+    destination: 'Tokyo',
+    demoStatus: 'past',
+  ),
+  Item(
+    id: 2,
+    title: 'Second trip',
+    subtitle: '2000.02.01 · Osaka',
+    image: '',
+    destination: 'Osaka',
+    demoStatus: 'past',
+  ),
+];
+Future<void> mount(
+  WidgetTester tester, {
+  double width = 500,
+  double height = 1400,
+  bool accessible = false,
+}) async {
+  tester.view.physicalSize = Size(width, height);
   tester.view.devicePixelRatio = 1;
+  addTearDown(tester.view.reset);
   await tester.pumpWidget(
     MaterialApp(
       key: UniqueKey(),
-      home: ListScreen(
-        load: store.load,
-        update: store.update,
-        create: store.create,
-        loadNotes: (_) async => [],
+      builder: (context, child) => MediaQuery(
+        data: MediaQuery.of(context).copyWith(accessibleNavigation: accessible),
+        child: child!,
       ),
+      home: ListScreen(load: () async => samples, loadNotes: (_) async => []),
     ),
   );
   await tester.pumpAndSettle();
 }
 
 Future<void> tap(WidgetTester tester, Finder finder) async {
+  if (finder.evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      finder,
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
+  }
   await tester.ensureVisible(finder);
   await tester.pumpAndSettle();
   await tester.tap(finder);
@@ -70,269 +63,106 @@ Future<void> fill(WidgetTester tester, String key, String value) async {
   await tester.pumpAndSettle();
 }
 
+Future<void> delete(WidgetTester tester, int id) async {
+  await tap(tester, find.byKey(ValueKey('delete-$id')));
+  await tap(tester, find.text('삭제'));
+}
+
+// Former persistence regressions now assert that prototype actions never mutate data.
 void main() {
-  test(
-    'country statistics deduplicate ISO identities and exclude future, unknown and deleted trips',
-    () {
-      final items = [
-        original,
-        original.copyWith(destination: 'Busan', countryCode: ' kr '),
-        original.copyWith(destination: 'Tokyo', countryCode: 'KR'),
-        original.copyWith(
-          destination: 'Paris',
-          countryCode: 'FR',
-          startDate: '2100-01-01',
-          endDate: '2100-01-03',
-        ),
-        original.copyWith(
-          destination: 'London',
-          countryCode: 'GB',
-          deleted: true,
-        ),
-        original.copyWith(
-          destination: 'Berlin',
-          countryCode: 'DE',
-          startDate: 'invalid',
-        ),
-        original.copyWith(destination: 'Unknown city', countryCode: 'US'),
-      ];
-      final summary = TripSummary(items, {}, DateTime(2026, 10, 29));
-      expect(summary.visitedCountries, 2);
-      expect(summary.total, 6);
-      expect(
-        TripSummary(
-          [original.copyWith(startDate: '2026-10-29', endDate: '2026-10-30')],
-          {},
-          DateTime(2026, 10, 29),
-        ).visitedCountries,
-        1,
-      );
-    },
-  );
-
-  testWidgets(
-    'favorites, deletion and undo survive a fresh page and keep statistics in sync',
-    (tester) async {
-      addTearDown(tester.view.reset);
-      final store = Store();
-      await mount(tester, store);
-      await tap(tester, find.byKey(const ValueKey('favorite-1')));
-      await mount(tester, store);
-      expect(find.byTooltip('즐겨찾기 해제'), findsOneWidget);
-      expect(find.text('즐겨찾기 1'), findsOneWidget);
-      await tap(tester, find.byKey(const ValueKey('delete-1')));
-      await tap(tester, find.text('삭제'));
-      expect(find.text('총 여행 0'), findsOneWidget);
-      expect(find.text('방문 국가 0개'), findsOneWidget);
-      await tap(tester, find.text('실행 취소'));
-      await mount(tester, store);
-      expect(find.text('Original trip'), findsOneWidget);
-      expect(find.text('즐겨찾기 1'), findsOneWidget);
-      await tap(tester, find.byKey(const ValueKey('delete-1')));
-      await tap(tester, find.text('삭제'));
-      await mount(tester, store);
-      expect(find.text('Original trip'), findsNothing);
-      expect(find.text('총 여행 0'), findsOneWidget);
-    },
-  );
-
-  testWidgets(
-    'editing title, destination, country and dates updates detail, home and fresh reads',
-    (tester) async {
-      addTearDown(tester.view.reset);
-      final store = Store();
-      await mount(tester, store);
-      await tap(tester, find.text('Original trip'));
-      await tap(tester, find.byTooltip('여행 정보 수정'));
-      await fill(tester, 'trip-title', 'Updated trip');
-      await fill(tester, 'trip-destination', 'Tokyo');
-      expect(find.text('자동 인식 국가: 일본'), findsOneWidget);
-      await fill(tester, 'trip-start', '2100-01-01');
-      await fill(tester, 'trip-end', '2100-01-05');
-      await tap(tester, find.text('저장'));
-      expect(find.text('Updated trip'), findsWidgets);
-      expect(find.text('2100.01.01 – 2100.01.05 · Tokyo'), findsOneWidget);
-      await tap(tester, find.byType(BackButton));
-      expect(find.text('Updated trip'), findsOneWidget);
-      expect(find.text('예정 1'), findsOneWidget);
-      expect(find.text('방문 국가 0개'), findsOneWidget);
-      expect(find.text('여행일 합계 5일'), findsOneWidget);
-      await mount(tester, store);
-      expect(find.text('Updated trip'), findsOneWidget);
-      expect(find.text('2100.01.01 – 2100.01.05 · Tokyo'), findsOneWidget);
-    },
-  );
-
-  testWidgets(
-    'create persists server ID, details and dates after rebuilding the page',
-    (tester) async {
-      addTearDown(tester.view.reset);
-      final store = Store();
-      await mount(tester, store);
-      await tap(tester, find.byType(FloatingActionButton));
-      await fill(tester, 'trip-title', 'New trip');
-      await fill(tester, 'trip-destination', 'Osaka');
-      await fill(tester, 'trip-start', '2001-01-01');
-      await fill(tester, 'trip-end', '2001-01-02');
-      await tap(tester, find.text('여행 추가'));
-      expect(find.text('총 여행 2'), findsOneWidget);
-      expect(find.text('방문 국가 2개'), findsOneWidget);
-      await mount(tester, store);
-      expect(find.text('New trip'), findsOneWidget);
-      expect(find.byKey(const ValueKey('favorite-2')), findsOneWidget);
-      expect(store.rows[2]!.endDate, '2001-01-02');
-      expect(store.rows[2]!.countryCode, 'JP');
-    },
-  );
-
-  testWidgets('failed mutations keep original data and editor open for retry', (
-    tester,
+  testWidgets('favorite demo leaves the card unchanged after refresh', (
+    t,
   ) async {
-    addTearDown(tester.view.reset);
-    final store = Store()..fail = true;
-    await mount(tester, store);
-    await tap(tester, find.byKey(const ValueKey('favorite-1')));
-    expect(find.text('즐겨찾기 0'), findsOneWidget);
-    await tap(tester, find.byKey(const ValueKey('delete-1')));
-    await tap(tester, find.text('삭제'));
-    expect(find.text('Original trip'), findsOneWidget);
-    expect(find.text('총 여행 1'), findsOneWidget);
-    await tap(tester, find.text('Original trip'));
-    await tap(tester, find.byTooltip('여행 정보 수정'));
-    await fill(tester, 'trip-title', 'Changed');
-    await tap(tester, find.text('저장'));
-    expect(find.byType(AlertDialog), findsOneWidget);
-    expect(find.textContaining('저장 실패'), findsWidgets);
-    expect(store.rows[1]!.title, 'Original trip');
-    store.fail = false;
-    await tap(tester, find.text('저장'));
-    expect(find.byType(AlertDialog), findsNothing);
-    expect(store.rows[1]!.title, 'Changed');
+    await mount(t);
+    await tap(t, find.byKey(const ValueKey('favorite-1')));
+    expect(find.text(prototypeNotice), findsOneWidget);
+    expect(find.byTooltip('즐겨찾기 해제'), findsNothing);
+    await mount(t);
+    expect(find.text('First trip'), findsOneWidget);
   });
-
-  testWidgets(
-    'invalid dates cannot be saved and unknown destinations show guidance',
-    (tester) async {
-      addTearDown(tester.view.reset);
-      final store = Store();
-      await mount(tester, store);
-      await tap(tester, find.byType(FloatingActionButton));
-      await fill(tester, 'trip-title', 'New');
-      await fill(tester, 'trip-destination', 'City');
-      await fill(tester, 'trip-start', '2026-02-30');
-      await tap(tester, find.text('여행 추가'));
-      expect(find.textContaining('국가를 인식하지 못했어요.'), findsOneWidget);
-      expect(find.byKey(const ValueKey('country-code')), findsNothing);
-      expect(find.text('올바른 날짜를 입력해 주세요 (YYYY-MM-DD).'), findsWidgets);
-      expect(store.rows.length, 1);
-      await fill(tester, 'trip-start', '2026-03-02');
-      await fill(tester, 'trip-end', '2026-03-01');
-      await tap(tester, find.text('여행 추가'));
-      expect(find.text('종료일은 출발일보다 빠를 수 없어요.'), findsOneWidget);
-      expect(store.rows.length, 1);
-    },
-  );
-  testWidgets(
-    'editing an unknown place clears old country and photo without blocking persistence',
-    (tester) async {
-      addTearDown(tester.view.reset);
-      final store = Store();
-      await mount(tester, store);
-      await tap(tester, find.text('Original trip'));
-      await tap(tester, find.byTooltip('여행 정보 수정'));
-      expect(find.byKey(const ValueKey('country-code')), findsNothing);
-      for (final name in ['Tokyo', '도쿄', '东京都']) {
-        await fill(tester, 'trip-destination', name);
-        expect(find.text('자동 인식 국가: 일본'), findsOneWidget);
-      }
-      await fill(tester, 'trip-destination', 'Unknown city');
-      expect(find.textContaining('국가를 인식하지 못했어요.'), findsOneWidget);
-      await tap(tester, find.text('저장'));
-      expect(store.rows[1]!.countryCode, '');
-      expect(store.rows[1]!.image, defaultTripPhoto);
-      await tap(tester, find.byType(BackButton));
-      expect(find.text('방문 국가 0개'), findsOneWidget);
-      await mount(tester, store);
-      expect(
-        tester.widget<NetImage>(find.byType(NetImage).first).url,
-        defaultTripPhoto,
-      );
-      expect(find.text('총 여행 1'), findsOneWidget);
-    },
-  );
-
-  testWidgets(
-    'auto recognition updates country totals after adding, editing and deleting trips',
-    (tester) async {
-      addTearDown(tester.view.reset);
-      final store = Store();
-      store.rows[1] = original.copyWith(destination: 'Tokyo');
-      await mount(tester, store);
-      expect(find.text('방문 국가 1개'), findsOneWidget);
-      expect(find.text('방문 도시 수 1개'), findsOneWidget);
-      await tap(tester, find.byType(FloatingActionButton));
-      await fill(tester, 'trip-title', 'Osaka trip');
-      await fill(tester, 'trip-destination', '오사카');
-      await fill(tester, 'trip-start', '2000-01-01');
-      await fill(tester, 'trip-end', '2000-01-03');
-      await tap(tester, find.text('여행 추가'));
-      expect(find.text('총 여행 2'), findsOneWidget);
-      expect(find.text('방문 국가 1개'), findsOneWidget);
-      expect(find.text('방문 도시 수 2개'), findsOneWidget);
-      await tap(tester, find.text('Original trip'));
-      await tap(tester, find.byTooltip('여행 정보 수정'));
-      await fill(tester, 'trip-destination', '巴黎');
-      expect(find.text('자동 인식 국가: 프랑스'), findsOneWidget);
-      await tap(tester, find.text('저장'));
-      await tap(tester, find.byType(BackButton));
-      expect(find.text('방문 국가 2개'), findsOneWidget);
-      expect(find.text('방문 도시 수 2개'), findsOneWidget);
-      await tap(tester, find.byKey(const ValueKey('delete-1')));
-      await tap(tester, find.text('삭제'));
-      expect(find.text('방문 국가 1개'), findsOneWidget);
-      expect(find.text('방문 도시 수 1개'), findsOneWidget);
-      await mount(tester, store);
-      expect(find.text('방문 국가 1개'), findsOneWidget);
-      expect(find.text('방문 도시 수 1개'), findsOneWidget);
-    },
-  );
-
-  testWidgets(
-    'destination photos agree across home, detail, recap and fresh reads',
-    (tester) async {
-      addTearDown(tester.view.reset);
-      final store = Store();
-      store.rows[1] = original.copyWith(
-        destination: 'Tokyo',
-        image: 'stale-photo',
-      );
-      final expected = resolveDestination('Tokyo')!.photoUrl;
-      await mount(tester, store);
-      expect(
-        tester.widget<NetImage>(find.byType(NetImage).first).url,
-        expected,
-      );
-      await tap(tester, find.text('Original trip'));
-      expect(
-        tester.widget<NetImage>(find.byType(NetImage).first).url,
-        expected,
-      );
-      await tap(tester, find.byTooltip('여행 정보 수정'));
-      await fill(tester, 'trip-destination', 'Paris');
-      await tap(tester, find.text('저장'));
-      final paris = resolveDestination('Paris')!.photoUrl;
-      expect(tester.widget<NetImage>(find.byType(NetImage).first).url, paris);
-      await tap(tester, find.byType(BackButton));
-      await mount(tester, store);
-      expect(tester.widget<NetImage>(find.byType(NetImage).first).url, paris);
-      await tap(tester, find.text('기록 모아보기'));
-      expect(find.text('나의 여행 돌아보기'), findsOneWidget);
-      expect(
-        tester
-            .widgetList<NetImage>(find.byType(NetImage))
-            .every((image) => image.url == paris),
-        isTrue,
-      );
-    },
-  );
+  testWidgets('delete confirmation and undo are demonstrations only', (
+    t,
+  ) async {
+    await mount(t);
+    await delete(t, 1);
+    expect(find.text('First trip'), findsOneWidget);
+    await tap(t, find.text('실행 취소'));
+    expect(find.text(prototypeNotice), findsOneWidget);
+    await mount(t);
+    expect(find.text('First trip'), findsOneWidget);
+  });
+  testWidgets('edit form keeps current data after demo save', (t) async {
+    await mount(t);
+    await tap(t, find.text('First trip'));
+    await tap(t, find.byTooltip('여행 정보 수정'));
+    await fill(t, 'trip-title', 'Changed');
+    await fill(t, 'trip-destination', 'Paris');
+    await tap(t, find.text('저장'));
+    expect(find.text('Changed'), findsNothing);
+    expect(find.text('First trip'), findsWidgets);
+    await tap(t, find.byType(BackButton));
+    expect(find.text('First trip'), findsOneWidget);
+  });
+  testWidgets('new trip form demonstrates save without creating a record', (
+    t,
+  ) async {
+    await mount(t);
+    await tap(t, find.byType(FloatingActionButton));
+    await fill(t, 'trip-title', 'New trip');
+    await fill(t, 'trip-destination', 'Paris');
+    await tap(t, find.text('여행 추가'));
+    expect(find.text('New trip'), findsNothing);
+    expect(find.text(prototypeNotice), findsOneWidget);
+    await mount(t);
+    expect(find.text('New trip'), findsNothing);
+  });
+  testWidgets('canceling editor preserves all data', (t) async {
+    await mount(t);
+    await tap(t, find.byType(FloatingActionButton));
+    await fill(t, 'trip-title', 'Canceled');
+    await tap(t, find.text('취소'));
+    expect(find.text('Canceled'), findsNothing);
+    expect(find.text('First trip'), findsOneWidget);
+  });
+  testWidgets('country field is explanatory rather than actual recognition', (
+    t,
+  ) async {
+    await mount(t);
+    await tap(t, find.byType(FloatingActionButton));
+    await fill(t, 'trip-destination', 'Tokyo');
+    expect(find.textContaining('실제 인식·계산은 하지 않습니다'), findsOneWidget);
+    expect(find.byKey(const ValueKey('country-code')), findsNothing);
+    await fill(t, 'trip-destination', 'Unknown');
+    expect(find.textContaining('실제 인식·계산은 하지 않습니다'), findsOneWidget);
+  });
+  testWidgets('record creation shows feedback without changing timeline', (
+    t,
+  ) async {
+    await mount(t);
+    await tap(t, find.text('First trip'));
+    await tap(t, find.text('여행 기록'));
+    await tap(t, find.text('여행 기록 추가'));
+    await t.enterText(find.byType(TextField), 'My note');
+    await tap(t, find.text('저장'));
+    expect(find.text('My note'), findsNothing);
+    expect(find.text(prototypeNotice), findsOneWidget);
+  });
+  testWidgets('avatar opens a local explanation instead of another page', (
+    t,
+  ) async {
+    await mount(t);
+    await tap(t, find.byType(CircleAvatar));
+    expect(find.text('프로필 안내'), findsOneWidget);
+    expect(find.byType(BackButton), findsNothing);
+    await tap(t, find.text('닫기'));
+    expect(find.text('First trip'), findsOneWidget);
+  });
+  testWidgets('photo rendering remains consistent between home and detail', (
+    t,
+  ) async {
+    await mount(t);
+    final photo = t.widget<NetImage>(find.byType(NetImage).first).url;
+    await tap(t, find.text('First trip'));
+    expect(t.widget<NetImage>(find.byType(NetImage).first).url, photo);
+  });
 }

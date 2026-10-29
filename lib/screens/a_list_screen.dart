@@ -1,14 +1,16 @@
 // 화면 A — 나의 여행 목록 · 디자인 가이드 대응표
 // A-1 Row + Text · 브랜드명과 프로필 영역 · P04
-// A-2 ListView + Card (TripCard) · 여행 카드 목록 · P06
-// A-3 GridView (≥600dp) · 넓은 화면 여행 카드 격자 · P07
+// A-2 ListView + Card (TripCard) · 여행 카드 목록 · P02 · P06
+// A-3 GridView (≥600dp) · 넓은 화면 여행 카드 격자 · P07 · P08
 // A-4 LoadingView · 불러오는 중 표시 · P01
 // A-5 ErrorView + FilledButton · 오류 안내·다시 시도 · P09
 // A-6 EmptyView · 빈 목록 안내 · P01
 // A-7 TextField · 여행 검색 · P07
 // A-8 FilterChip + DropdownButton · 즐겨찾기 필터·그룹 내 정렬 · P07
 // A-9 IconButton + AlertDialog + SnackBar · 즐겨찾기·삭제·실행 취소 · P03 · P05
-// A-10 Wrap + Chip · 전체 여행 통계 · P01
+// A-10 Wrap + Chip · 전체 여행 통계 · P01 · P10
+// A-11 TripEditor · 여행 추가 시연 · P05 · P10
+// A-12 IconButton · 여행 새로고침 · P09
 import 'package:flutter/material.dart';
 import '../api.dart';
 import '../models.dart';
@@ -17,7 +19,6 @@ import '../trip_insights.dart';
 import '../trip_editor.dart';
 import 'b_detail_screen.dart';
 import 'c_result_sheet.dart';
-import 'd_profile_screen.dart';
 
 const wideBreakpoint = 600.0;
 
@@ -26,87 +27,29 @@ class ListScreen extends StatefulWidget {
     super.key,
     this.load = fetchItems,
     this.loadNotes = fetchNotes,
-    this.create = createItem,
-    this.update = updateItem,
   });
 
   final ItemsLoader load;
   final NotesLoader loadNotes;
-  final ItemSaver create;
-  final ItemSaver update;
 
   @override
   State<ListScreen> createState() => _ListScreenState();
 }
 
 class _ListScreenState extends State<ListScreen> {
-  late Future<List<Item>> _future = _load();
-  List<Item> _items = [];
+  late Future<List<Item>> _future = widget.load();
   final _searchController = TextEditingController();
   String _query = '';
   bool _favoritesOnly = false;
   TripSort _sort = TripSort.newest;
-  bool _hadDeletion = false;
-  final Set<int> _busyIds = {};
-  Set<int> get _favorites =>
-      _items.where((item) => item.favorite).map((item) => item.id).toSet();
-
-  Future<List<Item>> _load() async {
-    _items = (await widget.load()).where((item) => !item.deleted).toList();
-    return _items;
-  }
-
+  // STATE: 즐겨찾기·생성·수정·삭제 데이터 → A-2/A-9 (구현하지 않음)
   @override
   void dispose() {
     _searchController.dispose();
     super.dispose();
   }
 
-  void _accept(Item saved) {
-    if (!mounted) return;
-    setState(() {
-      final index = _items.indexWhere((item) => item.id == saved.id);
-      final items = [..._items];
-      if (saved.deleted) {
-        items.removeWhere((item) => item.id == saved.id);
-      } else if (index < 0) {
-        items.add(saved);
-      } else {
-        items[index] = saved;
-      }
-      _items = items;
-      _future = Future.value(_items);
-    });
-  }
-
-  Future<Item> _persist(Item item) async {
-    final saved = await widget.update(item);
-    _accept(saved);
-    return saved;
-  }
-
-  Future<bool> _action(Item item) async {
-    if (_busyIds.contains(item.id)) return false;
-    setState(() => _busyIds.add(item.id));
-    try {
-      await _persist(item);
-      return true;
-    } catch (error) {
-      if (mounted) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(SnackBar(content: Text('$error')));
-      }
-      return false;
-    } finally {
-      if (mounted) setState(() => _busyIds.remove(item.id));
-    }
-  }
-
-  Future<void> _toggleFavorite(Item item) async {
-    // STATE: 서버 저장 성공 → 카드·필터·통계 갱신. 실패 시 기존 값 유지.
-    await _action(item.copyWith(favorite: !item.favorite));
-  }
+  void _toggleFavorite(Item item) => showPrototypeNotice(context);
 
   Future<void> _deleteTrip(Item item) async {
     final confirmed = await showDialog<bool>(
@@ -115,7 +58,7 @@ class _ListScreenState extends State<ListScreen> {
         // A-9 P05
         title: const Text('여행 삭제'),
         content: Text(
-          '“${item.title}” 여행을 삭제할까요?\n새로고침 후에도 목록에서 제외됩니다. 삭제 직후 실행 취소할 수 있어요.',
+          '“${item.title}” 여행을 삭제할까요?\n삭제 확인 UI 시연입니다. 실제 여행은 삭제되지 않습니다.',
         ),
         actions: [
           TextButton(
@@ -130,8 +73,6 @@ class _ListScreenState extends State<ListScreen> {
       ),
     );
     if (confirmed != true || !mounted) return;
-    if (!await _action(item.copyWith(deleted: true)) || !mounted) return;
-    setState(() => _hadDeletion = true);
     final messenger = ScaffoldMessenger.of(context);
     messenger.clearSnackBars();
     messenger.showSnackBar(
@@ -141,23 +82,10 @@ class _ListScreenState extends State<ListScreen> {
         duration: MediaQuery.accessibleNavigationOf(context)
             ? const Duration(seconds: 10)
             : const Duration(seconds: 4),
-        content: Text('${item.title} 여행이 삭제되었습니다.'),
+        content: Text('${item.title} 삭제 시연 · 실제 데이터는 유지됩니다.'),
         action: SnackBarAction(
           label: '실행 취소',
-          onPressed: () async {
-            final restored = await _action(item.copyWith(deleted: false));
-            if (!restored && mounted) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: const Text('복원하지 못했어요. 다시 시도해 주세요.'),
-                  action: SnackBarAction(
-                    label: '다시 시도',
-                    onPressed: () => _action(item.copyWith(deleted: false)),
-                  ),
-                ),
-              );
-            }
-          },
+          onPressed: () => showPrototypeNotice(context),
         ),
       ),
     );
@@ -173,33 +101,20 @@ class _ListScreenState extends State<ListScreen> {
 
   void _retry() {
     setState(() {
-      _future = _load();
+      _future = widget.load();
     });
   }
 
   Future<void> _open(Item item) => Navigator.of(context).push<void>(
     MaterialPageRoute<void>(
-      builder: (_) =>
-          DetailScreen(item: item, loadNotes: widget.loadNotes, save: _persist),
+      builder: (_) => DetailScreen(item: item, loadNotes: widget.loadNotes),
     ),
   );
-
-  Future<void> _addTrip() async {
-    await showDialog<Item>(
-      context: context,
-      barrierDismissible: false,
-      builder: (_) => TripEditor(
-        save: (item) async {
-          final saved = await widget.create(item);
-          _accept(saved);
-          return saved;
-        },
-      ),
-    );
-  }
+  Future<void> _addTrip() =>
+      showDialog<void>(context: context, builder: (_) => const TripEditor());
 
   Widget _buildControls(List<Item> items, int resultCount) {
-    final summary = TripSummary(items, _favorites, DateTime.now());
+    final summary = const TripSummary();
     return Padding(
       padding: const EdgeInsets.fromLTRB(22, 0, 22, 12),
       child: Column(
@@ -229,7 +144,7 @@ class _ListScreenState extends State<ListScreen> {
             ],
           ),
           const Text(
-            '여행 기간 합계 · 방문 도시·국가는 시작한 여행만 중복 없이 집계',
+            '시연용 예시 통계 · 실제 계산이나 데이터 연동이 아닙니다.',
             style: TextStyle(fontSize: 11, color: Color(0xFF687775)),
           ),
           const SizedBox(height: 14),
@@ -300,7 +215,7 @@ class _ListScreenState extends State<ListScreen> {
             ],
           ),
           const Text(
-            '각 여행 그룹 안에서 정렬됩니다.',
+            '검색·필터·정렬은 미리 정한 결과를 보여 주는 UI 시연입니다.',
             style: TextStyle(fontSize: 11, color: Color(0xFF687775)),
           ),
         ],
@@ -358,13 +273,9 @@ class _ListScreenState extends State<ListScreen> {
               itemBuilder: (context, i) {
                 return TripCard(
                   item: items[i],
-                  favorite: _favorites.contains(items[i].id),
-                  onFavorite: _busyIds.contains(items[i].id)
-                      ? null
-                      : () => _toggleFavorite(items[i]),
-                  onDelete: _busyIds.contains(items[i].id)
-                      ? null
-                      : () => _deleteTrip(items[i]),
+                  favorite: items[i].favorite,
+                  onFavorite: () => _toggleFavorite(items[i]),
+                  onDelete: () => _deleteTrip(items[i]),
                   onTap: () => _open(items[i]),
                   vertical: true,
                 );
@@ -379,13 +290,9 @@ class _ListScreenState extends State<ListScreen> {
               itemBuilder: (context, i) {
                 return TripCard(
                   item: items[i],
-                  favorite: _favorites.contains(items[i].id),
-                  onFavorite: _busyIds.contains(items[i].id)
-                      ? null
-                      : () => _toggleFavorite(items[i]),
-                  onDelete: _busyIds.contains(items[i].id)
-                      ? null
-                      : () => _deleteTrip(items[i]),
+                  favorite: items[i].favorite,
+                  onFavorite: () => _toggleFavorite(items[i]),
+                  onDelete: () => _deleteTrip(items[i]),
                   onTap: () => _open(items[i]),
                 );
               },
@@ -427,14 +334,25 @@ class _ListScreenState extends State<ListScreen> {
                         IconButton(
                           tooltip: '여행 새로고침',
                           key: const ValueKey('refresh-trips'),
-                          onPressed: _busyIds.isEmpty ? _retry : null,
+                          onPressed: _retry,
                           icon: const Icon(Icons.refresh),
                         ),
                         InkWell(
                           onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                builder: (_) => const ProfileScreen(),
+                            showDialog<void>(
+                              context: context,
+                              builder: (dialogContext) => AlertDialog(
+                                title: const Text('프로필 안내'),
+                                content: const Text(
+                                  '개인정보와 로그인 기능이 없는 UI 시연입니다.',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(dialogContext),
+                                    child: const Text('닫기'),
+                                  ),
+                                ],
                               ),
                             );
                           },
@@ -487,9 +405,7 @@ class _ListScreenState extends State<ListScreen> {
                           onTap: () async {
                             try {
                               final loadedItems = await _future;
-                              final items = loadedItems
-                                  .where((item) => !item.deleted)
-                                  .toList();
+                              final items = loadedItems.toList();
 
                               if (!context.mounted || items.isEmpty) return;
 
@@ -548,7 +464,7 @@ class _ListScreenState extends State<ListScreen> {
                   if (snap.connectionState != ConnectionState.done) {
                     return const SizedBox(
                       height: 260,
-                      child: LoadingView(label: '여행 기록을 불러오는 중…'),
+                      child: LoadingView(label: '여행 기록을 불러오는 중…'), // A-4 P01
                     );
                   }
 
@@ -556,6 +472,7 @@ class _ListScreenState extends State<ListScreen> {
                     return SizedBox(
                       height: 300,
                       child: ErrorView(
+                        // A-5 P09
                         title: '여행 기록을 불러오지 못했어요.',
                         message: '${snap.error}',
                         onRetry: _retry,
@@ -563,38 +480,29 @@ class _ListScreenState extends State<ListScreen> {
                     );
                   }
 
-                  final items = (snap.data ?? const <Item>[])
-                      .where((item) => !item.deleted)
-                      .toList();
+                  final items = (snap.data ?? const <Item>[]).toList();
                   final visible = selectTrips(
                     items,
                     query: _query,
-                    favorites: _favorites,
+                    favorites: const {},
                     favoritesOnly: _favoritesOnly,
                     sort: _sort,
                   );
-                  final today = DateTime.now();
 
                   final upcomingTrips = visible
-                      .where(
-                        (item) =>
-                            tripStatus(item, today) == TripStatus.upcoming,
-                      )
+                      .where((item) => tripStatus(item) == TripStatus.upcoming)
                       .toList();
 
                   final ongoingTrips = visible
-                      .where(
-                        (item) => tripStatus(item, today) == TripStatus.ongoing,
-                      )
+                      .where((item) => tripStatus(item) == TripStatus.ongoing)
                       .toList();
 
                   final pastTrips = visible
-                      .where(
-                        (item) => tripStatus(item, today) == TripStatus.past,
-                      )
+                      .where((item) => tripStatus(item) == TripStatus.past)
                       .toList();
 
                   return LayoutBuilder(
+                    // A-3 P07
                     builder: (context, constraints) {
                       final wide = constraints.maxWidth >= wideBreakpoint;
 
@@ -608,10 +516,9 @@ class _ListScreenState extends State<ListScreen> {
                               child: Column(
                                 children: [
                                   EmptyView(
+                                    // A-6 P01
                                     message: items.isEmpty
-                                        ? (_hadDeletion
-                                              ? '표시할 여행이 없어요. 삭제는 아래에서 실행 취소할 수 있어요.'
-                                              : '아직 여행 기록이 없어요. 첫 번째 여행을 기록해 보세요.')
+                                        ? '아직 여행 기록이 없어요. 첫 번째 여행을 기록해 보세요.'
                                         : '검색 조건에 맞는 여행이 없어요.',
                                   ),
                                   if (items.isNotEmpty)
@@ -642,8 +549,7 @@ class _ListScreenState extends State<ListScreen> {
                             items: visible
                                 .where(
                                   (item) =>
-                                      tripStatus(item, today) ==
-                                      TripStatus.unknown,
+                                      tripStatus(item) == TripStatus.unknown,
                                 )
                                 .toList(),
                             wide: wide,

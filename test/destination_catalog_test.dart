@@ -3,7 +3,6 @@ import 'package:flutter/services.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mid_project_template/destinations.dart';
 import 'package:mid_project_template/models.dart';
-import 'package:mid_project_template/trip_insights.dart';
 
 void main() {
   late String source;
@@ -60,9 +59,14 @@ void main() {
           );
         }
       }
-      final summary = TripSummary(trips, {}, DateTime(2026, 10, 29));
-      expect(summary.visitedCities, 50);
-      expect(summary.visitedCountries, 35);
+      expect(
+        trips.map((item) => item.destinationInfo!.cityKey).toSet(),
+        hasLength(50),
+      );
+      expect(
+        trips.map((item) => item.destinationInfo!.countryCode).toSet(),
+        hasLength(35),
+      );
     },
   );
 
