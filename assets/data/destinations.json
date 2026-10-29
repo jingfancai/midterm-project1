@@ -28,7 +28,9 @@
         "license": "Unsplash License",
         "licenseUrl": "https://unsplash.com/license",
         "verifiedOn": "2026-10-29"
-      }
+      },
+      "latitude": 35.6762,
+      "longitude": 139.6503
     },
     {
       "id": "osaka",
@@ -51,7 +53,9 @@
         "license": "Unsplash License",
         "licenseUrl": "https://unsplash.com/license",
         "verifiedOn": "2026-10-29"
-      }
+      },
+      "latitude": 34.6937,
+      "longitude": 135.5023
     },
     {
       "id": "kyoto",
@@ -74,7 +78,9 @@
         "license": "Unsplash License",
         "licenseUrl": "https://unsplash.com/license",
         "verifiedOn": "2026-10-29"
-      }
+      },
+      "latitude": 35.0116,
+      "longitude": 135.7681
     },
     {
       "id": "seoul",
@@ -100,7 +106,9 @@
         "license": "Unsplash License",
         "licenseUrl": "https://unsplash.com/license",
         "verifiedOn": "2026-10-29"
-      }
+      },
+      "latitude": 37.5665,
+      "longitude": 126.978
     },
     {
       "id": "busan",
@@ -124,7 +132,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Syced"
-      }
+      },
+      "latitude": 35.1796,
+      "longitude": 129.0756
     },
     {
       "id": "paris",
@@ -148,7 +158,9 @@
         "license": "Unsplash License",
         "licenseUrl": "https://unsplash.com/license",
         "verifiedOn": "2026-10-29"
-      }
+      },
+      "latitude": 48.8566,
+      "longitude": 2.3522
     },
     {
       "id": "lyon",
@@ -167,7 +179,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Romainbehar"
-      }
+      },
+      "latitude": 45.764,
+      "longitude": 4.8357
     },
     {
       "id": "london",
@@ -191,7 +205,9 @@
         "license": "Unsplash License",
         "licenseUrl": "https://unsplash.com/license",
         "verifiedOn": "2026-10-29"
-      }
+      },
+      "latitude": 51.5074,
+      "longitude": -0.1278
     },
     {
       "id": "new-york",
@@ -216,7 +232,9 @@
         "license": "Unsplash License",
         "licenseUrl": "https://unsplash.com/license",
         "verifiedOn": "2026-10-29"
-      }
+      },
+      "latitude": 40.7128,
+      "longitude": -74.006
     },
     {
       "id": "los-angeles",
@@ -238,7 +256,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "ItzAPotato2009"
-      }
+      },
+      "latitude": 34.0522,
+      "longitude": -118.2437
     },
     {
       "id": "beijing",
@@ -261,7 +281,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "P. K. Koo"
-      }
+      },
+      "latitude": 39.9042,
+      "longitude": 116.4074
     },
     {
       "id": "shanghai",
@@ -284,7 +306,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Ermell"
-      }
+      },
+      "latitude": 31.2304,
+      "longitude": 121.4737
     },
     {
       "id": "singapore",
@@ -303,7 +327,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "DvTor8303"
-      }
+      },
+      "latitude": 1.3521,
+      "longitude": 103.8198
     },
     {
       "id": "bangkok",
@@ -322,7 +348,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Bernard Spragg. NZ from Christchurch, New Zealand"
-      }
+      },
+      "latitude": 13.7563,
+      "longitude": 100.5018
     },
     {
       "id": "hanoi",
@@ -344,7 +372,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Syced"
-      }
+      },
+      "latitude": 21.0278,
+      "longitude": 105.8342
     },
     {
       "id": "da-nang",
@@ -367,7 +397,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Quangpraha"
-      }
+      },
+      "latitude": 16.0544,
+      "longitude": 108.2022
     },
     {
       "id": "rome",
@@ -390,7 +422,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Emiliano Carchia"
-      }
+      },
+      "latitude": 41.9028,
+      "longitude": 12.4964
     },
     {
       "id": "barcelona",
@@ -412,7 +446,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Zarateman"
-      }
+      },
+      "latitude": 41.3874,
+      "longitude": 2.1686
     },
     {
       "id": "berlin",
@@ -431,7 +467,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Markus Spiske from Forchheim, Bavaria Upper Franconia"
-      }
+      },
+      "latitude": 52.52,
+      "longitude": 13.405
     },
     {
       "id": "sydney",
@@ -453,7 +491,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Kanzcech"
-      }
+      },
+      "latitude": -33.8688,
+      "longitude": 151.2093
     },
     {
       "id": "amsterdam",
@@ -473,7 +513,9 @@
         "verifiedOn": "2026-10-29",
         "author": "Unknown authorUnknown author",
         "note": "Historical view of Amsterdam Centraal Station."
-      }
+      },
+      "latitude": 52.3676,
+      "longitude": 4.9041
     },
     {
       "id": "brussels",
@@ -492,7 +534,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "DimiTalen"
-      }
+      },
+      "latitude": 50.8503,
+      "longitude": 4.3517
     },
     {
       "id": "zurich",
@@ -514,7 +558,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Lovasoa"
-      }
+      },
+      "latitude": 47.3769,
+      "longitude": 8.5417
     },
     {
       "id": "vienna",
@@ -537,7 +583,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Spicypepper999"
-      }
+      },
+      "latitude": 48.2082,
+      "longitude": 16.3738
     },
     {
       "id": "prague",
@@ -559,7 +607,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "MurderousPass"
-      }
+      },
+      "latitude": 50.0755,
+      "longitude": 14.4378
     },
     {
       "id": "budapest",
@@ -578,7 +628,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Perituss"
-      }
+      },
+      "latitude": 47.4979,
+      "longitude": 19.0402
     },
     {
       "id": "lisbon",
@@ -597,7 +649,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Stephan"
-      }
+      },
+      "latitude": 38.7223,
+      "longitude": -9.1393
     },
     {
       "id": "athens",
@@ -616,7 +670,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Jebulon"
-      }
+      },
+      "latitude": 37.9838,
+      "longitude": 23.7275
     },
     {
       "id": "istanbul",
@@ -638,7 +694,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Hunanuk"
-      }
+      },
+      "latitude": 41.0082,
+      "longitude": 28.9784
     },
     {
       "id": "copenhagen",
@@ -657,7 +715,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Syced"
-      }
+      },
+      "latitude": 55.6761,
+      "longitude": 12.5683
     },
     {
       "id": "stockholm",
@@ -676,7 +736,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/mark/1.0/",
         "verifiedOn": "2026-10-29",
         "author": "Jonas Bergsten"
-      }
+      },
+      "latitude": 59.3293,
+      "longitude": 18.0686
     },
     {
       "id": "auckland",
@@ -695,7 +757,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Daderot"
-      }
+      },
+      "latitude": -36.8485,
+      "longitude": 174.7633
     },
     {
       "id": "kuala-lumpur",
@@ -714,7 +778,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Unknown authorUnknown author"
-      }
+      },
+      "latitude": 3.139,
+      "longitude": 101.6869
     },
     {
       "id": "dublin",
@@ -733,7 +799,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "www.Pixel.la Free Stock Photos"
-      }
+      },
+      "latitude": 53.3498,
+      "longitude": -6.2603
     },
     {
       "id": "reykjavik",
@@ -755,7 +823,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Syced"
-      }
+      },
+      "latitude": 64.1466,
+      "longitude": -21.9426
     },
     {
       "id": "denpasar",
@@ -775,7 +845,9 @@
         "verifiedOn": "2026-10-29",
         "author": "Sosialist Denpasar",
         "note": "Historical photograph of Denpasar Museum, published in 1935; not a contemporary street view."
-      }
+      },
+      "latitude": -8.6705,
+      "longitude": 115.2126
     },
     {
       "id": "dubai",
@@ -794,7 +866,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Robert Bock"
-      }
+      },
+      "latitude": 25.2048,
+      "longitude": 55.2708
     },
     {
       "id": "cairo",
@@ -813,7 +887,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Warren LeMay from Chicago, IL, United States"
-      }
+      },
+      "latitude": 30.0444,
+      "longitude": 31.2357
     },
     {
       "id": "marrakesh",
@@ -835,7 +911,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Maesi64"
-      }
+      },
+      "latitude": 31.6295,
+      "longitude": -7.9811
     },
     {
       "id": "cape-town",
@@ -854,7 +932,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "HPBotha"
-      }
+      },
+      "latitude": -33.9249,
+      "longitude": 18.4241
     },
     {
       "id": "toronto",
@@ -873,7 +953,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Peter_Glyn"
-      }
+      },
+      "latitude": 43.6532,
+      "longitude": -79.3832
     },
     {
       "id": "mexico-city",
@@ -892,7 +974,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Gobierno CDMX  * https://www.flickr.com/photos/140660272@N07/"
-      }
+      },
+      "latitude": 19.4326,
+      "longitude": -99.1332
     },
     {
       "id": "madrid",
@@ -911,7 +995,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Wikier 2017"
-      }
+      },
+      "latitude": 40.4168,
+      "longitude": -3.7038
     },
     {
       "id": "florence",
@@ -933,7 +1019,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Jebulon"
-      }
+      },
+      "latitude": 43.7696,
+      "longitude": 11.2558
     },
     {
       "id": "venice",
@@ -956,7 +1044,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Alejandro Franco alejo1996"
-      }
+      },
+      "latitude": 45.4408,
+      "longitude": 12.3155
     },
     {
       "id": "munich",
@@ -978,7 +1068,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Jebulon"
-      }
+      },
+      "latitude": 48.1351,
+      "longitude": 11.582
     },
     {
       "id": "melbourne",
@@ -997,7 +1089,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Maximus Lu"
-      }
+      },
+      "latitude": -37.8136,
+      "longitude": 144.9631
     },
     {
       "id": "san-francisco",
@@ -1019,7 +1113,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Dsdugan"
-      }
+      },
+      "latitude": 37.7749,
+      "longitude": -122.4194
     },
     {
       "id": "vancouver",
@@ -1038,7 +1134,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "Suspencewl"
-      }
+      },
+      "latitude": 49.2827,
+      "longitude": -123.1207
     },
     {
       "id": "porto",
@@ -1057,7 +1155,9 @@
         "licenseUrl": "https://creativecommons.org/publicdomain/zero/1.0/deed.en",
         "verifiedOn": "2026-10-29",
         "author": "WissensWolke"
-      }
+      },
+      "latitude": 41.1579,
+      "longitude": -8.6291
     }
   ],
   "regions": [
