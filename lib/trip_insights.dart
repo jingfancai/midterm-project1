@@ -122,7 +122,7 @@ class TripSummary {
                   TripStatus.past,
                 ].contains(tripStatus(item, today)),
           )
-          .map((item) => item.countryCode.trim().toUpperCase())
+          .map((item) => item.inferredCountryCode)
           .where((code) => validCountryCodes.contains(code))
           .toSet()
           .length,

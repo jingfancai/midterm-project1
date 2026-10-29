@@ -1,3 +1,5 @@
+import 'destinations.dart';
+
 // 여행 데이터 — 구조화된 필드와 기존 subtitle 데이터를 함께 지원한다.
 // 형식이 틀린 항목은 null을 돌려준다 → 목록에서 빠질 뿐 앱이 멈추지 않는다 (Dart 3 패턴 매칭).
 //
@@ -33,10 +35,19 @@ class Item {
       ? '${startDate.replaceAll('-', '.')} – ${endDate.replaceAll('-', '.')} · $destination'
       : _subtitle;
 
+  // Legacy records may store the destination only after the subtitle separator.
+  String get destinationName => destination.trim().isNotEmpty
+      ? destination.trim()
+      : (_subtitle.contains('·') ? _subtitle.split('·').last.trim() : '');
+  DestinationInfo? get destinationInfo => resolveDestination(destinationName);
+  String get inferredCountryCode => destinationInfo?.countryCode ?? '';
+  String get photoUrl => destinationInfo?.photoUrl ?? defaultTripPhoto;
+
   Item copyWith({
     String? title,
     String? destination,
     String? countryCode,
+    String? image,
     String? startDate,
     String? endDate,
     bool? favorite,
@@ -45,7 +56,7 @@ class Item {
     id: id,
     title: title ?? this.title,
     subtitle: _subtitle,
-    image: image,
+    image: image ?? this.image,
     tags: tags,
     destination: destination ?? this.destination,
     countryCode: countryCode ?? this.countryCode,
@@ -59,10 +70,10 @@ class Item {
     if (includeId) 'id': id,
     'title': title,
     'subtitle': subtitle,
-    'image': image,
+    'image': photoUrl,
     'tags': tags,
     'destination': destination,
-    'countryCode': countryCode.trim().toUpperCase(),
+    'countryCode': inferredCountryCode,
     'startDate': startDate,
     'endDate': endDate,
     'favorite': favorite,

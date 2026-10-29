@@ -124,7 +124,7 @@ class _InfoTab extends StatelessWidget {
       children: [
         ClipRRect(
           borderRadius: BorderRadius.circular(22),
-          child: AspectRatio(aspectRatio: 4 / 3, child: NetImage(item.image)),
+          child: AspectRatio(aspectRatio: 4 / 3, child: NetImage(item.photoUrl)),
         ),
         const SizedBox(height: 12),
         FutureBuilder<List<Item>>(
@@ -167,7 +167,7 @@ class _InfoTab extends StatelessWidget {
                         child: Stack(
                           fit: StackFit.expand,
                           children: [
-                            NetImage(trip.image),
+                            NetImage(trip.photoUrl),
                             Positioned(
                               left: 0,
                               right: 0,
@@ -305,7 +305,7 @@ class _InfoTab extends StatelessWidget {
                     SizedBox(
                       height: 180,
                       width: double.infinity,
-                      child: NetImage(item.image),
+                      child: NetImage(item.photoUrl),
                     ),
                     const SizedBox(height: 12),
                     Text(

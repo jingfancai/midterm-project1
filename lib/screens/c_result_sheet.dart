@@ -107,7 +107,7 @@ class ResultSheet extends StatelessWidget {
                       SizedBox(
                         height: 155,
                         width: double.infinity,
-                        child: NetImage(featuredItem.image),
+                        child: NetImage(featuredItem.photoUrl),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(14),
@@ -188,7 +188,7 @@ class ResultSheet extends StatelessWidget {
                               child: SizedBox(
                                 width: 64,
                                 height: 64,
-                                child: NetImage(item.image),
+                                child: NetImage(item.photoUrl),
                               ),
                             ),
                             const SizedBox(width: 12),

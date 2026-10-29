@@ -707,7 +707,7 @@ class TripCard extends StatelessWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          NetImage(item.image),
+          NetImage(item.photoUrl),
           Positioned(
             right: 4,
             bottom: 4,
