@@ -3,8 +3,10 @@ import 'destinations.dart';
 // 여행 데이터 — 구조화된 필드와 기존 subtitle 데이터를 함께 지원한다.
 // 형식이 틀린 항목은 null을 돌려준다 → 목록에서 빠질 뿐 앱이 멈추지 않는다 (Dart 3 패턴 매칭).
 //
-// TODO: Item / Note를 내 앱의 비즈니스 명칭으로 바꾼다 (예: Item → Product, Note → Review).
-//           필드 이름은 db.json의 키와 같아야 한다.
+// Item / Note는 GET 데이터와 세션 내 여행/기록 표시 모델이다.
+// STATE: 변경은 메모리에서만 유지하며 서버·기기에 저장하지 않는다.
+typedef TripChange = Future<Item> Function(Item item);
+Future<Item> previewTripChange(Item item) async => item;
 
 class Item {
   const Item({
@@ -44,6 +46,7 @@ class Item {
   String get photoUrl => destinationInfo?.photoUrl ?? defaultTripPhoto;
 
   Item copyWith({
+    int? id,
     String? title,
     String? destination,
     String? countryCode,
@@ -53,7 +56,7 @@ class Item {
     bool? favorite,
     bool? deleted,
   }) => Item(
-    id: id,
+    id: id ?? this.id,
     title: title ?? this.title,
     subtitle: _subtitle,
     image: image ?? this.image,

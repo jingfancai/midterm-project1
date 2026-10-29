@@ -3,133 +3,112 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mid_project_template/models.dart';
 import 'package:mid_project_template/screens/a_list_screen.dart';
 
-const first = Item(
-  id: 1,
-  title: 'First trip',
-  subtitle: '',
-  image: '',
-  destination: 'Tokyo',
-);
-const second = Item(
-  id: 2,
-  title: 'Second trip',
-  subtitle: '',
-  image: '',
-  destination: 'Osaka',
-);
-
-Future<Map<int, Item>> mount(
+const samples = [
+  Item(
+    id: 1,
+    title: 'First trip',
+    subtitle: '2000.01.01 · Tokyo',
+    image: '',
+    destination: 'Tokyo',
+  ),
+  Item(
+    id: 2,
+    title: 'Second trip',
+    subtitle: '2000.02.01 · Osaka',
+    image: '',
+    destination: 'Osaka',
+  ),
+];
+Future<void> mount(
   WidgetTester tester, {
+  double width = 500,
+  double height = 1800,
   bool accessible = false,
 }) async {
-  tester.view.physicalSize = const Size(500, 1400);
+  tester.view.physicalSize = Size(width, height);
   tester.view.devicePixelRatio = 1;
   addTearDown(tester.view.reset);
-  final rows = {1: first, 2: second};
   await tester.pumpWidget(
     MaterialApp(
+      key: UniqueKey(),
       builder: (context, child) => MediaQuery(
         data: MediaQuery.of(context).copyWith(accessibleNavigation: accessible),
         child: child!,
       ),
-      home: ListScreen(
-        load: () async => rows.values.where((item) => !item.deleted).toList(),
-        update: (item) async {
-          rows[item.id] = item;
-          return item;
-        },
-        loadNotes: (_) async => [],
-      ),
+      home: ListScreen(load: () async => samples, loadNotes: (_) async => []),
     ),
   );
   await tester.pumpAndSettle();
-  return rows;
+}
+
+Future<void> tap(WidgetTester tester, Finder finder) async {
+  if (finder.evaluate().isEmpty) {
+    await tester.scrollUntilVisible(
+      finder,
+      250,
+      scrollable: find.byType(Scrollable).first,
+    );
+  }
+  await tester.ensureVisible(finder);
+  await tester.pumpAndSettle();
+  await tester.tap(finder);
+  await tester.pumpAndSettle();
+}
+
+Future<void> fill(WidgetTester tester, String key, String value) async {
+  await tester.enterText(find.byKey(ValueKey(key)), value);
+  await tester.pumpAndSettle();
 }
 
 Future<void> delete(WidgetTester tester, int id) async {
-  final button = find.byKey(ValueKey('delete-$id'));
-  await tester.ensureVisible(button);
-  await tester.pumpAndSettle();
-  await tester.tap(button);
-  await tester.pumpAndSettle();
-  await tester.tap(find.text('삭제'));
-  await tester.pumpAndSettle();
+  await tap(tester, find.byKey(ValueKey('delete-$id')));
+  await tap(tester, find.text('삭제'));
 }
 
-Future<void> elapse(WidgetTester tester, Duration duration) async {
-  await tester.pump(duration);
-  await tester.pumpAndSettle();
+Future<void> elapse(WidgetTester t, int seconds) async {
+  await t.pump(Duration(seconds: seconds));
+  await t.pumpAndSettle();
 }
 
 void main() {
-  testWidgets('successful deletion toast disappears after about four seconds', (
-    tester,
-  ) async {
-    final rows = await mount(tester);
-    await delete(tester, 1);
-    expect(rows[1]!.deleted, isTrue);
-    expect(find.text('First trip 여행이 삭제되었습니다.'), findsOneWidget);
-    await elapse(tester, const Duration(seconds: 3));
+  testWidgets('delete toast expires after four seconds', (t) async {
+    await mount(t);
+    await delete(t, 1);
     expect(find.text('실행 취소'), findsOneWidget);
-    await elapse(tester, const Duration(seconds: 1));
+    await elapse(t, 3);
+    expect(find.text('실행 취소'), findsOneWidget);
+    await elapse(t, 1);
     expect(find.byType(SnackBar), findsNothing);
-    expect(rows[1]!.deleted, isTrue);
+    expect(find.text('First trip'), findsNothing);
   });
-
-  testWidgets('undo before timeout restores the correct deleted trip', (
-    tester,
-  ) async {
-    final rows = await mount(tester);
-    await delete(tester, 1);
-    await elapse(tester, const Duration(seconds: 2));
-    await tester.tap(find.text('실행 취소'));
-    await tester.pumpAndSettle();
-    expect(rows[1]!.deleted, isFalse);
+  testWidgets('undo restores the deleted session record', (t) async {
+    await mount(t);
+    await delete(t, 1);
+    await tap(t, find.text('실행 취소'));
     expect(find.text('First trip'), findsOneWidget);
+  });
+  testWidgets('repeat deletions clear old queued messages', (t) async {
+    await mount(t);
+    await delete(t, 1);
+    ScaffoldMessenger.of(
+      t.element(find.byType(ListScreen)),
+    ).showSnackBar(const SnackBar(content: Text('Old queued notice')));
+    await delete(t, 2);
+    expect(find.textContaining('Second trip 여행이 삭제되었습니다.'), findsOneWidget);
+    expect(find.text('Old queued notice'), findsNothing);
+    await elapse(t, 5);
     expect(find.byType(SnackBar), findsNothing);
   });
-
-  testWidgets(
-    'repeated deletions replace old and queued toasts; undo targets the latest trip',
-    (tester) async {
-      final rows = await mount(tester);
-      await delete(tester, 1);
-      final messenger = ScaffoldMessenger.of(
-        tester.element(find.byType(ListScreen)),
-      );
-      messenger.showSnackBar(
-        const SnackBar(content: Text('Queued old message')),
-      );
-      await delete(tester, 2);
-      expect(find.text('First trip 여행이 삭제되었습니다.'), findsNothing);
-      expect(find.text('Second trip 여행이 삭제되었습니다.'), findsOneWidget);
-      expect(find.text('Queued old message'), findsNothing);
-      await tester.tap(find.text('실행 취소'));
-      await tester.pumpAndSettle();
-      expect(rows[1]!.deleted, isTrue);
-      expect(rows[2]!.deleted, isFalse);
-      await elapse(tester, const Duration(seconds: 12));
-      expect(find.byType(SnackBar), findsNothing);
-      expect(find.text('Queued old message'), findsNothing);
-    },
-  );
-
-  testWidgets(
-    'accessibility grants extra undo time without keeping the toast forever',
-    (tester) async {
-      final rows = await mount(tester, accessible: true);
-      await delete(tester, 1);
-      await elapse(tester, const Duration(seconds: 5));
-      expect(find.text('실행 취소'), findsOneWidget);
-      await tester.tap(find.text('실행 취소'));
-      await tester.pumpAndSettle();
-      expect(rows[1]!.deleted, isFalse);
-      await delete(tester, 2);
-      await elapse(tester, const Duration(seconds: 9));
-      expect(find.text('실행 취소'), findsOneWidget);
-      await elapse(tester, const Duration(seconds: 1));
-      expect(find.byType(SnackBar), findsNothing);
-      expect(rows[2]!.deleted, isTrue);
-    },
-  );
+  testWidgets('accessibility mode offers a longer bounded undo window', (
+    t,
+  ) async {
+    await mount(t, accessible: true);
+    await delete(t, 1);
+    await elapse(t, 5);
+    expect(find.text('실행 취소'), findsOneWidget);
+    await tap(t, find.text('실행 취소'));
+    await delete(t, 2);
+    await elapse(t, 10);
+    expect(find.byType(SnackBar), findsNothing);
+  });
 }

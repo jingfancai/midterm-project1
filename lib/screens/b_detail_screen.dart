@@ -1,6 +1,12 @@
-// 화면 B: 여행 상세 — 여행 정보 | 여행 기록 탭
-// B-5 OutlinedButton · 여행 즐겨찾기(서버 저장) · P01 · P09
-// B-8 IconButton + TripEditor · 여행 정보 수정 · P05 · P09
+// 화면 B — 여행 상세 · 디자인 가이드 대응표
+// B-1 AppBar + BackButton · 여행 제목줄 · P03
+// B-2 TabBar + TabBarView · 여행 정보·여행 기록 탭 · P04
+// B-3 NetImage + Text · 대표 사진·여행 제목 · P02 · P08
+// B-4 Wrap(Chip) · 여행 태그 · P06
+// B-5 OutlinedButton · 여행 즐겨찾기 · P03
+// B-6 FilledButton + AlertDialog · 여행 추억 카드 만들기 · P07
+// B-7 FutureBuilder + ListView · 여행 기록 타임라인 · P01 · P09
+// B-8 IconButton + TripEditor · 여행 정보 수정 · P05
 import 'package:flutter/material.dart';
 import '../api.dart';
 import '../models.dart';
@@ -12,18 +18,19 @@ class DetailScreen extends StatefulWidget {
     super.key,
     required this.item,
     this.loadNotes = fetchNotes,
-    this.save = updateItem,
+    this.save = previewTripChange,
   });
 
   final Item item;
   final NotesLoader loadNotes;
-  final ItemSaver save;
+  final TripChange save;
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
 }
 
 class _DetailScreenState extends State<DetailScreen> {
+  // STATE: 상세 편집·즐겨찾기 → A에 전달한 메모리 콜백과 상세 표시만 갱신.
   late Item _item = widget.item;
   bool _saving = false;
 
@@ -207,7 +214,7 @@ class _InfoTab extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         OutlinedButton.icon(
-          onPressed: onFavorite, // B-5 P09
+          onPressed: onFavorite, // B-5 P03
           icon: Icon(item.favorite ? Icons.bookmark : Icons.bookmark_border),
           label: Text(item.favorite ? '즐겨찾기 해제' : '이 여행 보관하기'),
         ),
@@ -276,14 +283,15 @@ class _NotesTabState extends State<_NotesTab> {
   }
 
   Future<void> _addNote() async {
-    final controller = TextEditingController();
+    // STATE: 기록 입력 → 현재 상세 탭의 임시 기록. 다시 조회하면 복구.
+    var draft = '';
 
     final result = await showDialog<String>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('새로운 여행 기록'),
         content: TextField(
-          controller: controller,
+          onChanged: (value) => draft = value,
           maxLines: 4,
           decoration: const InputDecoration(
             hintText: '오늘의 여행 순간을 기록해 보세요.',
@@ -297,15 +305,13 @@ class _NotesTabState extends State<_NotesTab> {
           ),
           FilledButton(
             onPressed: () {
-              Navigator.pop(dialogContext, controller.text.trim());
+              Navigator.pop(dialogContext, draft.trim());
             },
             child: const Text('저장'),
           ),
         ],
       ),
     );
-
-    controller.dispose();
 
     if (!mounted || result == null || result.isEmpty) return;
 
@@ -330,9 +336,9 @@ class _NotesTabState extends State<_NotesTab> {
       );
     });
 
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(const SnackBar(content: Text('여행 기록이 추가되었습니다.')));
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('여행 기록이 추가되었습니다. 이 화면에서만 유지됩니다.')),
+    );
   }
 
   @override

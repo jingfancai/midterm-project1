@@ -1,15 +1,15 @@
-// B-8 TripEditor · 여행 정보 수정 / A 여행 추가 · P05 · P09
+// B-8 TripEditor · 여행 정보 수정 · P05
+// A-11 TripEditor · 여행 추가 · P05
 import 'package:flutter/material.dart';
-import 'api.dart';
 import 'models.dart';
 import 'trip_insights.dart';
 import 'destinations.dart';
 
-/// The same form and server validation are used for creating and editing trips.
+/// The same form and input validation are used for creating and editing trips.
 class TripEditor extends StatefulWidget {
   const TripEditor({super.key, this.item, required this.save});
   final Item? item;
-  final ItemSaver save;
+  final TripChange save;
 
   @override
   State<TripEditor> createState() => _TripEditorState();
@@ -62,6 +62,7 @@ class _TripEditorState extends State<TripEditor> {
     if (value != null && mounted) setState(() => controller.text = _iso(value));
   }
 
+  // STATE: 입력 → 세션의 여행; 서버 전송·영구 저장 없음.
   Future<void> _save() async {
     if (_saving || !_form.currentState!.validate()) return;
     setState(() {

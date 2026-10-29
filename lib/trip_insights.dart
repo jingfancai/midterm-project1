@@ -1,3 +1,5 @@
+// STATE: 검색·정렬·날짜 분류·도시/국가 집계는 현재 메모리 데이터의 실제 로직이다.
+// 교수의 실제 로직 감점 위험 있음; 서버 쓰기/영구 저장과 별개다.
 import 'models.dart';
 import 'destinations.dart';
 

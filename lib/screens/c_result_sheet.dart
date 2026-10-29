@@ -1,3 +1,9 @@
+// 화면 C — 여행 추억 카드 · 디자인 가이드 대응표
+// C-1 showModalBottomSheet + SafeArea · 여행 회고 모달 · P03
+// C-2 Text · 여행 제목과 회고 안내 · P02
+// C-3 Row + _StatCard · 여행 통계 카드 · P01
+// C-4 Text · 전체 여행 제목 · P06
+// C-5 Material + NetImage · 여행 회고 선택 카드 · P04 · P06
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../widgets.dart';
@@ -13,7 +19,7 @@ class ResultSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
 
-    // 从现有旅行数据中统计标签种类
+    // STATE: 현재 여행 → 방문 도시/국가와 전체 여행 통계 카드
     final summary = TripSummary(
       items,
       items.where((item) => item.favorite).map((item) => item.id).toSet(),

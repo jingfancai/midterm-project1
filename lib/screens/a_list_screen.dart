@@ -1,14 +1,16 @@
 // 화면 A — 나의 여행 목록 · 디자인 가이드 대응표
 // A-1 Row + Text · 브랜드명과 프로필 영역 · P04
-// A-2 ListView + Card (TripCard) · 여행 카드 목록 · P06
-// A-3 GridView (≥600dp) · 넓은 화면 여행 카드 격자 · P07
+// A-2 ListView + Card (TripCard) · 여행 카드 목록 · P02 · P06
+// A-3 GridView (≥600dp) · 넓은 화면 여행 카드 격자 · P07 · P08
 // A-4 LoadingView · 불러오는 중 표시 · P01
 // A-5 ErrorView + FilledButton · 오류 안내·다시 시도 · P09
 // A-6 EmptyView · 빈 목록 안내 · P01
 // A-7 TextField · 여행 검색 · P07
 // A-8 FilterChip + DropdownButton · 즐겨찾기 필터·그룹 내 정렬 · P07
 // A-9 IconButton + AlertDialog + SnackBar · 즐겨찾기·삭제·실행 취소 · P03 · P05
-// A-10 Wrap + Chip · 전체 여행 통계 · P01
+// A-10 Wrap + Chip · 전체 여행 통계 · P01 · P10
+// A-11 TripEditor · 여행 추가 · P05
+// A-12 IconButton · 여행 새로고침 · P09
 import 'package:flutter/material.dart';
 import '../api.dart';
 import '../models.dart';
@@ -17,7 +19,6 @@ import '../trip_insights.dart';
 import '../trip_editor.dart';
 import 'b_detail_screen.dart';
 import 'c_result_sheet.dart';
-import 'd_profile_screen.dart';
 
 const wideBreakpoint = 600.0;
 
@@ -26,14 +27,10 @@ class ListScreen extends StatefulWidget {
     super.key,
     this.load = fetchItems,
     this.loadNotes = fetchNotes,
-    this.create = createItem,
-    this.update = updateItem,
   });
 
   final ItemsLoader load;
   final NotesLoader loadNotes;
-  final ItemSaver create;
-  final ItemSaver update;
 
   @override
   State<ListScreen> createState() => _ListScreenState();
@@ -79,17 +76,24 @@ class _ListScreenState extends State<ListScreen> {
     });
   }
 
-  Future<Item> _persist(Item item) async {
-    final saved = await widget.update(item);
-    _accept(saved);
-    return saved;
+  // STATE: 여행 변경 → A/B/C 세션 표시. 새로고침/재실행 시 GET 원본 복구.
+  int _nextId = -1;
+  Future<Item> _change(Item item, {bool create = false}) async {
+    if (create) {
+      while (_items.any((existing) => existing.id == _nextId)) {
+        _nextId--;
+      }
+      item = item.copyWith(id: _nextId--);
+    }
+    _accept(item);
+    return item;
   }
 
   Future<bool> _action(Item item) async {
     if (_busyIds.contains(item.id)) return false;
     setState(() => _busyIds.add(item.id));
     try {
-      await _persist(item);
+      await _change(item);
       return true;
     } catch (error) {
       if (mounted) {
@@ -104,7 +108,7 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   Future<void> _toggleFavorite(Item item) async {
-    // STATE: 서버 저장 성공 → 카드·필터·통계 갱신. 실패 시 기존 값 유지.
+    // STATE: 메모리 즐겨찾기 → 카드·필터·통계 갱신. 서버 저장 없음.
     await _action(item.copyWith(favorite: !item.favorite));
   }
 
@@ -115,7 +119,7 @@ class _ListScreenState extends State<ListScreen> {
         // A-9 P05
         title: const Text('여행 삭제'),
         content: Text(
-          '“${item.title}” 여행을 삭제할까요?\n새로고침 후에도 목록에서 제외됩니다. 삭제 직후 실행 취소할 수 있어요.',
+          '“${item.title}” 여행을 삭제할까요?\n이 화면에서만 삭제됩니다. 새로고침하면 원래 데이터로 돌아와요. 실행 취소할 수 있어요.',
         ),
         actions: [
           TextButton(
@@ -172,6 +176,7 @@ class _ListScreenState extends State<ListScreen> {
   }
 
   void _retry() {
+    ScaffoldMessenger.of(context).clearSnackBars();
     setState(() {
       _future = _load();
     });
@@ -180,7 +185,7 @@ class _ListScreenState extends State<ListScreen> {
   Future<void> _open(Item item) => Navigator.of(context).push<void>(
     MaterialPageRoute<void>(
       builder: (_) =>
-          DetailScreen(item: item, loadNotes: widget.loadNotes, save: _persist),
+          DetailScreen(item: item, loadNotes: widget.loadNotes, save: _change),
     ),
   );
 
@@ -188,13 +193,7 @@ class _ListScreenState extends State<ListScreen> {
     await showDialog<Item>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => TripEditor(
-        save: (item) async {
-          final saved = await widget.create(item);
-          _accept(saved);
-          return saved;
-        },
-      ),
+      builder: (_) => TripEditor(save: (item) => _change(item, create: true)),
     );
   }
 
@@ -229,7 +228,7 @@ class _ListScreenState extends State<ListScreen> {
             ],
           ),
           const Text(
-            '여행 기간 합계 · 방문 도시·국가는 시작한 여행만 중복 없이 집계',
+            '여행 기간 합계 · 방문 도시·국가는 시작한 여행만 중복 집계 제외 · 변경은 새로고침 시 초기화',
             style: TextStyle(fontSize: 11, color: Color(0xFF687775)),
           ),
           const SizedBox(height: 14),
@@ -432,9 +431,20 @@ class _ListScreenState extends State<ListScreen> {
                         ),
                         InkWell(
                           onTap: () {
-                            Navigator.of(context).push(
-                              MaterialPageRoute<void>(
-                                builder: (_) => const ProfileScreen(),
+                            showDialog<void>(
+                              context: context,
+                              builder: (dialogContext) => AlertDialog(
+                                title: const Text('프로필 안내'),
+                                content: const Text(
+                                  '여행 UI 프로토타입입니다. 로그인·개인정보 기능은 제공하지 않습니다.',
+                                ),
+                                actions: [
+                                  TextButton(
+                                    onPressed: () =>
+                                        Navigator.pop(dialogContext),
+                                    child: const Text('닫기'),
+                                  ),
+                                ],
                               ),
                             );
                           },

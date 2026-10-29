@@ -38,32 +38,19 @@ class TripApi {
   final http.Client _client;
   final String _base;
 
-  Future<http.Response> _request(
-    String method,
-    String path, [
-    Map<String, Object>? body,
-  ]) async {
+  Future<http.Response> _get(String path) async {
     try {
-      final request = http.Request(method, Uri.parse('$_base/$path'));
-      if (body != null) {
-        request.headers['Content-Type'] = 'application/json; charset=utf-8';
-        request.body = jsonEncode(body);
-      }
-      final response = await http.Response.fromStream(
-        await _client.send(request).timeout(const Duration(seconds: 10)),
-      ).timeout(const Duration(seconds: 10));
-      if (response.statusCode < 200 || response.statusCode >= 300) {
-        throw ApiException(
-          '저장 또는 조회에 실패했어요 (HTTP ${response.statusCode}). 서버 설정을 확인하고 다시 시도해 주세요.',
-        );
+      final response = await _client
+          .get(Uri.parse('$_base/$path'))
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode != 200) {
+        throw ApiException('목록을 불러오지 못했어요 (HTTP ${response.statusCode}).');
       }
       return response;
     } on ApiException {
       rethrow;
     } on Exception {
-      throw const ApiException(
-        '서버에 연결하지 못했어요. 연결을 확인한 뒤 목록을 새로고침해 저장 여부를 확인해 주세요.',
-      );
+      throw const ApiException('서버에 연결하지 못했어요. 연결을 확인하고 다시 시도해 주세요.');
     }
   }
 
@@ -76,40 +63,19 @@ class TripApi {
   }
 
   Future<List<Object?>> _list(String path) async {
-    final data = _decode(await _request('GET', path));
+    final data = _decode(await _get(path));
     if (data is! List) throw const ApiException('서버가 목록을 반환하지 않았어요.');
     return data;
   }
 
   Future<List<Item>> load() async {
-    final data = await _list('items?deleted_ne=true');
-    return data
-        .map(Item.fromJson)
-        .nonNulls
-        .where((item) => !item.deleted)
-        .toList();
+    final data = await _list('items');
+    return data.map(Item.fromJson).nonNulls.toList();
   }
 
   Future<List<Note>> notes(int itemId) async => (await _list(
     'notes?itemId=$itemId',
   )).map(Note.fromJson).nonNulls.toList();
-
-  Future<Item> _save(
-    String method,
-    String path,
-    Map<String, Object> body,
-  ) async {
-    final item = Item.fromJson(_decode(await _request(method, path, body)));
-    if (item == null) {
-      throw const ApiException('저장 결과를 읽지 못했어요. 목록을 새로고침해 주세요.');
-    }
-    return item;
-  }
-
-  Future<Item> create(Item item) =>
-      _save('POST', 'items', item.toJson(includeId: false));
-  Future<Item> update(Item item) =>
-      _save('PATCH', 'items/${item.id}', item.toJson());
 }
 
 final _api = TripApi();
@@ -123,9 +89,6 @@ Future<List<Item>> fetchItems() async {
 }
 
 Future<List<Note>> fetchNotes(int itemId) => _api.notes(itemId);
-Future<Item> createItem(Item item) => _api.create(item);
-Future<Item> updateItem(Item item) => _api.update(item);
-typedef ItemSaver = Future<Item> Function(Item item);
 
 /// 화면이 데이터를 받는 함수 모양 — 테스트에서는 가짜 함수를 넣는다.
 typedef ItemsLoader = Future<List<Item>> Function();
