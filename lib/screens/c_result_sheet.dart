@@ -77,6 +77,14 @@ class ResultSheet extends StatelessWidget {
                     label: '방문 국가',
                   ),
                 ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: _StatCard(
+                    icon: Icons.location_city_outlined,
+                    number: '${summary.visitedCities}',
+                    label: '방문 도시 수',
+                  ),
+                ),
               ],
             ),
 

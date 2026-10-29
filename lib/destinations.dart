@@ -8,12 +8,16 @@ class DestinationInfo {
     this.countryName,
     this.aliases, {
     this.photoUrl = defaultTripPhoto,
+    this.cityId,
   });
 
   final String countryCode;
   final String countryName;
   final List<String> aliases;
   final String photoUrl;
+  // Regions/islands have no city ID and do not inflate visited city counts.
+  final String? cityId;
+  String? get cityKey => cityId == null ? null : '$countryCode/$cityId';
 }
 
 const _destinations = [
@@ -35,6 +39,7 @@ const _destinations = [
     ],
     photoUrl:
         'https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=1000&q=85',
+    cityId: 'tokyo',
   ),
   DestinationInfo(
     'JP',
@@ -42,6 +47,7 @@ const _destinations = [
     ['Osaka', '오사카', '大阪', '일본 오사카', '日本大阪', 'Osaka, Japan'],
     photoUrl:
         'https://images.unsplash.com/photo-1590559899731-a382839e5549?w=1000&q=85',
+    cityId: 'osaka',
   ),
   DestinationInfo(
     'JP',
@@ -49,6 +55,7 @@ const _destinations = [
     ['Kyoto', '교토', '京都', '일본 교토', '日本京都', 'Kyoto, Japan'],
     photoUrl:
         'https://images.unsplash.com/photo-1493976040374-85c8e12f0c0e?w=1000&q=85',
+    cityId: 'kyoto',
   ),
   DestinationInfo(
     'KR',
@@ -66,6 +73,7 @@ const _destinations = [
     ],
     photoUrl:
         'https://images.unsplash.com/photo-1517154421773-0529f29ea451?w=1000&q=85',
+    cityId: 'seoul',
   ),
   DestinationInfo('KR', '대한민국', [
     'Busan',
@@ -74,7 +82,7 @@ const _destinations = [
     '釜山',
     '한국 부산',
     'Busan, South Korea',
-  ]),
+  ], cityId: 'busan'),
   DestinationInfo('KR', '대한민국', [
     'Jeju',
     'Jeju Island',
@@ -98,14 +106,16 @@ const _destinations = [
     ['Paris', '파리', '巴黎', '프랑스 파리', '法国巴黎', '法國巴黎', 'Paris, France'],
     photoUrl:
         'https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=1000&q=85',
+    cityId: 'paris',
   ),
-  DestinationInfo('FR', '프랑스', ['Lyon', '리옹', '里昂']),
+  DestinationInfo('FR', '프랑스', ['Lyon', '리옹', '里昂'], cityId: 'lyon'),
   DestinationInfo(
     'GB',
     '영국',
     ['London', '런던', '伦敦', '倫敦', '영국 런던', '英国伦敦', 'London, UK'],
     photoUrl:
         'https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=1000&q=85',
+    cityId: 'london',
   ),
   DestinationInfo(
     'US',
@@ -113,18 +123,57 @@ const _destinations = [
     ['New York', 'New York City', 'NYC', '뉴욕', '纽约', '紐約', '미국 뉴욕', '美国纽约'],
     photoUrl:
         'https://images.unsplash.com/photo-1519501025264-65ba15a82390?w=1000&q=85',
+    cityId: 'new-york',
   ),
-  DestinationInfo('US', '미국', ['Los Angeles', '로스앤젤레스', '洛杉矶', '洛杉磯']),
-  DestinationInfo('CN', '중국', ['Beijing', '베이징', '北京', '중국 베이징', '中国北京']),
-  DestinationInfo('CN', '중국', ['Shanghai', '상하이', '上海', '중국 상하이', '中国上海']),
-  DestinationInfo('SG', '싱가포르', ['Singapore', '싱가포르', '新加坡']),
-  DestinationInfo('TH', '태국', ['Bangkok', '방콕', '曼谷']),
-  DestinationInfo('VN', '베트남', ['Hanoi', '하노이', '河内', '河內']),
-  DestinationInfo('VN', '베트남', ['Da Nang', 'Danang', '다낭', '岘港', '峴港']),
-  DestinationInfo('IT', '이탈리아', ['Rome', 'Roma', '로마', '罗马', '羅馬']),
-  DestinationInfo('ES', '스페인', ['Barcelona', '바르셀로나', '巴塞罗那', '巴塞羅那']),
-  DestinationInfo('DE', '독일', ['Berlin', '베를린', '柏林']),
-  DestinationInfo('AU', '호주', ['Sydney', '시드니', '悉尼', '雪梨']),
+  DestinationInfo('US', '미국', [
+    'Los Angeles',
+    '로스앤젤레스',
+    '洛杉矶',
+    '洛杉磯',
+  ], cityId: 'los-angeles'),
+  DestinationInfo('CN', '중국', [
+    'Beijing',
+    '베이징',
+    '北京',
+    '중국 베이징',
+    '中国北京',
+  ], cityId: 'beijing'),
+  DestinationInfo('CN', '중국', [
+    'Shanghai',
+    '상하이',
+    '上海',
+    '중국 상하이',
+    '中国上海',
+  ], cityId: 'shanghai'),
+  DestinationInfo('SG', '싱가포르', [
+    'Singapore',
+    '싱가포르',
+    '新加坡',
+  ], cityId: 'singapore'),
+  DestinationInfo('TH', '태국', ['Bangkok', '방콕', '曼谷'], cityId: 'bangkok'),
+  DestinationInfo('VN', '베트남', ['Hanoi', '하노이', '河内', '河內'], cityId: 'hanoi'),
+  DestinationInfo('VN', '베트남', [
+    'Da Nang',
+    'Danang',
+    '다낭',
+    '岘港',
+    '峴港',
+  ], cityId: 'da-nang'),
+  DestinationInfo('IT', '이탈리아', [
+    'Rome',
+    'Roma',
+    '로마',
+    '罗马',
+    '羅馬',
+  ], cityId: 'rome'),
+  DestinationInfo('ES', '스페인', [
+    'Barcelona',
+    '바르셀로나',
+    '巴塞罗那',
+    '巴塞羅那',
+  ], cityId: 'barcelona'),
+  DestinationInfo('DE', '독일', ['Berlin', '베를린', '柏林'], cityId: 'berlin'),
+  DestinationInfo('AU', '호주', ['Sydney', '시드니', '悉尼', '雪梨'], cityId: 'sydney'),
 ];
 
 String _normalize(String value) =>

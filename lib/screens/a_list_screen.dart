@@ -224,10 +224,11 @@ class _ListScreenState extends State<ListScreen> {
                 Chip(label: Text('날짜 미정 ${summary.unknown}')),
               Chip(label: Text('여행일 합계 ${summary.days}일')),
               Chip(label: Text('방문 국가 ${summary.visitedCountries}개')),
+              Chip(label: Text('방문 도시 수 ${summary.visitedCities}개')),
             ],
           ),
           const Text(
-            '여행 기간 합계 · 방문 국가는 시작한 여행만 국가별 집계',
+            '여행 기간 합계 · 방문 도시·국가는 시작한 여행만 중복 없이 집계',
             style: TextStyle(fontSize: 11, color: Color(0xFF687775)),
           ),
           const SizedBox(height: 14),

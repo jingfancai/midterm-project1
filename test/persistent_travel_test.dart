@@ -269,6 +269,7 @@ void main() {
       store.rows[1] = original.copyWith(destination: 'Tokyo');
       await mount(tester, store);
       expect(find.text('방문 국가 1개'), findsOneWidget);
+      expect(find.text('방문 도시 수 1개'), findsOneWidget);
       await tap(tester, find.byType(FloatingActionButton));
       await fill(tester, 'trip-title', 'Osaka trip');
       await fill(tester, 'trip-destination', '오사카');
@@ -277,6 +278,7 @@ void main() {
       await tap(tester, find.text('여행 추가'));
       expect(find.text('총 여행 2'), findsOneWidget);
       expect(find.text('방문 국가 1개'), findsOneWidget);
+      expect(find.text('방문 도시 수 2개'), findsOneWidget);
       await tap(tester, find.text('Original trip'));
       await tap(tester, find.byTooltip('여행 정보 수정'));
       await fill(tester, 'trip-destination', '巴黎');
@@ -284,11 +286,14 @@ void main() {
       await tap(tester, find.text('저장'));
       await tap(tester, find.byType(BackButton));
       expect(find.text('방문 국가 2개'), findsOneWidget);
+      expect(find.text('방문 도시 수 2개'), findsOneWidget);
       await tap(tester, find.byKey(const ValueKey('delete-1')));
       await tap(tester, find.text('삭제'));
       expect(find.text('방문 국가 1개'), findsOneWidget);
+      expect(find.text('방문 도시 수 1개'), findsOneWidget);
       await mount(tester, store);
       expect(find.text('방문 국가 1개'), findsOneWidget);
+      expect(find.text('방문 도시 수 1개'), findsOneWidget);
     },
   );
 
