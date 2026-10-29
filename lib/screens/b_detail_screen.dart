@@ -1,5 +1,4 @@
 // 화면 B: 여행 상세 — 여행 정보 | 여행 기록 탭
-import 'a_list_screen.dart';
 import 'package:flutter/material.dart';
 import '../api.dart';
 import '../models.dart';

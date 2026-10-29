@@ -37,11 +37,11 @@ void main() {
       _app(() => ++calls == 1 ? first.future : Future.value(_items)),
     );
     expect(find.byType(CircularProgressIndicator), findsOneWidget);
-    expect(find.text('목록을 불러오는 중…'), findsOneWidget);
+    expect(find.text('여행 기록을 불러오는 중…'), findsOneWidget);
 
     first.completeError(Exception('테스트 오류'));
     await tester.pumpAndSettle();
-    expect(find.text('목록을 불러오지 못했습니다.'), findsOneWidget);
+    expect(find.text('여행 기록을 불러오지 못했어요.'), findsOneWidget);
 
     // 다시 시도 → 성공
     await tester.tap(find.text('다시 시도'));
@@ -53,7 +53,7 @@ void main() {
   testWidgets('3상태: 빈 상태', (tester) async {
     await tester.pumpWidget(_app(() async => const []));
     await tester.pumpAndSettle();
-    expect(find.text('아직 등록된 항목이 없습니다.'), findsOneWidget);
+    expect(find.text('아직 여행 기록이 없어요. 첫 번째 여행을 기록해 보세요.'), findsOneWidget);
   });
 
   testWidgets('흐름: A 목록 → push B 상세 → tab 메모 → modal C 결과', (tester) async {
@@ -63,19 +63,24 @@ void main() {
     expect(find.byType(ListView), findsOneWidget); // 폰: 목록
     expect(find.byType(GridView), findsNothing);
 
+    await tester.ensureVisible(find.text('항목 1'));
     await tester.tap(find.text('항목 1'));
     await tester.pumpAndSettle();
     expect(find.byType(BackButton), findsOneWidget); // push
 
-    await tester.tap(find.text('결과 보기'));
+    await tester.ensureVisible(find.text('여행 추억 카드 만들기'));
+    await tester.tap(find.text('여행 추억 카드 만들기'));
     await tester.pumpAndSettle();
-    expect(find.textContaining('실제 기능은 없습니다'), findsOneWidget); // modal
+    expect(find.text('MY TRAVEL MEMORY'), findsOneWidget); // modal
     await tester.tap(find.text('닫기'));
     await tester.pumpAndSettle();
 
-    await tester.tap(find.text('메모'));
+    await tester.tap(find.text('여행 기록'));
     await tester.pumpAndSettle();
-    expect(find.text('아직 메모가 없습니다.'), findsOneWidget); // tab + 빈 상태
+    expect(
+      find.text('아직 기록이 없어요. 여행의 순간을 남겨 보세요.'),
+      findsOneWidget,
+    ); // tab + 빈 상태
   });
 
   testWidgets('적응형: 600dp 이상이면 격자', (tester) async {
