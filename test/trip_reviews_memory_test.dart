@@ -222,6 +222,17 @@ void main() {
       ),
     );
     await t.pumpAndSettle();
+    await t.scrollUntilVisible(
+      find.byKey(const ValueKey('detail-review')),
+      250,
+      scrollable: find
+          .descendant(
+            of: find.byType(ListView).first,
+            matching: find.byType(Scrollable),
+          )
+          .first,
+    );
+    await t.pumpAndSettle();
     final text = t.widget<Text>(find.byKey(const ValueKey('detail-review')));
     expect(text.data, review);
     expect(text.maxLines, isNull);

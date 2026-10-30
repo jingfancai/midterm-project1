@@ -175,6 +175,9 @@ List<VisitedCity> visitedCities(List<Item> items, DateTime today) {
     ..sort((a, b) => a.destination.cityName.compareTo(b.destination.cityName));
 }
 
+bool canManageTripPhotos(Item item, DateTime today) =>
+    isVisitedTrip(item, today);
+
 bool canReviewTrip(Item item, DateTime today) => isVisitedTrip(item, today);
 bool canCreateMemory(Item item, DateTime today) =>
     !item.deleted && tripStatus(item, today) == TripStatus.past;

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -8,6 +9,7 @@ import 'package:mid_project_template/photo_picker.dart';
 import 'package:mid_project_template/screens/b_detail_screen.dart';
 import 'package:mid_project_template/travel_memory_card.dart';
 import 'package:mid_project_template/trip_photos.dart';
+import 'package:mid_project_template/trip_insights.dart';
 import 'package:mid_project_template/widgets.dart';
 
 const sample = Item(
@@ -340,4 +342,185 @@ void main() {
     );
     expect(t.takeException(), isNull);
   });
+  test(
+    'photo permissions include ongoing and past days, exclude future invalid and deleted',
+    () {
+      final today = DateTime(2026, 10, 30);
+      expect(canManageTripPhotos(sample, today), isTrue);
+      expect(
+        canManageTripPhotos(
+          sample.copyWith(startDate: '2026-10-30', endDate: '2026-10-30'),
+          today,
+        ),
+        isTrue,
+      );
+      expect(
+        canManageTripPhotos(
+          sample.copyWith(startDate: '2026-10-31', endDate: '2026-11-03'),
+          today,
+        ),
+        isFalse,
+      );
+      expect(
+        canManageTripPhotos(
+          sample.copyWith(startDate: 'invalid', endDate: 'invalid'),
+          today,
+        ),
+        isFalse,
+      );
+      expect(
+        canManageTripPhotos(sample.copyWith(deleted: true), today),
+        isFalse,
+      );
+    },
+  );
+
+  testWidgets(
+    'B has one full-width hero gallery with the original guidance above it',
+    (t) async {
+      t.view.physicalSize = const Size(400, 1000);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.reset);
+      await t.pumpWidget(
+        MaterialApp(
+          home: DetailScreen(item: sample, loadNotes: (_) async => []),
+        ),
+      );
+      await t.pumpAndSettle();
+      final pages = find.byKey(const ValueKey('trip-photo-pages'));
+      expect(pages, findsOneWidget);
+      expect(find.byType(TripPhotoGallery), findsOneWidget);
+      expect(find.byType(NetImage), findsOneWidget);
+      for (final label in ['순간을 다시 꺼내 보기', '사진과 짧은 기록으로 여행의 흐름을 돌아보세요.']) {
+        expect(find.text(label), findsOneWidget);
+        expect(
+          t.getBottomLeft(find.text(label)).dy,
+          lessThan(t.getTopLeft(pages).dy),
+        );
+      }
+      expect(t.getTopLeft(pages).dx, closeTo(18, 1));
+      expect(t.getSize(pages).width, closeTo(364, 1));
+      expect(t.getSize(pages).aspectRatio, closeTo(4 / 3, .01));
+      expect(t.takeException(), isNull);
+    },
+  );
+
+  testWidgets('ongoing travel can add a local photo', (t) async {
+    final date = DateTime.now().toIso8601String().substring(0, 10);
+    final get = await gallery(
+      t,
+      item: sample.copyWith(startDate: date, endDate: date),
+      picker: ({required limit}) async => [red],
+    );
+    await t.tap(find.byKey(const ValueKey('add-trip-photo')));
+    await settlePhotos(t);
+    expect(get().photos, hasLength(1));
+    expect(find.text('1 / 5장'), findsOneWidget);
+  });
+
+  testWidgets(
+    'future dates hide stored photos and actions, starting dates restore first photo',
+    (t) async {
+      t.view.physicalSize = const Size(400, 800);
+      t.view.devicePixelRatio = 1;
+      addTearDown(t.view.reset);
+      var item = sample.copyWith(photos: [red, blue]);
+      late StateSetter change;
+      await t.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: StatefulBuilder(
+              builder: (_, setState) {
+                change = setState;
+                return SingleChildScrollView(
+                  child: TripPhotoGallery(
+                    item: item,
+                    onChanged: (_) async {},
+                    pickPhotos: ({required limit}) async => [blue],
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+      await t.pumpAndSettle();
+      await t.drag(
+        find.byKey(const ValueKey('trip-photo-pages')),
+        const Offset(-300, 0),
+      );
+      await t.pumpAndSettle();
+      expect(find.text('2 / 2'), findsOneWidget);
+      change(
+        () => item = item.copyWith(
+          startDate: '2100-01-01',
+          endDate: '2100-01-03',
+        ),
+      );
+      await t.pumpAndSettle();
+      expect(find.byType(NetImage), findsOneWidget);
+      expect(find.byKey(const ValueKey('add-trip-photo')), findsNothing);
+      expect(find.byTooltip('현재 사진 삭제'), findsNothing);
+      expect(find.byTooltip('현재 사진 바꾸기'), findsNothing);
+      expect(find.byKey(const ValueKey('photo-page-indicator')), findsNothing);
+      expect(item.photos, hasLength(2));
+      change(
+        () => item = item.copyWith(
+          startDate: '2000-01-01',
+          endDate: '2000-01-03',
+        ),
+      );
+      await t.pumpAndSettle();
+      expect(find.text('1 / 2'), findsOneWidget);
+      expect(find.byType(NetImage), findsNothing);
+      expect(t.takeException(), isNull);
+    },
+  );
+
+  testWidgets(
+    'photos selected after a date changes to future are not applied',
+    (t) async {
+      var item = sample;
+      var writes = 0;
+      final pending = Completer<List<Uint8List>>();
+      late StateSetter change;
+      await t.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: StatefulBuilder(
+              builder: (_, setState) {
+                change = setState;
+                return SingleChildScrollView(
+                  child: TripPhotoGallery(
+                    item: item,
+                    onChanged: (_) async {
+                      writes++;
+                    },
+                    pickPhotos: ({required limit}) => pending.future,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+      );
+      await t.pumpAndSettle();
+      await t.ensureVisible(find.byKey(const ValueKey('add-trip-photo')));
+      await t.pumpAndSettle();
+      await t.tap(find.byKey(const ValueKey('add-trip-photo')));
+      await t.pump();
+      change(
+        () => item = item.copyWith(
+          startDate: '2100-01-01',
+          endDate: '2100-01-03',
+        ),
+      );
+      await t.pump();
+      pending.complete([red]);
+      await t.pumpAndSettle();
+      expect(writes, 0);
+      expect(find.byType(NetImage), findsOneWidget);
+      expect(find.byKey(const ValueKey('add-trip-photo')), findsNothing);
+    },
+  );
 }
