@@ -15,6 +15,7 @@ class Item {
     required String subtitle,
     required this.image,
     this.tags = const [],
+    this.review = '',
     this.destination = '',
     this.countryCode = '',
     this.startDate = '',
@@ -32,6 +33,7 @@ class Item {
   final String endDate;
   final bool favorite;
   final bool deleted;
+  final String review;
 
   String get subtitle => startDate.isNotEmpty && endDate.isNotEmpty
       ? '${startDate.replaceAll('-', '.')} – ${endDate.replaceAll('-', '.')} · $destination'
@@ -47,6 +49,8 @@ class Item {
 
   Item copyWith({
     int? id,
+    List<String>? tags,
+    String? review,
     String? title,
     String? destination,
     String? countryCode,
@@ -60,7 +64,8 @@ class Item {
     title: title ?? this.title,
     subtitle: _subtitle,
     image: image ?? this.image,
-    tags: tags,
+    tags: tags ?? this.tags,
+    review: review ?? this.review,
     destination: destination ?? this.destination,
     countryCode: countryCode ?? this.countryCode,
     startDate: startDate ?? this.startDate,
@@ -75,6 +80,7 @@ class Item {
     'subtitle': subtitle,
     'image': photoUrl,
     'tags': tags,
+    'review': review,
     'destination': destination,
     'countryCode': inferredCountryCode,
     'startDate': startDate,
@@ -110,6 +116,7 @@ class Item {
               ? json['startDate'] as String
               : '',
           endDate: json['endDate'] is String ? json['endDate'] as String : '',
+          review: json['review'] is String ? json['review'] as String : '',
           favorite: json['favorite'] == true,
           deleted: json['deleted'] == true,
           tags: switch (json['tags']) {

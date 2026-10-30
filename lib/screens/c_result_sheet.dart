@@ -6,11 +6,14 @@
 // C-5 Material + NetImage · 여행 회고 선택 카드 · P04 · P06
 // C-6 VisitedPlacesMap · 방문 장소 지도 · P02 · P06
 // C-7 AlertDialog · 방문 도시와 여행 목록 · P03 · P10
+// C-8 TravelMemoryDialog · 여행 추억 카드 · P02 · P06
+// C-9 FilledButton · 추억 카드 PNG 내보내기 · P03 · P09
 import 'package:flutter/material.dart';
 import '../models.dart';
 import '../widgets.dart';
 import '../trip_insights.dart';
 import '../visited_places_map.dart';
+import '../travel_memory_card.dart';
 
 class ResultSheet extends StatelessWidget {
   const ResultSheet({super.key, required this.items, required this.onSelect});
@@ -169,6 +172,27 @@ class ResultSheet extends StatelessWidget {
                                         color: Color(0xFF687775),
                                       ),
                                     ),
+                                    TextButton.icon(
+                                      key: ValueKey('create-memory-${item.id}'),
+                                      onPressed:
+                                          canCreateMemory(item, DateTime.now())
+                                          ? () =>
+                                                showTravelMemory(context, item)
+                                          : null,
+                                      icon: const Icon(
+                                        Icons.auto_awesome,
+                                        size: 16,
+                                      ),
+                                      label: const Text('여행 추억 카드 만들기'),
+                                    ),
+                                    if (!canCreateMemory(item, DateTime.now()))
+                                      const Text(
+                                        memoryRestriction,
+                                        style: TextStyle(
+                                          fontSize: 10,
+                                          color: Color(0xFF687775),
+                                        ),
+                                      ),
                                   ],
                                 ),
                               ),

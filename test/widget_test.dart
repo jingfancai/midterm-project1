@@ -11,8 +11,14 @@ import 'package:mid_project_template/widgets.dart';
 import 'package:mid_project_template/screens/a_list_screen.dart';
 
 const _items = [
-  Item(id: 1, title: '항목 1', subtitle: '설명 1', image: '', tags: ['태그']),
-  Item(id: 2, title: '항목 2', subtitle: '설명 2', image: ''),
+  Item(
+    id: 1,
+    title: '항목 1',
+    subtitle: '2000.01.01 · Tokyo',
+    image: '',
+    tags: ['태그'],
+  ),
+  Item(id: 2, title: '항목 2', subtitle: '2000.02.01 · Osaka', image: ''),
 ];
 
 Future<List<Note>> _noNotes(int _) async => const [];
@@ -88,6 +94,8 @@ void main() {
           )
           .first,
     );
+    await tester.ensureVisible(find.text('여행 추억 카드 만들기'));
+    await tester.pumpAndSettle();
     await tester.tap(find.text('여행 추억 카드 만들기'));
     await tester.pumpAndSettle();
     expect(find.text('MY TRAVEL MEMORY'), findsOneWidget); // modal

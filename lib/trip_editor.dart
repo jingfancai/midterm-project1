@@ -21,6 +21,8 @@ class _TripEditorState extends State<TripEditor> {
   late final TextEditingController _destination;
   late final TextEditingController _start;
   late final TextEditingController _end;
+  late final TextEditingController _tags;
+  late final TextEditingController _review;
   bool _saving = false;
   String? _error;
 
@@ -36,11 +38,13 @@ class _TripEditorState extends State<TripEditor> {
     _destination = TextEditingController(text: item?.destinationName ?? '');
     _start = TextEditingController(text: _iso(start));
     _end = TextEditingController(text: _iso(dates?.end ?? start));
+    _tags = TextEditingController(text: item?.tags.join(', ') ?? '');
+    _review = TextEditingController(text: item?.review ?? '');
   }
 
   @override
   void dispose() {
-    for (final c in [_title, _destination, _start, _end]) {
+    for (final c in [_title, _destination, _start, _end, _tags, _review]) {
       c.dispose();
     }
     super.dispose();
@@ -62,6 +66,15 @@ class _TripEditorState extends State<TripEditor> {
     if (value != null && mounted) setState(() => controller.text = _iso(value));
   }
 
+  Item get _draft =>
+      (widget.item ?? const Item(id: 0, title: '', subtitle: '', image: ''))
+          .copyWith(startDate: _start.text.trim(), endDate: _end.text.trim());
+  bool get _reviewAllowed =>
+      _date(_start.text) == null &&
+      _date(_end.text) == null &&
+      _end.text.trim().compareTo(_start.text.trim()) >= 0 &&
+      canReviewTrip(_draft, DateTime.now());
+
   // STATE: 입력 → 세션의 여행; 서버 전송·영구 저장 없음.
   Future<void> _save() async {
     if (_saving || !_form.currentState!.validate()) return;
@@ -77,6 +90,14 @@ class _TripEditorState extends State<TripEditor> {
       final saved = await widget.save(
         original.copyWith(
           title: _title.text.trim(),
+          tags: _tags.text
+              .split(RegExp('[,，\\n]'))
+              .map((tag) => tag.trim())
+              .where((tag) => tag.isNotEmpty)
+              .toSet()
+              .toList(),
+          // Changing dates to future/invalid clears the review in the saved session.
+          review: _reviewAllowed ? _review.text.trim() : '',
           destination: _destination.text.trim(),
           countryCode: destination?.countryCode ?? '',
           image: destination?.photoUrl ?? defaultTripPhoto,
@@ -169,6 +190,7 @@ class _TripEditorState extends State<TripEditor> {
                   '출발 날짜 (YYYY-MM-DD)',
                   _start,
                   validator: _date,
+                  onChanged: (_) => setState(() {}),
                   suffix: IconButton(
                     onPressed: _saving ? null : () => _pick(_start),
                     icon: const Icon(Icons.calendar_month),
@@ -178,6 +200,7 @@ class _TripEditorState extends State<TripEditor> {
                   'trip-end',
                   '종료 날짜 (YYYY-MM-DD)',
                   _end,
+                  onChanged: (_) => setState(() {}),
                   validator: (value) {
                     final error = _date(value);
                     if (error != null) return error;
@@ -192,6 +215,44 @@ class _TripEditorState extends State<TripEditor> {
                     icon: const Icon(Icons.calendar_month),
                   ),
                 ),
+                // STATE: Tag/후기 입력 → 현재 여행의 메모리 표시 데이터.
+                TextFormField(
+                  key: const ValueKey('trip-tags'),
+                  controller: _tags,
+                  enabled: !_saving,
+                  maxLength: 500,
+                  decoration: const InputDecoration(
+                    labelText: '태그',
+                    hintText: '쉼표로 구분해 주세요 (예: 휴가, 맛집)',
+                    counterText: '',
+                  ),
+                ),
+                const SizedBox(height: 12),
+                TextFormField(
+                  key: const ValueKey('trip-review'),
+                  controller: _review,
+                  enabled: !_saving && _reviewAllowed,
+                  minLines: 3,
+                  maxLines: 6,
+                  maxLength: 2000,
+                  decoration: const InputDecoration(
+                    labelText: '여행 후기',
+                    hintText: '여행에서 느낀 점을 남겨 보세요.',
+                  ),
+                ),
+                if (!_reviewAllowed)
+                  Text(
+                    reviewRestriction(_draft, DateTime.now()),
+                    style: const TextStyle(
+                      fontSize: 12,
+                      color: Color(0xFF687775),
+                    ),
+                  ),
+                if (!_reviewAllowed && _review.text.isNotEmpty)
+                  const Text(
+                    '예정된 날짜로 저장하면 기존 후기는 저장되지 않아요.',
+                    style: TextStyle(fontSize: 12),
+                  ),
                 if (_error != null)
                   Text(
                     _error!,

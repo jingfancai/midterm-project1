@@ -174,3 +174,13 @@ List<VisitedCity> visitedCities(List<Item> items, DateTime today) {
   return cities.values.toList()
     ..sort((a, b) => a.destination.cityName.compareTo(b.destination.cityName));
 }
+
+bool canReviewTrip(Item item, DateTime today) => isVisitedTrip(item, today);
+bool canCreateMemory(Item item, DateTime today) =>
+    !item.deleted && tripStatus(item, today) == TripStatus.past;
+
+String reviewRestriction(Item item, DateTime today) =>
+    tripStatus(item, today) == TripStatus.upcoming
+    ? '예정된 여행은 태그만 관리할 수 있어요. 후기는 여행 시작 후 작성해 주세요.'
+    : '올바른 여행 날짜를 입력하면 후기 작성 가능 여부를 확인할 수 있어요.';
+const memoryRestriction = '여행이 종료된 후 추억 카드를 만들 수 있어요.';
