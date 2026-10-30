@@ -7,7 +7,7 @@ import 'models.dart';
 import 'destinations.dart';
 import 'png_download.dart';
 import 'trip_insights.dart';
-import 'widgets.dart';
+import 'trip_photos.dart';
 
 typedef PngSaver = Future<void> Function(Uint8List bytes, String filename);
 
@@ -66,18 +66,25 @@ class _TravelMemoryDialogState extends State<TravelMemoryDialog> {
     try {
       // Wait for the same cached image used by NetImage before rasterizing.
       // If it fails, wait for its neutral fallback too; never export a loading gap.
-      var failed = false;
-      await precacheImage(
-        NetworkImage(widget.item.photoUrl),
-        context,
-        onError: (_, _) => failed = true,
-      ).timeout(const Duration(seconds: 10));
-      if (failed && mounted && widget.item.photoUrl != defaultTripPhoto) {
+      if (widget.item.photos.isNotEmpty) {
         await precacheImage(
-          NetworkImage(defaultTripPhoto),
+          MemoryImage(widget.item.photos.first),
           context,
-          onError: (_, _) {},
         ).timeout(const Duration(seconds: 10));
+      } else {
+        var failed = false;
+        await precacheImage(
+          NetworkImage(widget.item.photoUrl),
+          context,
+          onError: (_, _) => failed = true,
+        ).timeout(const Duration(seconds: 10));
+        if (failed && mounted && widget.item.photoUrl != defaultTripPhoto) {
+          await precacheImage(
+            NetworkImage(defaultTripPhoto),
+            context,
+            onError: (_, _) {},
+          ).timeout(const Duration(seconds: 10));
+        }
       }
       if (!mounted) return;
       await WidgetsBinding.instance.endOfFrame;
@@ -163,7 +170,10 @@ class TravelMemoryCard extends StatelessWidget {
           child: SizedBox(
             height: 180,
             width: double.infinity,
-            child: NetImage(item.photoUrl),
+            child: tripPhotoImage(
+              item.photos.isEmpty ? null : item.photos.first,
+              item.photoUrl,
+            ),
           ),
         ),
         const SizedBox(height: 12),

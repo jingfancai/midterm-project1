@@ -487,7 +487,7 @@ class _ListScreenState extends State<ListScreen> {
                         const Text(
                           '나의 여행',
                           style: TextStyle(
-                            fontSize: 20,
+                            fontSize: 24,
                             fontWeight: FontWeight.w800,
                             color: Color(0xFF183B3A),
                           ),
