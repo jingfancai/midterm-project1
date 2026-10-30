@@ -8,6 +8,8 @@
 // B-7 FutureBuilder + ListView · 여행 기록 타임라인 · P01 · P09
 // B-8 IconButton + TripEditor · 여행 정보 수정 · P05
 // B-9 Text · 여행 후기 · P02
+// B-10 TripPhotoGallery · 여행 사진 슬라이드 · P03 · P06
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../api.dart';
 import '../models.dart';
@@ -15,6 +17,8 @@ import '../widgets.dart';
 import '../trip_editor.dart';
 import '../trip_insights.dart';
 import '../travel_memory_card.dart';
+import '../trip_photos.dart';
+import '../photo_picker.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({
@@ -22,11 +26,13 @@ class DetailScreen extends StatefulWidget {
     required this.item,
     this.loadNotes = fetchNotes,
     this.save = previewTripChange,
+    this.pickPhotos,
   });
 
   final Item item;
   final NotesLoader loadNotes;
   final TripChange save;
+  final TripPhotoPicker? pickPhotos;
 
   @override
   State<DetailScreen> createState() => _DetailScreenState();
@@ -65,6 +71,17 @@ class _DetailScreenState extends State<DetailScreen> {
     }
   }
 
+  Future<void> _changePhotos(List<Uint8List> photos) async {
+    if (_saving) return;
+    setState(() => _saving = true);
+    try {
+      final saved = await widget.save(_item.copyWith(photos: photos));
+      if (mounted) setState(() => _item = saved);
+    } finally {
+      if (mounted) setState(() => _saving = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -96,6 +113,9 @@ class _DetailScreenState extends State<DetailScreen> {
               item: _item,
               title: _item.title,
               onFavorite: _saving ? null : _favorite,
+              onPhotosChanged: _changePhotos,
+              pickPhotos: widget.pickPhotos,
+              photosEnabled: !_saving,
             ),
             _NotesTab(itemId: widget.item.id, load: widget.loadNotes),
           ],
@@ -110,11 +130,17 @@ class _InfoTab extends StatelessWidget {
     required this.item,
     required this.title,
     required this.onFavorite,
+    required this.onPhotosChanged,
+    this.pickPhotos,
+    required this.photosEnabled,
   });
 
   final Item item;
   final String title;
   final VoidCallback? onFavorite;
+  final Future<void> Function(List<Uint8List>) onPhotosChanged;
+  final TripPhotoPicker? pickPhotos;
+  final bool photosEnabled;
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
@@ -195,41 +221,12 @@ class _InfoTab extends StatelessWidget {
           key: const ValueKey('detail-review'),
         ),
         const SizedBox(height: 18),
-        Container(
-          padding: const EdgeInsets.all(16),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(18),
-          ),
-          child: const Row(
-            children: [
-              Icon(
-                Icons.photo_library_outlined,
-                color: Color(0xFF2D7770),
-                size: 25,
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '순간을 다시 꺼내 보기',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF183B3A),
-                      ),
-                    ),
-                    SizedBox(height: 4),
-                    Text(
-                      '사진과 짧은 기록으로 여행의 흐름을 돌아보세요.',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF687775)),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+        // B-10 P03 · P06
+        TripPhotoGallery(
+          item: item,
+          onChanged: onPhotosChanged,
+          pickPhotos: pickPhotos,
+          enabled: photosEnabled,
         ),
         const SizedBox(height: 16),
         OutlinedButton.icon(

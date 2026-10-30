@@ -1,4 +1,7 @@
+import 'dart:typed_data';
 import 'destinations.dart';
+
+const maxTripPhotos = 5;
 
 // 여행 데이터 — 구조화된 필드와 기존 subtitle 데이터를 함께 지원한다.
 // 형식이 틀린 항목은 null을 돌려준다 → 목록에서 빠질 뿐 앱이 멈추지 않는다 (Dart 3 패턴 매칭).
@@ -16,6 +19,7 @@ class Item {
     required this.image,
     this.tags = const [],
     this.review = '',
+    this.photos = const [],
     this.destination = '',
     this.countryCode = '',
     this.startDate = '',
@@ -34,6 +38,8 @@ class Item {
   final bool favorite;
   final bool deleted;
   final String review;
+  // User photos stay in memory only: never decoded from GET or included in JSON.
+  final List<Uint8List> photos;
 
   String get subtitle => startDate.isNotEmpty && endDate.isNotEmpty
       ? '${startDate.replaceAll('-', '.')} – ${endDate.replaceAll('-', '.')} · $destination'
@@ -51,6 +57,7 @@ class Item {
     int? id,
     List<String>? tags,
     String? review,
+    List<Uint8List>? photos,
     String? title,
     String? destination,
     String? countryCode,
@@ -66,6 +73,9 @@ class Item {
     image: image ?? this.image,
     tags: tags ?? this.tags,
     review: review ?? this.review,
+    photos: photos == null
+        ? this.photos
+        : List.unmodifiable(photos.take(maxTripPhotos)),
     destination: destination ?? this.destination,
     countryCode: countryCode ?? this.countryCode,
     startDate: startDate ?? this.startDate,
