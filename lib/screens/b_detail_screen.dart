@@ -7,11 +7,14 @@
 // B-6 FilledButton + AlertDialog · 여행 추억 카드 만들기 · P07
 // B-7 FutureBuilder + ListView · 여행 기록 타임라인 · P01 · P09
 // B-8 IconButton + TripEditor · 여행 정보 수정 · P05
+// B-9 Text · 여행 후기 · P02
 import 'package:flutter/material.dart';
 import '../api.dart';
 import '../models.dart';
 import '../widgets.dart';
 import '../trip_editor.dart';
+import '../trip_insights.dart';
+import '../travel_memory_card.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({
@@ -175,6 +178,22 @@ class _InfoTab extends StatelessWidget {
               ),
           ],
         ),
+        // B-9 P02: 전체 후기, 줄 수 제한/말줄임 없음.
+        const SizedBox(height: 14),
+        const Text(
+          '여행 후기',
+          style: TextStyle(
+            fontWeight: FontWeight.w700,
+            color: Color(0xFF183B3A),
+          ),
+        ),
+        const SizedBox(height: 6),
+        Text(
+          canReviewTrip(item, DateTime.now())
+              ? (item.review.isEmpty ? '아직 작성한 후기가 없어요.' : item.review)
+              : reviewRestriction(item, DateTime.now()),
+          key: const ValueKey('detail-review'),
+        ),
         const SizedBox(height: 18),
         Container(
           padding: const EdgeInsets.all(16),
@@ -220,44 +239,17 @@ class _InfoTab extends StatelessWidget {
         ),
         const SizedBox(height: 8),
         FilledButton.icon(
-          onPressed: () => showDialog<void>(
-            context: context,
-            builder: (dialogContext) => AlertDialog(
-              title: const Text('MY TRAVEL MEMORY'),
-              content: SizedBox(
-                width: 400,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 180,
-                      width: double.infinity,
-                      child: NetImage(item.photoUrl),
-                    ),
-                    const SizedBox(height: 12),
-                    Text(
-                      item.title,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                    const SizedBox(height: 6),
-                    Text(item.subtitle),
-                    const SizedBox(height: 12),
-                    const Text('소중한 순간은 오래도록 기억에 남습니다.'),
-                  ],
-                ),
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.of(dialogContext).pop(),
-                  child: const Text('닫기'),
-                ),
-              ],
-            ),
-          ),
+          onPressed: canCreateMemory(item, DateTime.now())
+              ? () => showTravelMemory(context, item)
+              : null,
           icon: const Icon(Icons.auto_awesome),
           label: const Text('여행 추억 카드 만들기'),
         ),
+        if (!canCreateMemory(item, DateTime.now()))
+          const Text(
+            memoryRestriction,
+            style: TextStyle(fontSize: 12, color: Color(0xFF687775)),
+          ),
       ],
     );
   }
