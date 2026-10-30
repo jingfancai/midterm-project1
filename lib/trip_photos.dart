@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'models.dart';
 import 'photo_picker.dart';
 import 'widgets.dart';
+import 'trip_insights.dart';
 
 /// Bound memory use and keep only a decoded, static image, never its file path.
 Future<Uint8List> prepareTripPhoto(Uint8List bytes) async {
@@ -56,7 +57,7 @@ Widget tripPhotoImage(Uint8List? bytes, String fallback) => bytes == null
         errorBuilder: (_, _, _) => NetImage(fallback),
       );
 
-/// B-10, inside the existing 순간을 다시 꺼내 보기 panel.
+/// B-3/B-10: title and gallery replace the one existing hero image.
 class TripPhotoGallery extends StatefulWidget {
   const TripPhotoGallery({
     super.key,
@@ -81,6 +82,19 @@ class _TripPhotoGalleryState extends State<TripPhotoGallery> {
   void dispose() {
     _pages.dispose();
     super.dispose();
+  }
+
+  @override
+  void didUpdateWidget(covariant TripPhotoGallery oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final today = DateTime.now();
+    if (canManageTripPhotos(oldWidget.item, today) !=
+        canManageTripPhotos(widget.item, today)) {
+      final old = _pages;
+      _page = 0;
+      _pages = PageController(keepPage: false);
+      WidgetsBinding.instance.addPostFrameCallback((_) => old.dispose());
+    }
   }
 
   void _showPage(int index, int count) {
@@ -110,13 +124,21 @@ class _TripPhotoGalleryState extends State<TripPhotoGallery> {
   }
 
   Future<void> _pick({bool replace = false}) async {
-    if (_busy || !widget.enabled) return;
+    if (_busy ||
+        !widget.enabled ||
+        !canManageTripPhotos(widget.item, DateTime.now())) {
+      return;
+    }
     final limit = replace ? 1 : maxTripPhotos - widget.item.photos.length;
     if (limit <= 0) return;
     setState(() => _busy = true);
     try {
       final picked = await (widget.pickPhotos ?? pickTripPhotos)(limit: limit);
-      if (picked.isEmpty || !mounted) return;
+      if (picked.isEmpty ||
+          !mounted ||
+          !canManageTripPhotos(widget.item, DateTime.now())) {
+        return;
+      }
       if (picked.length > limit) {
         throw PhotoSelectionException('사진은 $limit장까지 선택해 주세요.');
       }
@@ -124,7 +146,7 @@ class _TripPhotoGalleryState extends State<TripPhotoGallery> {
       for (final bytes in picked) {
         prepared.add(await prepareTripPhoto(bytes));
       }
-      if (!mounted) return;
+      if (!mounted || !canManageTripPhotos(widget.item, DateTime.now())) return;
       final photos = [...widget.item.photos];
       final target = replace ? _page : photos.length;
       if (replace && photos.isNotEmpty) {
@@ -146,7 +168,12 @@ class _TripPhotoGalleryState extends State<TripPhotoGallery> {
   }
 
   Future<void> _remove() async {
-    if (_busy || !widget.enabled || widget.item.photos.isEmpty) return;
+    if (_busy ||
+        !widget.enabled ||
+        widget.item.photos.isEmpty ||
+        !canManageTripPhotos(widget.item, DateTime.now())) {
+      return;
+    }
     setState(() => _busy = true);
     try {
       final photos = [...widget.item.photos]..removeAt(_page);
@@ -161,67 +188,63 @@ class _TripPhotoGalleryState extends State<TripPhotoGallery> {
 
   @override
   Widget build(BuildContext context) {
-    final photos = widget.item.photos;
+    final eligible = canManageTripPhotos(widget.item, DateTime.now());
+    final photos = eligible ? widget.item.photos : const <Uint8List>[];
     final canPick = widget.pickPhotos != null || localPhotoPickingSupported;
-    final active = !_busy && widget.enabled;
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(18),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Row(
-            children: [
-              Icon(
-                Icons.photo_library_outlined,
-                color: Color(0xFF2D7770),
-                size: 25,
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      '순간을 다시 꺼내 보기',
-                      style: TextStyle(
-                        fontWeight: FontWeight.w800,
-                        color: Color(0xFF183B3A),
-                      ),
+    final active = !_busy && widget.enabled && eligible;
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Row(
+          children: [
+            Icon(
+              Icons.photo_library_outlined,
+              color: Color(0xFF2D7770),
+              size: 25,
+            ),
+            SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '순간을 다시 꺼내 보기',
+                    style: TextStyle(
+                      fontWeight: FontWeight.w800,
+                      color: Color(0xFF183B3A),
                     ),
-                    SizedBox(height: 4),
-                    Text(
-                      '사진과 짧은 기록으로 여행의 흐름을 돌아보세요.',
-                      style: TextStyle(fontSize: 12, color: Color(0xFF687775)),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: AspectRatio(
-              aspectRatio: 4 / 3,
-              child: PageView.builder(
-                key: const ValueKey('trip-photo-pages'),
-                controller: _pages,
-                itemCount: math.max(1, photos.length),
-                onPageChanged: (value) => setState(() => _page = value),
-                itemBuilder: (_, index) => Semantics(
-                  label: photos.isEmpty ? '목적지 기본 사진' : '여행 사진 ${index + 1}',
-                  child: tripPhotoImage(
-                    photos.isEmpty ? null : photos[index],
-                    widget.item.photoUrl,
                   ),
+                  SizedBox(height: 4),
+                  Text(
+                    '사진과 짧은 기록으로 여행의 흐름을 돌아보세요.',
+                    style: TextStyle(fontSize: 12, color: Color(0xFF687775)),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 12),
+        ClipRRect(
+          borderRadius: BorderRadius.circular(22),
+          child: AspectRatio(
+            aspectRatio: 4 / 3,
+            child: PageView.builder(
+              key: const ValueKey('trip-photo-pages'),
+              controller: _pages,
+              itemCount: math.max(1, photos.length),
+              onPageChanged: (value) => setState(() => _page = value),
+              itemBuilder: (_, index) => Semantics(
+                label: photos.isEmpty ? '목적지 기본 사진' : '여행 사진 ${index + 1}',
+                child: tripPhotoImage(
+                  photos.isEmpty ? null : photos[index],
+                  widget.item.photoUrl,
                 ),
               ),
             ),
           ),
+        ),
+        if (eligible) ...[
           const SizedBox(height: 8),
           Center(
             child: Text(
@@ -270,8 +293,17 @@ class _TripPhotoGalleryState extends State<TripPhotoGallery> {
               style: TextStyle(fontSize: 11),
             ),
           if (_busy) const LinearProgressIndicator(),
-        ],
-      ),
+        ] else
+          Padding(
+            padding: const EdgeInsets.only(top: 8),
+            child: Text(
+              tripStatus(widget.item, DateTime.now()) == TripStatus.upcoming
+                  ? '예정된 여행은 목적지 기본 사진만 표시해요. 여행 시작 후 사진을 추가할 수 있어요.'
+                  : '여행 날짜를 확인하면 사진을 추가할 수 있어요.',
+              style: const TextStyle(fontSize: 11, color: Color(0xFF687775)),
+            ),
+          ),
+      ],
     );
   }
 }

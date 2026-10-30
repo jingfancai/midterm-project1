@@ -75,10 +75,7 @@ void main() {
     await tester.tap(find.text('항목 1'));
     await tester.pumpAndSettle();
     expect(find.byType(BackButton), findsOneWidget); // push
-    expect(
-      find.byType(NetImage),
-      findsNWidgets(2),
-    ); // Cover and gallery default.
+    expect(find.byType(NetImage), findsOneWidget); // One hero gallery default.
     expect(
       tester
           .widgetList<ListView>(find.byType(ListView))

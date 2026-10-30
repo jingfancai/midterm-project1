@@ -1,7 +1,7 @@
 // 화면 B — 여행 상세 · 디자인 가이드 대응표
 // B-1 AppBar + BackButton · 여행 제목줄 · P03
 // B-2 TabBar + TabBarView · 여행 정보·여행 기록 탭 · P04
-// B-3 NetImage + Text · 대표 사진·여행 제목 · P02 · P08
+// B-3 TripPhotoGallery + Text · 대표 사진·여행 제목 · P02 · P08
 // B-4 Wrap(Chip) · 여행 태그 · P06
 // B-5 OutlinedButton · 여행 즐겨찾기 · P03
 // B-6 FilledButton + AlertDialog · 여행 추억 카드 만들기 · P07
@@ -72,7 +72,7 @@ class _DetailScreenState extends State<DetailScreen> {
   }
 
   Future<void> _changePhotos(List<Uint8List> photos) async {
-    if (_saving) return;
+    if (_saving || !canManageTripPhotos(_item, DateTime.now())) return;
     setState(() => _saving = true);
     try {
       final saved = await widget.save(_item.copyWith(photos: photos));
@@ -147,12 +147,12 @@ class _InfoTab extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(22),
-          child: AspectRatio(
-            aspectRatio: 4 / 3,
-            child: NetImage(item.photoUrl),
-          ),
+        // B-3 P02 · P08 / B-10 P03 · P06: the single existing hero photo location.
+        TripPhotoGallery(
+          item: item,
+          onChanged: onPhotosChanged,
+          pickPhotos: pickPhotos,
+          enabled: photosEnabled,
         ),
         const SizedBox(height: 20),
         const Row(
@@ -219,14 +219,6 @@ class _InfoTab extends StatelessWidget {
               ? (item.review.isEmpty ? '아직 작성한 후기가 없어요.' : item.review)
               : reviewRestriction(item, DateTime.now()),
           key: const ValueKey('detail-review'),
-        ),
-        const SizedBox(height: 18),
-        // B-10 P03 · P06
-        TripPhotoGallery(
-          item: item,
-          onChanged: onPhotosChanged,
-          pickPhotos: pickPhotos,
-          enabled: photosEnabled,
         ),
         const SizedBox(height: 16),
         OutlinedButton.icon(
