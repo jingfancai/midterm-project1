@@ -63,10 +63,12 @@ void main() {
         'a_list_screen',
         'b_detail_screen',
         'c_result_sheet',
+        'd_wishlist_dialog',
+        'e_recommendations_dialog',
       ]) {
         final source = File('lib/screens/$name.dart').readAsStringSync();
         final headers = RegExp(
-          r'^// ([ABC]-\d+) (.+?) · (.+?) · (P\d+(?: · P\d+)*)$',
+          r'^// ([ABCDE]-\d+) (.+?) · (.+?) · (P\d+(?: · P\d+)*)$',
           multiLine: true,
         ).allMatches(source);
         expect(headers, isNotEmpty);

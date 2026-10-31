@@ -10,6 +10,7 @@
 // A-9 IconButton + AlertDialog + SnackBar · 즐겨찾기·삭제·실행 취소 · P03 · P05
 // A-10 Wrap + Chip · 전체 여행 통계 · P01 · P10
 // A-11 TripEditor · 여행 추가 · P05
+// A-13 Wrap + TextButton · 미래 여행 도구 · P04 · P07
 // A-12 IconButton · 여행 새로고침 · P09
 import 'package:flutter/material.dart';
 import '../api.dart';
@@ -19,6 +20,8 @@ import '../trip_insights.dart';
 import '../trip_editor.dart';
 import 'b_detail_screen.dart';
 import 'c_result_sheet.dart';
+import 'd_wishlist_dialog.dart';
+import 'e_recommendations_dialog.dart';
 
 const wideBreakpoint = 600.0;
 
@@ -39,6 +42,7 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
   late Future<List<Item>> _future = _load();
   List<Item> _items = [];
+  List<TravelWish> _wishes = [];
   final _searchController = TextEditingController();
   String _query = '';
   bool _favoritesOnly = false;
@@ -189,11 +193,16 @@ class _ListScreenState extends State<ListScreen> {
     ),
   );
 
-  Future<void> _addTrip() async {
+  Future<void> _addTrip({TripSuggestion? suggestion}) async {
     await showDialog<Item>(
       context: context,
       barrierDismissible: false,
-      builder: (_) => TripEditor(save: (item) => _change(item, create: true)),
+      builder: (_) => TripEditor(
+        initialTitle: suggestion?.title,
+        initialDestination: suggestion?.destination,
+        initialTags: suggestion == null ? const [] : [suggestion.theme],
+        save: (item) => _change(item, create: true),
+      ),
     );
   }
 
@@ -461,6 +470,40 @@ class _ListScreenState extends State<ListScreen> {
                         ),
                       ],
                     ),
+                    Wrap( // A-13 P07
+                      spacing: 8,
+                      children: [
+                        TextButton.icon(
+                          key: const ValueKey('open-wishlist'),
+                          icon: const Icon(Icons.checklist),
+                          label: const Text('여행 위시리스트'),
+                          onPressed: () => showDialog<void>(
+                            context: context,
+                            builder: (_) => WishlistDialog(
+                              wishes: _wishes,
+                              onChanged: (wishes) {
+                                // STATE: 위시리스트 → A 세션 메모리, 서버 저장 없음.
+                                setState(() => _wishes = wishes);
+                              },
+                            ),
+                          ),
+                        ),
+                        TextButton.icon(
+                          key: const ValueKey('open-recommendations'),
+                          icon: const Icon(Icons.explore_outlined),
+                          label: const Text('여행지 추천'),
+                          onPressed: () async {
+                            final suggestion = await showDialog<TripSuggestion>(
+                              context: context,
+                              builder: (_) => const RecommendationsDialog(),
+                            );
+                            if (suggestion != null && mounted) {
+                              await _addTrip(suggestion: suggestion);
+                            }
+                          },
+                        ),
+                      ],
+                    ),
                     const SizedBox(height: 28),
                     Text(
                       '여행은 지나가도,',
@@ -688,7 +731,7 @@ class _ListScreenState extends State<ListScreen> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addTrip,
+        onPressed: () => _addTrip(),
         backgroundColor: const Color(0xFF2F8179),
         child: const Icon(Icons.add, color: Colors.white),
       ),

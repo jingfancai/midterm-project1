@@ -1,3 +1,4 @@
+// B-11 ListView + InkWell · 여행 사진 미리보기 탐색 · P03 · P06
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -244,6 +245,48 @@ class _TripPhotoGalleryState extends State<TripPhotoGallery> {
             ),
           ),
         ),
+        if (photos.isNotEmpty) ...[
+          const SizedBox(height: 10),
+          SizedBox(
+            height: 68,
+            child: ListView.separated( // B-11 P06
+              key: const ValueKey('photo-thumbnails'),
+              scrollDirection: Axis.horizontal,
+              itemCount: photos.length,
+              separatorBuilder: (_, _) => const SizedBox(width: 8),
+              itemBuilder: (_, index) => Semantics(
+                selected: _page == index,
+                button: true,
+                label: '사진 ${index + 1} 보기',
+                child: InkWell(
+                  key: ValueKey('photo-thumbnail-$index'),
+                  onTap: _busy ? null : () {
+                    // STATE: 썸네일 선택 → 큰 사진과 선택 테두리 동기화.
+                    _pages.animateToPage(index,
+                      duration: const Duration(milliseconds: 220),
+                      curve: Curves.easeInOut);
+                  },
+                  borderRadius: BorderRadius.circular(12),
+                  child: Container(
+                    width: 80,
+                    padding: const EdgeInsets.all(3),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: _page == index ? const Color(0xFF2D7770) : const Color(0xFFDDEAE3),
+                        width: 2,
+                      ),
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: tripPhotoImage(photos[index], widget.item.photoUrl),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
         if (eligible) ...[
           const SizedBox(height: 8),
           Center(
