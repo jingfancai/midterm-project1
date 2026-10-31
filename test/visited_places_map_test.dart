@@ -144,18 +144,19 @@ void main() {
   );
 
   testWidgets(
-    'overlapping markers show every nearby city and all eligible trip titles',
+    'overlapping hit targets resolve to the selected city and exclude nearby trips',
     (t) async {
       await mount(t, [
         trip(1, 'Tokyo'),
         trip(2, '도쿄'),
         trip(3, 'Osaka'),
+        trip(6, '오사카'),
         trip(4, 'Tokyo', start: '2100-01-01', end: '2100-01-03'),
         trip(5, 'Tokyo', deleted: true),
       ]);
       await t.ensureVisible(find.byKey(tokyoMarker));
       await t.pumpAndSettle();
-      // Dots overlap at world scale; either hit must expose all nearby cities.
+      // Click the visible Tokyo center even when another marker hit area overlaps.
       await t.tapAt(t.getCenter(find.byKey(tokyoMarker)));
       await t.pumpAndSettle();
       final dialog = find.byType(AlertDialog);
@@ -165,14 +166,15 @@ void main() {
       );
       expect(
         find.descendant(of: dialog, matching: find.text('오사카 · 일본')),
-        findsOneWidget,
+        findsNothing,
       );
-      for (final id in [1, 2, 3]) {
+      for (final id in [1, 2]) {
         expect(
           find.descendant(of: dialog, matching: find.text('• Trip $id')),
           findsOneWidget,
         );
       }
+      expect(find.descendant(of: dialog, matching: find.text('• Trip 3')), findsNothing);
       expect(
         find.descendant(of: dialog, matching: find.text('• Trip 4')),
         findsNothing,
@@ -184,6 +186,14 @@ void main() {
       await t.tap(find.descendant(of: dialog, matching: find.text('닫기')));
       await t.pumpAndSettle();
       expect(dialog, findsNothing);
+      await t.tapAt(t.getCenter(find.byKey(osakaMarker)));
+      await t.pumpAndSettle();
+      expect(find.descendant(of: find.byType(AlertDialog), matching: find.text('오사카 · 일본')), findsOneWidget);
+      expect(find.descendant(of: find.byType(AlertDialog), matching: find.text('도쿄 · 일본')), findsNothing);
+      for (final id in [3, 6]) {
+        expect(find.descendant(of: find.byType(AlertDialog), matching: find.text('• Trip $id')), findsOneWidget);
+      }
+
     },
   );
 

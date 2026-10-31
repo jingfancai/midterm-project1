@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'models.dart';
 import 'trip_insights.dart';
@@ -14,6 +15,7 @@ class VisitedPlacesMap extends StatefulWidget {
 class _VisitedPlacesMapState extends State<VisitedPlacesMap> {
   final _transform = TransformationController();
   Size _viewport = Size.zero;
+  Offset? _tapPosition;
 
   @override
   void dispose() {
@@ -44,13 +46,14 @@ class _VisitedPlacesMapState extends State<VisitedPlacesMap> {
     (90 - city.destination.latitude!) / 180 * size.height,
   );
 
-  Future<void> _showPlaces(BuildContext context, List<VisitedCity> nearby) async {
+  Future<void> _showPlaces(BuildContext context, VisitedCity selectedCity) async {
+    final nearby = [selectedCity];
     if (nearby.length == 1 && nearby.single.trips.length == 1 && widget.onSelect != null) {
       widget.onSelect!(nearby.single.trips.single);
       return;
     }
     // STATE: 선택한 Marker → 현재 메모리의 도시·국가·여행 제목 Dialog.
-    // C-7 P03 · P10: nearby cities remain selectable even when markers overlap.
+    // C-7 P03 · P10: only the selected city contributes trips.
     final selected = await showDialog<Item>(
       context: context,
       builder: (dialogContext) => AlertDialog(
@@ -62,11 +65,6 @@ class _VisitedPlacesMapState extends State<VisitedPlacesMap> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                if (nearby.length > 1)
-                  const Padding(
-                    padding: EdgeInsets.only(bottom: 12),
-                    child: Text('가까운 도시를 함께 표시해요.'),
-                  ),
                 for (final city in nearby)
                   Padding(
                     padding: const EdgeInsets.only(bottom: 12),
@@ -135,7 +133,11 @@ class _VisitedPlacesMapState extends State<VisitedPlacesMap> {
                       transformationController: _transform,
                       minScale: 1,
                       maxScale: 8,
-                      child: Stack(
+                      child: Listener(
+                        onPointerDown: (event) => _tapPosition = event.localPosition,
+                        onPointerUp: (_) => scheduleMicrotask(() => _tapPosition = null),
+                        onPointerCancel: (_) => _tapPosition = null,
+                        child: Stack(
                         clipBehavior: Clip.none,
                         children: [
                           Positioned.fill(
@@ -161,17 +163,13 @@ class _VisitedPlacesMapState extends State<VisitedPlacesMap> {
                                 tooltip:
                                     '${city.destination.cityName} · ${city.destination.countryName}',
                                 padding: EdgeInsets.zero,
-                                onPressed: () => _showPlaces(context, [
-                                  city,
-                                  ...cities.where(
-                                    (other) =>
-                                        other != city &&
-                                        (_position(other, size) -
-                                                    _position(city, size))
-                                                .distance <
-                                            36,
-                                  ),
-                                ]),
+                                onPressed: () {
+                                  final point = _tapPosition;
+                                  // Overlapping hit targets resolve to the nearest visible city dot.
+                                  final selected = point == null ? city : cities.reduce((a, b) =>
+                                    (_position(a, size) - point).distance <= (_position(b, size) - point).distance ? a : b);
+                                  _showPlaces(context, selected);
+                                },
                                 icon: Container(
                                   width: 12,
                                   height: 12,
@@ -187,6 +185,7 @@ class _VisitedPlacesMapState extends State<VisitedPlacesMap> {
                               ),
                             ),
                         ],
+                        ),
                       ),
                     ),
                   );
