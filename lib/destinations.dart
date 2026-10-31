@@ -12,8 +12,14 @@ class DestinationInfo {
     this.cityId,
     this.latitude,
     this.longitude,
+    this.themes = const [],
+    this.keywords = const [],
+    this.countryNames = const [],
   });
 
+  final List<String> themes;
+  final List<String> keywords;
+  final List<String> countryNames;
   final String countryCode;
   final String countryName;
   final List<String> aliases;
@@ -82,12 +88,21 @@ class DestinationCatalog {
                 longitude > 180)) {
           throw const FormatException('Invalid destination coordinates');
         }
+        if (row['countryNames'] != null && row['countryNames'] is! Map) {
+          throw const FormatException('Country names must be an object');
+        }
         final destination = DestinationInfo(
           code,
           country,
           List.unmodifiable(aliases),
           latitude: (latitude as num?)?.toDouble(),
           longitude: (longitude as num?)?.toDouble(),
+          themes: List.unmodifiable([for (final value in _list(row['themes'] ?? [])) _text(value)]),
+          keywords: List.unmodifiable([for (final value in _list(row['keywords'] ?? [])) _text(value)]),
+          countryNames: List.unmodifiable([
+            if (row['countryNames'] != null)
+              for (final language in ['en', 'ko', 'zh']) _text(row['countryNames'][language]),
+          ]),
           cityId: section == 'cities' ? id : null,
           photoUrl: row.containsKey('photoUrl')
               ? _photo(row['photoUrl'])
@@ -148,3 +163,16 @@ Future<void> loadDestinations() async {
 
 String get defaultTripPhoto => _loaded.defaultPhotoUrl;
 DestinationInfo? resolveDestination(String value) => _loaded.resolve(value);
+
+
+List<DestinationInfo> searchDestinations({String query = '', String? theme}) {
+  final terms = _normalize(query).split(' ').where((term) => term.isNotEmpty);
+  return _loaded.entries.where((entry) {
+    if (entry.cityId == null || (theme != null && !entry.themes.contains(theme))) return false;
+    final text = _normalize([
+      ...entry.aliases, entry.countryCode, entry.countryName,
+      ...entry.countryNames, ...entry.themes, ...entry.keywords,
+    ].join(' '));
+    return terms.every(text.contains);
+  }).toList();
+}

@@ -63,7 +63,7 @@ void main() {
         'a_list_screen',
         'b_detail_screen',
         'c_result_sheet',
-        'd_wishlist_dialog',
+        'd_travel_plans_dialog',
         'e_recommendations_dialog',
       ]) {
         final source = File('lib/screens/$name.dart').readAsStringSync();

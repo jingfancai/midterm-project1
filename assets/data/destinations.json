@@ -30,7 +30,27 @@
         "verifiedOn": "2026-10-29"
       },
       "latitude": 35.6762,
-      "longitude": 139.6503
+      "longitude": 139.6503,
+      "countryNames": {
+        "ko": "일본",
+        "en": "Japan",
+        "zh": "日本"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "osaka",
@@ -55,7 +75,27 @@
         "verifiedOn": "2026-10-29"
       },
       "latitude": 34.6937,
-      "longitude": 135.5023
+      "longitude": 135.5023,
+      "countryNames": {
+        "ko": "일본",
+        "en": "Japan",
+        "zh": "日本"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "kyoto",
@@ -80,7 +120,27 @@
         "verifiedOn": "2026-10-29"
       },
       "latitude": 35.0116,
-      "longitude": 135.7681
+      "longitude": 135.7681,
+      "countryNames": {
+        "ko": "일본",
+        "en": "Japan",
+        "zh": "日本"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "seoul",
@@ -108,7 +168,30 @@
         "verifiedOn": "2026-10-29"
       },
       "latitude": 37.5665,
-      "longitude": 126.978
+      "longitude": 126.978,
+      "countryNames": {
+        "ko": "대한민국",
+        "en": "South Korea",
+        "zh": "韩国"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행",
+        "Korea",
+        "韓國",
+        "한국"
+      ]
     },
     {
       "id": "busan",
@@ -134,7 +217,30 @@
         "author": "Syced"
       },
       "latitude": 35.1796,
-      "longitude": 129.0756
+      "longitude": 129.0756,
+      "countryNames": {
+        "ko": "대한민국",
+        "en": "South Korea",
+        "zh": "韩国"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행",
+        "Korea",
+        "韓國",
+        "한국"
+      ]
     },
     {
       "id": "paris",
@@ -160,7 +266,27 @@
         "verifiedOn": "2026-10-29"
       },
       "latitude": 48.8566,
-      "longitude": 2.3522
+      "longitude": 2.3522,
+      "countryNames": {
+        "ko": "프랑스",
+        "en": "France",
+        "zh": "法国"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "lyon",
@@ -181,7 +307,27 @@
         "author": "Romainbehar"
       },
       "latitude": 45.764,
-      "longitude": 4.8357
+      "longitude": 4.8357,
+      "countryNames": {
+        "ko": "프랑스",
+        "en": "France",
+        "zh": "法国"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "london",
@@ -207,7 +353,29 @@
         "verifiedOn": "2026-10-29"
       },
       "latitude": 51.5074,
-      "longitude": -0.1278
+      "longitude": -0.1278,
+      "countryNames": {
+        "ko": "영국",
+        "en": "United Kingdom",
+        "zh": "英国"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행",
+        "UK",
+        "Britain"
+      ]
     },
     {
       "id": "new-york",
@@ -234,7 +402,23 @@
         "verifiedOn": "2026-10-29"
       },
       "latitude": 40.7128,
-      "longitude": -74.006
+      "longitude": -74.006,
+      "countryNames": {
+        "ko": "미국",
+        "en": "United States",
+        "zh": "美国"
+      },
+      "themes": [
+        "도시"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "USA",
+        "America"
+      ]
     },
     {
       "id": "los-angeles",
@@ -258,7 +442,23 @@
         "author": "ItzAPotato2009"
       },
       "latitude": 34.0522,
-      "longitude": -118.2437
+      "longitude": -118.2437,
+      "countryNames": {
+        "ko": "미국",
+        "en": "United States",
+        "zh": "美国"
+      },
+      "themes": [
+        "도시"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "USA",
+        "America"
+      ]
     },
     {
       "id": "beijing",
@@ -283,7 +483,27 @@
         "author": "P. K. Koo"
       },
       "latitude": 39.9042,
-      "longitude": 116.4074
+      "longitude": 116.4074,
+      "countryNames": {
+        "ko": "중국",
+        "en": "China",
+        "zh": "中国"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "shanghai",
@@ -308,7 +528,27 @@
         "author": "Ermell"
       },
       "latitude": 31.2304,
-      "longitude": 121.4737
+      "longitude": 121.4737,
+      "countryNames": {
+        "ko": "중국",
+        "en": "China",
+        "zh": "中国"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "singapore",
@@ -329,7 +569,21 @@
         "author": "DvTor8303"
       },
       "latitude": 1.3521,
-      "longitude": 103.8198
+      "longitude": 103.8198,
+      "countryNames": {
+        "ko": "싱가포르",
+        "en": "Singapore",
+        "zh": "新加坡"
+      },
+      "themes": [
+        "도시"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행"
+      ]
     },
     {
       "id": "bangkok",
@@ -350,7 +604,21 @@
         "author": "Bernard Spragg. NZ from Christchurch, New Zealand"
       },
       "latitude": 13.7563,
-      "longitude": 100.5018
+      "longitude": 100.5018,
+      "countryNames": {
+        "ko": "태국",
+        "en": "Thailand",
+        "zh": "泰国"
+      },
+      "themes": [
+        "도시"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행"
+      ]
     },
     {
       "id": "hanoi",
@@ -374,7 +642,27 @@
         "author": "Syced"
       },
       "latitude": 21.0278,
-      "longitude": 105.8342
+      "longitude": 105.8342,
+      "countryNames": {
+        "ko": "베트남",
+        "en": "Vietnam",
+        "zh": "越南"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "da-nang",
@@ -399,7 +687,27 @@
         "author": "Quangpraha"
       },
       "latitude": 16.0544,
-      "longitude": 108.2022
+      "longitude": 108.2022,
+      "countryNames": {
+        "ko": "베트남",
+        "en": "Vietnam",
+        "zh": "越南"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행"
+      ]
     },
     {
       "id": "rome",
@@ -424,7 +732,27 @@
         "author": "Emiliano Carchia"
       },
       "latitude": 41.9028,
-      "longitude": 12.4964
+      "longitude": 12.4964,
+      "countryNames": {
+        "ko": "이탈리아",
+        "en": "Italy",
+        "zh": "意大利"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "barcelona",
@@ -448,7 +776,27 @@
         "author": "Zarateman"
       },
       "latitude": 41.3874,
-      "longitude": 2.1686
+      "longitude": 2.1686,
+      "countryNames": {
+        "ko": "스페인",
+        "en": "Spain",
+        "zh": "西班牙"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "berlin",
@@ -469,7 +817,27 @@
         "author": "Markus Spiske from Forchheim, Bavaria Upper Franconia"
       },
       "latitude": 52.52,
-      "longitude": 13.405
+      "longitude": 13.405,
+      "countryNames": {
+        "ko": "독일",
+        "en": "Germany",
+        "zh": "德国"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "sydney",
@@ -493,7 +861,27 @@
         "author": "Kanzcech"
       },
       "latitude": -33.8688,
-      "longitude": 151.2093
+      "longitude": 151.2093,
+      "countryNames": {
+        "ko": "호주",
+        "en": "Australia",
+        "zh": "澳大利亚"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행"
+      ]
     },
     {
       "id": "amsterdam",
@@ -515,7 +903,27 @@
         "note": "Historical view of Amsterdam Centraal Station."
       },
       "latitude": 52.3676,
-      "longitude": 4.9041
+      "longitude": 4.9041,
+      "countryNames": {
+        "ko": "네덜란드",
+        "en": "Netherlands",
+        "zh": "荷兰"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "brussels",
@@ -536,7 +944,27 @@
         "author": "DimiTalen"
       },
       "latitude": 50.8503,
-      "longitude": 4.3517
+      "longitude": 4.3517,
+      "countryNames": {
+        "ko": "벨기에",
+        "en": "Belgium",
+        "zh": "比利时"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "zurich",
@@ -560,7 +988,27 @@
         "author": "Lovasoa"
       },
       "latitude": 47.3769,
-      "longitude": 8.5417
+      "longitude": 8.5417,
+      "countryNames": {
+        "ko": "스위스",
+        "en": "Switzerland",
+        "zh": "瑞士"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행"
+      ]
     },
     {
       "id": "vienna",
@@ -585,7 +1033,27 @@
         "author": "Spicypepper999"
       },
       "latitude": 48.2082,
-      "longitude": 16.3738
+      "longitude": 16.3738,
+      "countryNames": {
+        "ko": "오스트리아",
+        "en": "Austria",
+        "zh": "奥地利"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "prague",
@@ -609,7 +1077,27 @@
         "author": "MurderousPass"
       },
       "latitude": 50.0755,
-      "longitude": 14.4378
+      "longitude": 14.4378,
+      "countryNames": {
+        "ko": "체코",
+        "en": "Czech Republic",
+        "zh": "捷克"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "budapest",
@@ -630,7 +1118,27 @@
         "author": "Perituss"
       },
       "latitude": 47.4979,
-      "longitude": 19.0402
+      "longitude": 19.0402,
+      "countryNames": {
+        "ko": "헝가리",
+        "en": "Hungary",
+        "zh": "匈牙利"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "lisbon",
@@ -651,7 +1159,27 @@
         "author": "Stephan"
       },
       "latitude": 38.7223,
-      "longitude": -9.1393
+      "longitude": -9.1393,
+      "countryNames": {
+        "ko": "포르투갈",
+        "en": "Portugal",
+        "zh": "葡萄牙"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "athens",
@@ -672,7 +1200,27 @@
         "author": "Jebulon"
       },
       "latitude": 37.9838,
-      "longitude": 23.7275
+      "longitude": 23.7275,
+      "countryNames": {
+        "ko": "그리스",
+        "en": "Greece",
+        "zh": "希腊"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "istanbul",
@@ -696,7 +1244,27 @@
         "author": "Hunanuk"
       },
       "latitude": 41.0082,
-      "longitude": 28.9784
+      "longitude": 28.9784,
+      "countryNames": {
+        "ko": "튀르키예",
+        "en": "Turkey",
+        "zh": "土耳其"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "copenhagen",
@@ -717,7 +1285,27 @@
         "author": "Syced"
       },
       "latitude": 55.6761,
-      "longitude": 12.5683
+      "longitude": 12.5683,
+      "countryNames": {
+        "ko": "덴마크",
+        "en": "Denmark",
+        "zh": "丹麦"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "stockholm",
@@ -738,7 +1326,27 @@
         "author": "Jonas Bergsten"
       },
       "latitude": 59.3293,
-      "longitude": 18.0686
+      "longitude": 18.0686,
+      "countryNames": {
+        "ko": "스웨덴",
+        "en": "Sweden",
+        "zh": "瑞典"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행"
+      ]
     },
     {
       "id": "auckland",
@@ -759,7 +1367,27 @@
         "author": "Daderot"
       },
       "latitude": -36.8485,
-      "longitude": 174.7633
+      "longitude": 174.7633,
+      "countryNames": {
+        "ko": "뉴질랜드",
+        "en": "New Zealand",
+        "zh": "新西兰"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행"
+      ]
     },
     {
       "id": "kuala-lumpur",
@@ -780,7 +1408,21 @@
         "author": "Unknown authorUnknown author"
       },
       "latitude": 3.139,
-      "longitude": 101.6869
+      "longitude": 101.6869,
+      "countryNames": {
+        "ko": "말레이시아",
+        "en": "Malaysia",
+        "zh": "马来西亚"
+      },
+      "themes": [
+        "도시"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행"
+      ]
     },
     {
       "id": "dublin",
@@ -801,7 +1443,27 @@
         "author": "www.Pixel.la Free Stock Photos"
       },
       "latitude": 53.3498,
-      "longitude": -6.2603
+      "longitude": -6.2603,
+      "countryNames": {
+        "ko": "아일랜드",
+        "en": "Ireland",
+        "zh": "爱尔兰"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "reykjavik",
@@ -825,7 +1487,27 @@
         "author": "Syced"
       },
       "latitude": 64.1466,
-      "longitude": -21.9426
+      "longitude": -21.9426,
+      "countryNames": {
+        "ko": "아이슬란드",
+        "en": "Iceland",
+        "zh": "冰岛"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행"
+      ]
     },
     {
       "id": "denpasar",
@@ -847,7 +1529,27 @@
         "note": "Historical photograph of Denpasar Museum, published in 1935; not a contemporary street view."
       },
       "latitude": -8.6705,
-      "longitude": 115.2126
+      "longitude": 115.2126,
+      "countryNames": {
+        "ko": "인도네시아",
+        "en": "Indonesia",
+        "zh": "印度尼西亚"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행"
+      ]
     },
     {
       "id": "dubai",
@@ -868,7 +1570,21 @@
         "author": "Robert Bock"
       },
       "latitude": 25.2048,
-      "longitude": 55.2708
+      "longitude": 55.2708,
+      "countryNames": {
+        "ko": "아랍에미리트",
+        "en": "United Arab Emirates",
+        "zh": "阿联酋"
+      },
+      "themes": [
+        "도시"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행"
+      ]
     },
     {
       "id": "cairo",
@@ -889,7 +1605,27 @@
         "author": "Warren LeMay from Chicago, IL, United States"
       },
       "latitude": 30.0444,
-      "longitude": 31.2357
+      "longitude": 31.2357,
+      "countryNames": {
+        "ko": "이집트",
+        "en": "Egypt",
+        "zh": "埃及"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "marrakesh",
@@ -913,7 +1649,27 @@
         "author": "Maesi64"
       },
       "latitude": 31.6295,
-      "longitude": -7.9811
+      "longitude": -7.9811,
+      "countryNames": {
+        "ko": "모로코",
+        "en": "Morocco",
+        "zh": "摩洛哥"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "cape-town",
@@ -934,7 +1690,27 @@
         "author": "HPBotha"
       },
       "latitude": -33.9249,
-      "longitude": 18.4241
+      "longitude": 18.4241,
+      "countryNames": {
+        "ko": "남아프리카공화국",
+        "en": "South Africa",
+        "zh": "南非"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행"
+      ]
     },
     {
       "id": "toronto",
@@ -955,7 +1731,21 @@
         "author": "Peter_Glyn"
       },
       "latitude": 43.6532,
-      "longitude": -79.3832
+      "longitude": -79.3832,
+      "countryNames": {
+        "ko": "캐나다",
+        "en": "Canada",
+        "zh": "加拿大"
+      },
+      "themes": [
+        "도시"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행"
+      ]
     },
     {
       "id": "mexico-city",
@@ -976,7 +1766,27 @@
         "author": "Gobierno CDMX  * https://www.flickr.com/photos/140660272@N07/"
       },
       "latitude": 19.4326,
-      "longitude": -99.1332
+      "longitude": -99.1332,
+      "countryNames": {
+        "ko": "멕시코",
+        "en": "Mexico",
+        "zh": "墨西哥"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "madrid",
@@ -997,7 +1807,27 @@
         "author": "Wikier 2017"
       },
       "latitude": 40.4168,
-      "longitude": -3.7038
+      "longitude": -3.7038,
+      "countryNames": {
+        "ko": "스페인",
+        "en": "Spain",
+        "zh": "西班牙"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "florence",
@@ -1021,7 +1851,27 @@
         "author": "Jebulon"
       },
       "latitude": 43.7696,
-      "longitude": 11.2558
+      "longitude": 11.2558,
+      "countryNames": {
+        "ko": "이탈리아",
+        "en": "Italy",
+        "zh": "意大利"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "venice",
@@ -1046,7 +1896,27 @@
         "author": "Alejandro Franco alejo1996"
       },
       "latitude": 45.4408,
-      "longitude": 12.3155
+      "longitude": 12.3155,
+      "countryNames": {
+        "ko": "이탈리아",
+        "en": "Italy",
+        "zh": "意大利"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "munich",
@@ -1070,7 +1940,27 @@
         "author": "Jebulon"
       },
       "latitude": 48.1351,
-      "longitude": 11.582
+      "longitude": 11.582,
+      "countryNames": {
+        "ko": "독일",
+        "en": "Germany",
+        "zh": "德国"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "melbourne",
@@ -1091,7 +1981,27 @@
         "author": "Maximus Lu"
       },
       "latitude": -37.8136,
-      "longitude": 144.9631
+      "longitude": 144.9631,
+      "countryNames": {
+        "ko": "호주",
+        "en": "Australia",
+        "zh": "澳大利亚"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     },
     {
       "id": "san-francisco",
@@ -1115,7 +2025,29 @@
         "author": "Dsdugan"
       },
       "latitude": 37.7749,
-      "longitude": -122.4194
+      "longitude": -122.4194,
+      "countryNames": {
+        "ko": "미국",
+        "en": "United States",
+        "zh": "美国"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행",
+        "USA",
+        "America"
+      ]
     },
     {
       "id": "vancouver",
@@ -1136,7 +2068,27 @@
         "author": "Suspencewl"
       },
       "latitude": 49.2827,
-      "longitude": -123.1207
+      "longitude": -123.1207,
+      "countryNames": {
+        "ko": "캐나다",
+        "en": "Canada",
+        "zh": "加拿大"
+      },
+      "themes": [
+        "도시",
+        "자연"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "nature",
+        "scenery",
+        "自然",
+        "风景",
+        "자연 여행"
+      ]
     },
     {
       "id": "porto",
@@ -1157,7 +2109,27 @@
         "author": "WissensWolke"
       },
       "latitude": 41.1579,
-      "longitude": -8.6291
+      "longitude": -8.6291,
+      "countryNames": {
+        "ko": "포르투갈",
+        "en": "Portugal",
+        "zh": "葡萄牙"
+      },
+      "themes": [
+        "도시",
+        "문화"
+      ],
+      "keywords": [
+        "city",
+        "urban",
+        "城市",
+        "도시 여행",
+        "culture",
+        "history",
+        "文化",
+        "历史",
+        "문화 여행"
+      ]
     }
   ],
   "regions": [

@@ -18,9 +18,10 @@ import '../models.dart';
 import '../widgets.dart';
 import '../trip_insights.dart';
 import '../trip_editor.dart';
+import '../trip_plans.dart';
 import 'b_detail_screen.dart';
 import 'c_result_sheet.dart';
-import 'd_wishlist_dialog.dart';
+import 'd_travel_plans_dialog.dart';
 import 'e_recommendations_dialog.dart';
 
 const wideBreakpoint = 600.0;
@@ -42,7 +43,7 @@ class ListScreen extends StatefulWidget {
 class _ListScreenState extends State<ListScreen> {
   late Future<List<Item>> _future = _load();
   List<Item> _items = [];
-  List<TravelWish> _wishes = [];
+  final Map<int, List<TravelPlan>> _plans = {};
   final _searchController = TextEditingController();
   String _query = '';
   bool _favoritesOnly = false;
@@ -182,6 +183,7 @@ class _ListScreenState extends State<ListScreen> {
   void _retry() {
     ScaffoldMessenger.of(context).clearSnackBars();
     setState(() {
+      _plans.clear();
       _future = _load();
     });
   }
@@ -474,16 +476,20 @@ class _ListScreenState extends State<ListScreen> {
                       spacing: 8,
                       children: [
                         TextButton.icon(
-                          key: const ValueKey('open-wishlist'),
+                          key: const ValueKey('open-travel-plans'),
                           icon: const Icon(Icons.checklist),
-                          label: const Text('여행 위시리스트'),
+                          label: const Text('여행 계획'),
                           onPressed: () => showDialog<void>(
                             context: context,
-                            builder: (_) => WishlistDialog(
-                              wishes: _wishes,
-                              onChanged: (wishes) {
-                                // STATE: 위시리스트 → A 세션 메모리, 서버 저장 없음.
-                                setState(() => _wishes = wishes);
+                            builder: (_) => TravelPlansDialog(
+                              items: () => _items,
+                              plans: _plans,
+                              onChanged: (id, plans) {
+                                final trips = _items.where((item) => item.id == id);
+                                if (trips.isEmpty || !canEditTravelPlans(trips.first, DateTime.now())) return false;
+                                // STATE: 여행별 계획 → 메모리만 갱신.
+                                setState(() => _plans[id] = plans);
+                                return true;
                               },
                             ),
                           ),
