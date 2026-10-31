@@ -1,4 +1,4 @@
-# Polarsteps v2 — GAI3008 중간프로젝트 저장소 (1인 1팀)
+# Polarsteps v2 — GAI3008 중간프로젝트
 
 ## 앱 소개
 
