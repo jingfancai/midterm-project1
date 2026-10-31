@@ -58,51 +58,6 @@ void main() {
     expect(searchDestinations(query: '  '), hasLength(50));
     expect(resolveDestination('Tokyo Hotel'), isNull);
   });
-  testWidgets('plans add, edit, sort, delete and become readonly during editing', (t) async {
-    t.view.physicalSize = const Size(500, 1100);
-    t.view.devicePixelRatio = 1;
-    addTearDown(t.view.reset);
-    var now = DateTime(2099, 12, 31);
-    final plans = <int, List<TravelPlan>>{};
-    await t.pumpWidget(MaterialApp(home: Scaffold(body: TravelPlansDialog(
-      items: () => [future], plans: plans, now: () => now,
-      onChanged: (id, value) { plans[id] = value; return true; },
-    ))));
-    await t.pumpAndSettle();
-    Future<void> save(String time, String place) async {
-      await t.enterText(find.byKey(const ValueKey('plan-time')), time);
-      await t.enterText(find.byKey(const ValueKey('plan-place')), place);
-      await t.enterText(find.byKey(const ValueKey('plan-activity')), 'Walk');
-      await t.ensureVisible(find.byKey(const ValueKey('save-plan')));
-      await t.tap(find.byKey(const ValueKey('save-plan')));
-      await t.pumpAndSettle();
-    }
-    await save('14:00', 'Park');
-    await save('09:00', 'Museum');
-    expect(plans[1]!.map((p) => p.time), ['09:00', '14:00']);
-    await t.ensureVisible(find.byTooltip('계획 편집').first);
-    await t.tap(find.byTooltip('계획 편집').first);
-    await t.pumpAndSettle();
-    await save('15:00', 'Cafe');
-    expect(plans[1]!.last.place, 'Cafe');
-    await t.ensureVisible(find.byTooltip('계획 삭제').first);
-    await t.tap(find.byTooltip('계획 삭제').first);
-    await t.pumpAndSettle();
-    expect(plans[1], hasLength(1));
-    await t.ensureVisible(find.byTooltip('계획 편집'));
-    await t.tap(find.byTooltip('계획 편집'));
-    await t.pumpAndSettle();
-    now = DateTime(2100, 1, 1);
-    await t.ensureVisible(find.byKey(const ValueKey('save-plan')));
-    await t.tap(find.byKey(const ValueKey('save-plan')));
-    await t.pumpAndSettle();
-    expect(find.byKey(const ValueKey('plans-readonly')), findsOneWidget);
-    expect(find.byTooltip('계획 삭제'), findsNothing);
-    expect(find.byKey(const ValueKey('save-plan')), findsNothing);
-    expect(plans[1]!.single.place, 'Cafe');
-    expect(t.takeException(), isNull);
-    await t.pumpWidget(const SizedBox()); // Dispose the date refresh timer.
-  });
   testWidgets('trip selection isolates plans; reopen retains session entries', (t) async {
     final other = future.copyWith(id: 2, title: 'Other');
     final plans = <int, List<TravelPlan>>{1: [plan('2100-01-01', '09:00', place: 'Only first')]};

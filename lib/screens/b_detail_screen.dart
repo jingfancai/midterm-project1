@@ -9,6 +9,8 @@
 // B-8 IconButton + TripEditor · 여행 정보 수정 · P05
 // B-9 Text · 여행 후기 · P02
 // B-10 TripPhotoGallery · 여행 사진 슬라이드 · P03 · P06
+// B-12 TravelPlansSection · 여행 일정 카드 · P01 · P03
+import 'dart:async';
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../api.dart';
@@ -19,6 +21,8 @@ import '../trip_insights.dart';
 import '../travel_memory_card.dart';
 import '../trip_photos.dart';
 import '../photo_picker.dart';
+import '../trip_plans.dart';
+import '../travel_plans_section.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({
@@ -27,8 +31,14 @@ class DetailScreen extends StatefulWidget {
     this.loadNotes = fetchNotes,
     this.save = previewTripChange,
     this.pickPhotos,
+    this.plans,
+    this.onPlansChanged,
+    this.now = DateTime.now,
   });
 
+  final Map<int, List<TravelPlan>>? plans;
+  final bool Function(int, List<TravelPlan>)? onPlansChanged;
+  final DateTime Function() now;
   final Item item;
   final NotesLoader loadNotes;
   final TripChange save;
@@ -42,6 +52,23 @@ class _DetailScreenState extends State<DetailScreen> {
   // STATE: 상세 편집·즐겨찾기 → A에 전달한 메모리 콜백과 상세 표시만 갱신.
   late Item _item = widget.item;
   bool _saving = false;
+  final Map<int, List<TravelPlan>> _localPlans = {};
+  late final Timer _clock;
+  @override
+  void initState() {
+    super.initState();
+    _clock = Timer.periodic(const Duration(minutes: 1), (_) { if (mounted) setState(() {}); });
+  }
+  @override
+  void dispose() { _clock.cancel(); super.dispose(); }
+  bool _changePlans(List<TravelPlan> plans) {
+    if (!canEditTravelPlans(_item, widget.now())) return false;
+    if (widget.onPlansChanged != null && !widget.onPlansChanged!(_item.id, plans)) return false;
+    // STATE: 상세 계획 → A와 공유한 여행 ID별 메모리 목록.
+    setState(() => (widget.plans ?? _localPlans)[_item.id] = sortedTravelPlans(plans));
+    return true;
+  }
+
 
   Future<void> _editTrip() async {
     final saved = await showDialog<Item>(
@@ -116,8 +143,14 @@ class _DetailScreenState extends State<DetailScreen> {
               onPhotosChanged: _changePhotos,
               pickPhotos: widget.pickPhotos,
               photosEnabled: !_saving,
+              plans: TravelPlansSection(
+                item: () => _item,
+                plans: () => (widget.plans ?? _localPlans)[_item.id] ?? const [],
+                onChanged: _changePlans,
+                now: widget.now,
+              ),
             ),
-            _NotesTab(itemId: widget.item.id, load: widget.loadNotes),
+            _NotesTab(item: () => _item, load: widget.loadNotes, now: widget.now),
           ],
         ),
       ),
@@ -133,6 +166,7 @@ class _InfoTab extends StatelessWidget {
     required this.onPhotosChanged,
     this.pickPhotos,
     required this.photosEnabled,
+    required this.plans,
   });
 
   final Item item;
@@ -141,11 +175,14 @@ class _InfoTab extends StatelessWidget {
   final Future<void> Function(List<Uint8List>) onPhotosChanged;
   final TripPhotoPicker? pickPhotos;
   final bool photosEnabled;
+  final Widget plans;
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
+    final width = MediaQuery.sizeOf(context).width;
+    final horizontal = width > 896 ? (width - 860) / 2 : 18.0;
     return ListView(
-      padding: const EdgeInsets.fromLTRB(18, 12, 18, 24),
+      padding: EdgeInsets.fromLTRB(horizontal, 12, horizontal, 24),
       children: [
         // B-3 P02 · P08 / B-10 P03 · P06: the single existing hero photo location.
         TripPhotoGallery(
@@ -204,6 +241,8 @@ class _InfoTab extends StatelessWidget {
               ),
           ],
         ),
+        const SizedBox(height: 24),
+        plans, // B-12 P03
         // B-9 P02: 전체 후기, 줄 수 제한/말줄임 없음.
         const SizedBox(height: 14),
         const Text(
@@ -245,9 +284,10 @@ class _InfoTab extends StatelessWidget {
 }
 
 class _NotesTab extends StatefulWidget {
-  const _NotesTab({required this.itemId, required this.load});
+  const _NotesTab({required this.item, required this.load, required this.now});
 
-  final int itemId;
+  final Item Function() item;
+  final DateTime Function() now;
   final NotesLoader load;
 
   @override
@@ -255,15 +295,18 @@ class _NotesTab extends StatefulWidget {
 }
 
 class _NotesTabState extends State<_NotesTab> {
-  late Future<List<Note>> _future = widget.load(widget.itemId);
+  late Future<List<Note>> _future = widget.load(widget.item().id);
 
   void _retry() {
     setState(() {
-      _future = widget.load(widget.itemId);
+      _future = widget.load(widget.item().id);
     });
   }
 
+  bool get _canAdd => canReviewTrip(widget.item(), widget.now());
+
   Future<void> _addNote() async {
+    if (!_canAdd) return;
     // STATE: 기록 입력 → 현재 상세 탭의 임시 기록. 다시 조회하면 복구.
     var draft = '';
 
@@ -286,6 +329,7 @@ class _NotesTabState extends State<_NotesTab> {
           ),
           FilledButton(
             onPressed: () {
+              if (!_canAdd) { Navigator.pop(dialogContext); return; }
               Navigator.pop(dialogContext, draft.trim());
             },
             child: const Text('저장'),
@@ -294,22 +338,22 @@ class _NotesTabState extends State<_NotesTab> {
       ),
     );
 
-    if (!mounted || result == null || result.isEmpty) return;
+    if (!mounted || result == null || result.isEmpty || !_canAdd) return;
 
-    final now = DateTime.now();
+    final now = widget.now();
     final date =
         '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
     setState(() {
       _future = _future.then(
-        (notes) => [
+        (notes) => !_canAdd ? notes : [
           ...notes,
           Note(
             id: notes.isEmpty
                 ? 1
                 : notes.map((note) => note.id).reduce((a, b) => a > b ? a : b) +
                       1,
-            itemId: widget.itemId,
+            itemId: widget.item().id,
             text: result,
             date: date,
           ),
@@ -342,9 +386,9 @@ class _NotesTabState extends State<_NotesTab> {
         final notes = snap.data ?? const <Note>[];
 
         return ListView(
-          padding: const EdgeInsets.all(18),
+          padding: EdgeInsets.symmetric(horizontal: MediaQuery.sizeOf(context).width > 896 ? (MediaQuery.sizeOf(context).width - 860) / 2 : 18, vertical: 18),
           children: [
-            SizedBox(
+            if (_canAdd) SizedBox(
               width: double.infinity,
               child: FilledButton.icon(
                 onPressed: _addNote,
@@ -352,10 +396,11 @@ class _NotesTabState extends State<_NotesTab> {
                 label: const Text('여행 기록 추가'),
               ),
             ),
+            if (!_canAdd) const Text('여행 시작 후 여행 기록을 남길 수 있어요.', key: ValueKey('notes-restricted')),
             const SizedBox(height: 18),
 
             if (notes.isEmpty)
-              const EmptyView(message: '아직 기록이 없어요. 여행의 순간을 남겨 보세요.')
+              EmptyView(message: _canAdd ? '아직 기록이 없어요. 여행의 순간을 남겨 보세요.' : '아직 여행 기록이 없어요.')
             else
               for (var i = 0; i < notes.length; i++)
                 Padding(

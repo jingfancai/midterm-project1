@@ -191,7 +191,13 @@ class _ListScreenState extends State<ListScreen> {
   Future<void> _open(Item item) => Navigator.of(context).push<void>(
     MaterialPageRoute<void>(
       builder: (_) =>
-          DetailScreen(item: item, loadNotes: widget.loadNotes, save: _change),
+          DetailScreen(item: item, loadNotes: widget.loadNotes, save: _change,
+            plans: _plans, onPlansChanged: (id, plans) {
+              final trips = _items.where((trip) => trip.id == id);
+              if (trips.isEmpty || !canEditTravelPlans(trips.first, DateTime.now())) return false;
+              setState(() => _plans[id] = plans);
+              return true;
+            }),
     ),
   );
 
