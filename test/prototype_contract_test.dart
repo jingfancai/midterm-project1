@@ -63,7 +63,6 @@ void main() {
         'lib/screens/a_list_screen.dart',
         'lib/screens/b_detail_screen.dart',
         'lib/screens/c_result_sheet.dart',
-        'lib/screens/d_travel_plans_dialog.dart',
         'lib/screens/e_recommendations_dialog.dart',
         'lib/travel_plans_section.dart',
       ]) {

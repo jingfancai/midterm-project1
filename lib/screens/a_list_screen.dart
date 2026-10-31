@@ -10,7 +10,7 @@
 // A-9 IconButton + AlertDialog + SnackBar · 즐겨찾기·삭제·실행 취소 · P03 · P05
 // A-10 Wrap + Chip · 전체 여행 통계 · P01 · P10
 // A-11 TripEditor · 여행 추가 · P05
-// A-13 Wrap + TextButton · 미래 여행 도구 · P04 · P07
+// A-13 Wrap + TextButton · 여행지 둘러보기 · P04 · P07
 // A-12 IconButton · 여행 새로고침 · P09
 import 'package:flutter/material.dart';
 import '../api.dart';
@@ -21,7 +21,6 @@ import '../trip_editor.dart';
 import '../trip_plans.dart';
 import 'b_detail_screen.dart';
 import 'c_result_sheet.dart';
-import 'd_travel_plans_dialog.dart';
 import 'e_recommendations_dialog.dart';
 
 const wideBreakpoint = 600.0;
@@ -194,7 +193,7 @@ class _ListScreenState extends State<ListScreen> {
           DetailScreen(item: item, loadNotes: widget.loadNotes, save: _change,
             plans: _plans, onPlansChanged: (id, plans) {
               final trips = _items.where((trip) => trip.id == id);
-              if (trips.isEmpty || !canEditTravelPlans(trips.first, DateTime.now())) return false;
+              if (trips.isEmpty || !canChangeTravelPlans(trips.first, _plans[id] ?? const [], plans, DateTime.now())) return false;
               setState(() => _plans[id] = plans);
               return true;
             }),
@@ -481,25 +480,6 @@ class _ListScreenState extends State<ListScreen> {
                     Wrap( // A-13 P07
                       spacing: 8,
                       children: [
-                        TextButton.icon(
-                          key: const ValueKey('open-travel-plans'),
-                          icon: const Icon(Icons.checklist),
-                          label: const Text('여행 계획'),
-                          onPressed: () => showDialog<void>(
-                            context: context,
-                            builder: (_) => TravelPlansDialog(
-                              items: () => _items,
-                              plans: _plans,
-                              onChanged: (id, plans) {
-                                final trips = _items.where((item) => item.id == id);
-                                if (trips.isEmpty || !canEditTravelPlans(trips.first, DateTime.now())) return false;
-                                // STATE: 여행별 계획 → 메모리만 갱신.
-                                setState(() => _plans[id] = plans);
-                                return true;
-                              },
-                            ),
-                          ),
-                        ),
                         TextButton.icon(
                           key: const ValueKey('open-recommendations'),
                           icon: const Icon(Icons.explore_outlined),

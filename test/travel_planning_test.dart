@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mid_project_template/models.dart';
 import 'package:mid_project_template/screens/a_list_screen.dart';
-import 'package:mid_project_template/screens/d_travel_plans_dialog.dart';
 import 'package:mid_project_template/trip_plans.dart';
 import 'package:mid_project_template/trip_photos.dart';
 import 'package:mid_project_template/destinations.dart';
@@ -13,11 +12,11 @@ const future = Item(id: 1, title: 'Future', subtitle: '', image: '', startDate: 
 TravelPlan plan(String date, String time, {String place = 'Museum', String activity = 'Visit'}) => TravelPlan(date: date, time: time, place: place, activity: activity);
 
 void main() {
-  test('plan permissions reject departure day, past, invalid and deleted trips', () {
+  test('plan permissions allow future and ongoing, reject ended invalid and deleted trips', () {
     expect(canEditTravelPlans(future, DateTime(2099, 12, 31, 23, 59)), isTrue);
-    for (final now in [DateTime(2100, 1, 1), DateTime(2100, 1, 4)]) {
-      expect(canEditTravelPlans(future, now), isFalse);
-    }
+    expect(canEditTravelPlans(future, DateTime(2100, 1, 1)), isTrue);
+    expect(canEditTravelPlans(future, DateTime(2100, 1, 3, 23, 59)), isTrue);
+    expect(canEditTravelPlans(future, DateTime(2100, 1, 4)), isFalse);
     expect(canEditTravelPlans(future.copyWith(deleted: true), DateTime(2099)), isFalse);
     expect(canEditTravelPlans(future.copyWith(startDate: 'bad'), DateTime(2099)), isFalse);
   });
@@ -58,29 +57,11 @@ void main() {
     expect(searchDestinations(query: '  '), hasLength(50));
     expect(resolveDestination('Tokyo Hotel'), isNull);
   });
-  testWidgets('trip selection isolates plans; reopen retains session entries', (t) async {
-    final other = future.copyWith(id: 2, title: 'Other');
-    final plans = <int, List<TravelPlan>>{1: [plan('2100-01-01', '09:00', place: 'Only first')]};
-    Widget dialog() => MaterialApp(home: Scaffold(body: TravelPlansDialog(
-      items: () => [future, other], plans: plans, now: () => DateTime(2099),
-      onChanged: (id, value) { plans[id] = value; return true; },
-    )));
-    await t.pumpWidget(dialog());
-    await t.pumpAndSettle();
-    expect(find.textContaining('Only first'), findsOneWidget);
-    await t.ensureVisible(find.byKey(const ValueKey('plan-trip')));
-    await t.tap(find.byKey(const ValueKey('plan-trip')));
-    await t.pumpAndSettle();
-    await t.tap(find.text('Other').last);
-    await t.pumpAndSettle();
-    expect(find.textContaining('Only first'), findsNothing);
-    expect(find.text('아직 여행 계획이 없어요.'), findsOneWidget);
-    await t.pumpWidget(const SizedBox());
-    await t.pumpWidget(dialog());
-    await t.pumpAndSettle();
-    expect(find.textContaining('Only first'), findsOneWidget);
-    expect(plans[2], isNull);
-    await t.pumpWidget(const SizedBox());
+  testWidgets('A keeps recommendations and has no plan entry', (t) async {
+    await t.pumpWidget(app()); await t.pumpAndSettle();
+    expect(find.byKey(const ValueKey('open-travel-plans')), findsNothing);
+    expect(find.text('여행 계획'), findsNothing);
+    expect(find.byKey(const ValueKey('open-recommendations')), findsOneWidget);
   });
   testWidgets('recommendation search, photos, theme, prefill and cancellation', (t) async {
     t.view.physicalSize = const Size(500, 1000);
@@ -149,7 +130,7 @@ void main() {
     addTearDown(t.view.reset);
     await t.pumpWidget(app());
     await t.pumpAndSettle();
-    for (final key in ['open-travel-plans', 'open-recommendations']) {
+    for (final key in ['open-recommendations']) {
       await t.ensureVisible(find.byKey(ValueKey(key)));
       await t.tap(find.byKey(ValueKey(key)));
       await t.pumpAndSettle();

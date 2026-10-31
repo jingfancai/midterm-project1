@@ -62,7 +62,7 @@ class _DetailScreenState extends State<DetailScreen> {
   @override
   void dispose() { _clock.cancel(); super.dispose(); }
   bool _changePlans(List<TravelPlan> plans) {
-    if (!canEditTravelPlans(_item, widget.now())) return false;
+    if (!canChangeTravelPlans(_item, (widget.plans ?? _localPlans)[_item.id] ?? const [], plans, widget.now())) return false;
     if (widget.onPlansChanged != null && !widget.onPlansChanged!(_item.id, plans)) return false;
     // STATE: 상세 계획 → A와 공유한 여행 ID별 메모리 목록.
     setState(() => (widget.plans ?? _localPlans)[_item.id] = sortedTravelPlans(plans));
@@ -143,12 +143,12 @@ class _DetailScreenState extends State<DetailScreen> {
               onPhotosChanged: _changePhotos,
               pickPhotos: widget.pickPhotos,
               photosEnabled: !_saving,
-              plans: TravelPlansSection(
+              plans: showTravelPlans(_item, widget.now()) ? TravelPlansSection(
                 item: () => _item,
                 plans: () => (widget.plans ?? _localPlans)[_item.id] ?? const [],
                 onChanged: _changePlans,
                 now: widget.now,
-              ),
+              ) : null,
             ),
             _NotesTab(item: () => _item, load: widget.loadNotes, now: widget.now),
           ],
@@ -175,7 +175,7 @@ class _InfoTab extends StatelessWidget {
   final Future<void> Function(List<Uint8List>) onPhotosChanged;
   final TripPhotoPicker? pickPhotos;
   final bool photosEnabled;
-  final Widget plans;
+  final Widget? plans;
   @override
   Widget build(BuildContext context) {
     final text = Theme.of(context).textTheme;
@@ -241,8 +241,10 @@ class _InfoTab extends StatelessWidget {
               ),
           ],
         ),
-        const SizedBox(height: 24),
-        plans, // B-12 P03
+        if (plans != null) ...[
+          const SizedBox(height: 24),
+          plans!, // B-12 P03
+        ],
         // B-9 P02: 전체 후기, 줄 수 제한/말줄임 없음.
         const SizedBox(height: 14),
         const Text(
