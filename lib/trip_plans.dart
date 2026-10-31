@@ -2,7 +2,12 @@ import 'models.dart';
 import 'trip_insights.dart';
 
 class TravelPlan {
-  const TravelPlan({required this.date, required this.time, required this.place, required this.activity});
+  const TravelPlan({required this.date, required this.time, required this.place, required this.activity, this.completed = false}) : _original = null;
+  const TravelPlan._({required this.date, required this.time, required this.place, required this.activity, required this.completed, required TravelPlan original}) : _original = original;
+  final TravelPlan? _original;
+  final bool completed;
+  Object get identity => _original ?? this;
+  TravelPlan copyWith({bool? completed}) => TravelPlan._(date: date, time: time, place: place, activity: activity, completed: completed ?? this.completed, original: _original ?? this);
   final String date;
   final String time;
   final String place;
@@ -31,12 +36,13 @@ bool canEditTravelPlan(TravelPlan plan, Item item, DateTime now) {
 
 bool canChangeTravelPlans(Item item, List<TravelPlan> before, List<TravelPlan> after, DateTime now) {
   if (!canEditTravelPlans(item, now)) return false;
-  // Immutable past entries must survive unchanged, even if an edit changes its date.
+  if (after.map((plan) => plan.identity).toSet().length != after.length) return false;
+  bool sameDetails(TravelPlan a, TravelPlan b) => identical(a.identity, b.identity) &&
+      a.date == b.date && a.time == b.time && a.place == b.place && a.activity == b.activity;
   for (final plan in before) {
-    if (!canEditTravelPlan(plan, item, now) && !after.contains(plan)) return false;
+    if (!canEditTravelPlan(plan, item, now) && !after.any((other) => sameDetails(plan, other))) return false;
   }
-  return after.where((plan) => !before.contains(plan)).every(
-    (plan) => validateTravelPlan(plan, item, now: now) == null);
+  return after.every((plan) => before.any((old) => sameDetails(old, plan)) || validateTravelPlan(plan, item, now: now) == null);
 }
 
 String? validateTravelPlan(TravelPlan plan, Item item, {DateTime? now}) {

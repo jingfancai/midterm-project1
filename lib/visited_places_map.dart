@@ -4,8 +4,9 @@ import 'trip_insights.dart';
 
 /// C-6: bundled Plate Carree image and catalog coordinates; no map service.
 class VisitedPlacesMap extends StatefulWidget {
-  const VisitedPlacesMap({super.key, required this.items});
+  const VisitedPlacesMap({super.key, required this.items, this.onSelect});
   final List<Item> items;
+  final ValueChanged<Item>? onSelect;
   @override
   State<VisitedPlacesMap> createState() => _VisitedPlacesMapState();
 }
@@ -43,10 +44,14 @@ class _VisitedPlacesMapState extends State<VisitedPlacesMap> {
     (90 - city.destination.latitude!) / 180 * size.height,
   );
 
-  void _showPlaces(BuildContext context, List<VisitedCity> nearby) {
+  Future<void> _showPlaces(BuildContext context, List<VisitedCity> nearby) async {
+    if (nearby.length == 1 && nearby.single.trips.length == 1 && widget.onSelect != null) {
+      widget.onSelect!(nearby.single.trips.single);
+      return;
+    }
     // STATE: 선택한 Marker → 현재 메모리의 도시·국가·여행 제목 Dialog.
     // C-7 P03 · P10: nearby cities remain selectable even when markers overlap.
-    showDialog<void>(
+    final selected = await showDialog<Item>(
       context: context,
       builder: (dialogContext) => AlertDialog(
         title: const Text('방문 장소'),
@@ -73,7 +78,12 @@ class _VisitedPlacesMapState extends State<VisitedPlacesMap> {
                           style: const TextStyle(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: 4),
-                        for (final trip in city.trips) Text('• ${trip.title}'),
+                        for (final trip in city.trips) ListTile(
+                          key: ValueKey('map-trip-${trip.id}'), contentPadding: EdgeInsets.zero,
+                          title: Text('• ${trip.title}'), subtitle: Text(trip.subtitle),
+                          trailing: widget.onSelect == null ? null : const Icon(Icons.chevron_right),
+                          onTap: widget.onSelect == null ? null : () => Navigator.pop(dialogContext, trip),
+                        ),
                       ],
                     ),
                   ),
@@ -89,6 +99,7 @@ class _VisitedPlacesMapState extends State<VisitedPlacesMap> {
         ],
       ),
     );
+    if (mounted && selected != null) widget.onSelect?.call(selected);
   }
 
   @override

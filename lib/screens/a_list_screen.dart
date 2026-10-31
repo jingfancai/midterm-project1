@@ -10,7 +10,7 @@
 // A-9 IconButton + AlertDialog + SnackBar · 즐겨찾기·삭제·실행 취소 · P03 · P05
 // A-10 Wrap + Chip · 전체 여행 통계 · P01 · P10
 // A-11 TripEditor · 여행 추가 · P05
-// A-13 Wrap + TextButton · 여행지 둘러보기 · P04 · P07
+// A-13 LayoutBuilder + FilledButton · 여행 도구 모음 · P04 · P07
 // A-12 IconButton · 여행 새로고침 · P09
 import 'package:flutter/material.dart';
 import '../api.dart';
@@ -212,6 +212,39 @@ class _ListScreenState extends State<ListScreen> {
       ),
     );
   }
+
+  Future<void> _recommendations() async {
+    final suggestion = await showDialog<TripSuggestion>(context: context, builder: (_) => const RecommendationsDialog());
+    if (suggestion != null && mounted) await _addTrip(suggestion: suggestion);
+  }
+  Future<void> _recap() async {
+    try {
+      final items = (await _future).where((item) => !item.deleted).toList();
+      if (!mounted || items.isEmpty) return;
+      await showModalBottomSheet<void>(context: context, showDragHandle: true, isScrollControlled: true,
+        builder: (sheetContext) => ResultSheet(items: items, onSelect: (item) {
+          Navigator.of(sheetContext).pop();
+          _open(item);
+        }));
+    } catch (_) {
+      if (mounted) ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('여행 기록을 불러오지 못했어요.')));
+    }
+  }
+  // A-13 P07: 동일한 버튼 크기와 간격, 좁은 창에서 적응 배치.
+  Widget _buildTripHeader() => LayoutBuilder(builder: (context, constraints) {
+    final style = FilledButton.styleFrom(backgroundColor: const Color(0xFFE4EFEB), foregroundColor: const Color(0xFF2D7770),
+      minimumSize: const Size(0, 40), padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+      textStyle: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)));
+    final recap = FilledButton(key: const ValueKey('open-recap'), style: style, onPressed: _recap, child: const Text('기록 모아보기'));
+    final recommendations = FilledButton(key: const ValueKey('open-recommendations'), style: style, onPressed: _recommendations, child: const Text('여행지 추천'));
+    final actions = constraints.maxWidth < 260
+      ? Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [recap, const SizedBox(height: 8), recommendations])
+      : Row(children: [Expanded(child: recap), const SizedBox(width: 8), Expanded(child: recommendations)]);
+    const title = Text('나의 여행', style: TextStyle(fontSize: 24, fontWeight: FontWeight.w800, color: Color(0xFF183B3A)));
+    return constraints.maxWidth >= 560
+      ? Row(children: [title, const SizedBox(width: 24), Expanded(child: actions)])
+      : Column(crossAxisAlignment: CrossAxisAlignment.stretch, children: [title, const SizedBox(height: 12), actions]);
+  });
 
   Widget _buildControls(List<Item> items, int resultCount) {
     final summary = TripSummary(items, _favorites, DateTime.now());
@@ -477,25 +510,6 @@ class _ListScreenState extends State<ListScreen> {
                         ),
                       ],
                     ),
-                    Wrap( // A-13 P07
-                      spacing: 8,
-                      children: [
-                        TextButton.icon(
-                          key: const ValueKey('open-recommendations'),
-                          icon: const Icon(Icons.explore_outlined),
-                          label: const Text('여행지 추천'),
-                          onPressed: () async {
-                            final suggestion = await showDialog<TripSuggestion>(
-                              context: context,
-                              builder: (_) => const RecommendationsDialog(),
-                            );
-                            if (suggestion != null && mounted) {
-                              await _addTrip(suggestion: suggestion);
-                            }
-                          },
-                        ),
-                      ],
-                    ),
                     const SizedBox(height: 28),
                     Text(
                       '여행은 지나가도,',
@@ -517,71 +531,7 @@ class _ListScreenState extends State<ListScreen> {
                       style: TextStyle(color: Color(0xFF687775), fontSize: 14),
                     ),
                     const SizedBox(height: 24),
-                    Row(
-                      children: [
-                        const Text(
-                          '나의 여행',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.w800,
-                            color: Color(0xFF183B3A),
-                          ),
-                        ),
-                        const Spacer(),
-                        InkWell(
-                          borderRadius: BorderRadius.circular(20),
-                          onTap: () async {
-                            try {
-                              final loadedItems = await _future;
-                              final items = loadedItems
-                                  .where((item) => !item.deleted)
-                                  .toList();
-
-                              if (!context.mounted || items.isEmpty) return;
-
-                              showModalBottomSheet<void>(
-                                context: context,
-                                showDragHandle: true,
-                                isScrollControlled: true,
-                                builder: (sheetContext) => ResultSheet(
-                                  items: items,
-                                  onSelect: (item) {
-                                    Navigator.of(sheetContext).pop();
-                                    _open(item);
-                                  },
-                                ),
-                              );
-                            } catch (_) {
-                              if (!context.mounted) return;
-
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text('여행 기록을 불러오지 못했어요.'),
-                                ),
-                              );
-                            }
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 7,
-                            ),
-                            decoration: BoxDecoration(
-                              color: const Color(0xFFE4EFEB),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Text(
-                              '기록 모아보기',
-                              style: TextStyle(
-                                color: Color(0xFF2D7770),
-                                fontWeight: FontWeight.w700,
-                                fontSize: 12,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
+                    _buildTripHeader(),
                   ],
                 ),
               ),

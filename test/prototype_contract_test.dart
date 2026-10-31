@@ -66,6 +66,7 @@ void main() {
         'lib/screens/e_recommendations_dialog.dart',
         'lib/travel_plans_section.dart',
         'lib/travel_notes.dart',
+        'lib/travel_memory_card.dart',
       ]) {
         final source = File(name).readAsStringSync();
         final headers = RegExp(

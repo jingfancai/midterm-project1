@@ -1,3 +1,4 @@
+// B-16 CheckboxListTile + LinearProgressIndicator · 계획 완료 진행률 · P01 · P03
 // B-12 TravelPlansSection · 여행 일정 카드 · P01 · P03
 // B-13 TravelPlanEditor · 계획 선택·입력 · P05
 import 'dart:async';
@@ -83,6 +84,16 @@ class _TravelPlansSectionState extends State<TravelPlansSection> {
       if (mounted) setState(() => _busy = false);
     }
   }
+  void _toggle(TravelPlan plan, bool completed) {
+    if (_busy || !canEditTravelPlans(widget.item(), widget.now())) return;
+    final plans = [...widget.plans()];
+    final index = plans.indexOf(plan);
+    if (index < 0) return;
+    // STATE: 완료 체크 → 현재 여행의 완료 수/진행률, 콘텐츠 편집 권한과 분리.
+    plans[index] = plan.copyWith(completed: completed);
+    if (!widget.onChanged(plans)) _message('완료 상태를 변경할 수 없어요.');
+    if (mounted) setState(() {});
+  }
   @override
   Widget build(BuildContext context) {
     final plans = sortedTravelPlans(widget.plans());
@@ -95,8 +106,10 @@ class _TravelPlansSectionState extends State<TravelPlansSection> {
         Row(children: [
           const Icon(Icons.route_outlined, color: _teal), const SizedBox(width: 10),
           Expanded(child: Text('여행 계획', style: Theme.of(context).textTheme.titleLarge?.copyWith(color: _ink))),
-          Text('${plans.length}', style: const TextStyle(color: _teal, fontWeight: FontWeight.w800)),
+          Text('${plans.where((plan) => plan.completed).length}/${plans.length}', key: const ValueKey('plan-progress'), style: const TextStyle(color: _teal, fontWeight: FontWeight.w800)),
         ]),
+        const SizedBox(height: 10),
+        LinearProgressIndicator(value: plans.isEmpty ? 0 : plans.where((plan) => plan.completed).length / plans.length, semanticsLabel: '계획 완료 진행률'),
         const SizedBox(height: 10),
         Text(editable ? '오늘과 앞으로의 여정을 준비해 보세요. 지난 날짜의 계획은 보기만 가능해요.' : '계획을 변경할 수 없는 여행이에요.',
           key: editable ? null : const ValueKey('plans-readonly'), style: const TextStyle(color: _muted, height: 1.5, fontSize: 12)),
@@ -127,6 +140,10 @@ class _TravelPlansSectionState extends State<TravelPlansSection> {
         decoration: BoxDecoration(color: const Color(0xFFE4EFEB), borderRadius: BorderRadius.circular(10)),
         child: Text(formatPlanTime(plan.time), style: const TextStyle(color: _teal, fontWeight: FontWeight.w800, fontSize: 12)));
       final content = Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        CheckboxListTile(contentPadding: EdgeInsets.zero, dense: true,
+          title: Text(plan.completed ? '완료' : '완료 표시', style: const TextStyle(color: _teal, fontSize: 12)),
+          value: plan.completed,
+          onChanged: !_busy && canEditTravelPlans(widget.item(), widget.now()) ? (value) => _toggle(plan, value ?? false) : null),
         Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
           const Icon(Icons.place_outlined, size: 19, color: _teal), const SizedBox(width: 6),
           Expanded(child: Text(plan.place, style: const TextStyle(color: _ink, fontSize: 16, fontWeight: FontWeight.w700))),
@@ -203,7 +220,7 @@ class _TravelPlanEditorState extends State<TravelPlanEditor> {
   }
   void _save() {
     if (!_editable) { setState(() => _error = '지난 날짜의 계획은 변경할 수 없어요.'); return; }
-    final plan = TravelPlan(date: _iso, time: _timeValue, place: _place.text.trim(), activity: _activity.text.trim());
+    final plan = TravelPlan(date: _iso, time: _timeValue, place: _place.text.trim(), activity: _activity.text.trim(), completed: widget.original?.completed ?? false);
     final error = validateTravelPlan(plan, widget.item(), now: widget.now());
     if (error != null) { setState(() => _error = error); return; }
     Navigator.pop(context, plan);

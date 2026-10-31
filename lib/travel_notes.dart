@@ -1,3 +1,4 @@
+// B-17 IconButton + AlertDialog · 여행 기록 삭제 · P03 · P05
 // B-14 TravelNoteCard · 사진 여행 기록 카드 · P02 · P06
 // B-15 TravelNoteEditor · 여행 기록 편집 · P03 · P05
 import 'dart:async';
@@ -59,6 +60,21 @@ class _TravelNotesTimelineState extends State<TravelNotesTimeline> {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text('여행 기록이 반영되었습니다. 이 화면에서만 유지됩니다.')));
     } finally { if (mounted) setState(() => _busy = false); }
   }
+  Future<void> _remove(List<Note> notes, Note note) async {
+    if (!_allowed || _busy) return;
+    setState(() => _busy = true);
+    try {
+      final confirmed = await showDialog<bool>(context: context, builder: (dialogContext) => AlertDialog(
+        title: const Text('여행 기록 삭제'),
+        content: const Text('이 기록과 기록에 첨부한 사진을 삭제할까요? 이번 화면의 메모리에서만 삭제됩니다.'),
+        actions: [TextButton(onPressed: () => Navigator.pop(dialogContext, false), child: const Text('취소')),
+          FilledButton(onPressed: () => Navigator.pop(dialogContext, true), child: const Text('삭제'))],
+      ));
+      if (!mounted || confirmed != true || !_allowed) return;
+      // STATE: 기록 삭제 확인 → 해당 기록/독립 사진만 메모리에서 제거.
+      setState(() => _future = Future.value([...notes]..remove(note)));
+    } finally { if (mounted) setState(() => _busy = false); }
+  }
   @override
   Widget build(BuildContext context) => FutureBuilder<List<Note>>(
     future: _future,
@@ -82,6 +98,7 @@ class _TravelNotesTimelineState extends State<TravelNotesTimeline> {
         for (var i = 0; i < notes.length; i++) TravelNoteCard(
           note: notes[i], last: i == notes.length - 1,
           onEdit: _allowed && !_busy ? () => _edit(notes, notes[i]) : null,
+          onDelete: _allowed && !_busy ? () => _remove(notes, notes[i]) : null,
         ),
       ]);
     },
@@ -89,10 +106,11 @@ class _TravelNotesTimelineState extends State<TravelNotesTimeline> {
 }
 
 class TravelNoteCard extends StatelessWidget {
-  const TravelNoteCard({super.key, required this.note, required this.last, this.onEdit});
+  const TravelNoteCard({super.key, required this.note, required this.last, this.onEdit, this.onDelete});
   final Note note;
   final bool last;
   final VoidCallback? onEdit;
+  final VoidCallback? onDelete;
   @override
   Widget build(BuildContext context) => IntrinsicHeight(child: Row(crossAxisAlignment: CrossAxisAlignment.stretch, children: [
     SizedBox(width: 20, child: Column(children: [
@@ -109,6 +127,7 @@ class TravelNoteCard extends StatelessWidget {
           Container(padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 5), decoration: BoxDecoration(color: const Color(0xFFEAF1ED), borderRadius: BorderRadius.circular(9)),
             child: Text(note.time.isEmpty ? '시간 미기록' : formatPlanTime(note.time), style: const TextStyle(fontSize: 11, color: _teal))),
           if (onEdit != null) IconButton(key: ValueKey('edit-note-${note.id}'), tooltip: '기록 편집', onPressed: onEdit, icon: const Icon(Icons.edit_outlined, color: _teal, size: 20)),
+          if (onDelete != null) IconButton(key: ValueKey('delete-note-${note.id}'), tooltip: '기록 삭제', onPressed: onDelete, icon: const Icon(Icons.delete_outline, color: _muted, size: 20)),
         ]),
         const SizedBox(height: 14), Text(note.text, style: const TextStyle(fontSize: 15, height: 1.65, color: _ink)),
         if (note.photo != null) ...[const SizedBox(height: 18), _notePhoto(note.photo!, key: ValueKey('note-photo-${note.id}'))],
