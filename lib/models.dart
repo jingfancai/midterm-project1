@@ -140,30 +140,25 @@ class Item {
 }
 
 class Note {
-  const Note({
-    required this.id,
-    required this.itemId,
-    required this.text,
-    required this.date,
-  });
-
+  const Note({required this.id, required this.itemId, required this.text, required this.date, this.time = '', this.photo});
   final int id;
   final int itemId;
   final String text;
   final String date;
-
-  static Note? fromJson(Object? json) {
-    return switch (json) {
-      {
-        'id': int id,
-        'itemId': int itemId,
-        'text': String text,
-        'date': String date,
-      } =>
-        Note(id: id, itemId: itemId, text: text, date: date),
-      _ => null,
-    };
-  }
+  final String time;
+  // Independent single image, only in memory; never read from JSON or trip photos.
+  final Uint8List? photo;
+  Note copyWith({String? text, Uint8List? photo, bool clearPhoto = false}) => Note(
+    id: id, itemId: itemId, text: text ?? this.text, date: date, time: time,
+    photo: clearPhoto ? null : photo ?? this.photo,
+  );
+  static Note? fromJson(Object? json) => switch (json) {
+    {'id': int id, 'itemId': int itemId, 'text': String text, 'date': String date} => Note(
+      id: id, itemId: itemId, text: text, date: date,
+      time: json['time'] is String && RegExp(r'^(?:[01]\d|2[0-3]):[0-5]\d$').hasMatch(json['time'] as String) ? json['time'] as String : '',
+    ),
+    _ => null,
+  };
 }
 
 // ISO 3166-1 alpha-2 codes; country identity never comes from tags or city names.

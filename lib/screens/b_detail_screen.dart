@@ -5,7 +5,7 @@
 // B-4 Wrap(Chip) · 여행 태그 · P06
 // B-5 OutlinedButton · 여행 즐겨찾기 · P03
 // B-6 FilledButton + AlertDialog · 여행 추억 카드 만들기 · P07
-// B-7 FutureBuilder + ListView · 여행 기록 타임라인 · P01 · P09
+// B-7 TravelNotesTimeline · 여행 기록 타임라인 · P01 · P09
 // B-8 IconButton + TripEditor · 여행 정보 수정 · P05
 // B-9 Text · 여행 후기 · P02
 // B-10 TripPhotoGallery · 여행 사진 슬라이드 · P03 · P06
@@ -15,7 +15,6 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import '../api.dart';
 import '../models.dart';
-import '../widgets.dart';
 import '../trip_editor.dart';
 import '../trip_insights.dart';
 import '../travel_memory_card.dart';
@@ -23,6 +22,7 @@ import '../trip_photos.dart';
 import '../photo_picker.dart';
 import '../trip_plans.dart';
 import '../travel_plans_section.dart';
+import '../travel_notes.dart';
 
 class DetailScreen extends StatefulWidget {
   const DetailScreen({
@@ -31,6 +31,7 @@ class DetailScreen extends StatefulWidget {
     this.loadNotes = fetchNotes,
     this.save = previewTripChange,
     this.pickPhotos,
+    this.pickNotePhoto,
     this.plans,
     this.onPlansChanged,
     this.now = DateTime.now,
@@ -42,6 +43,7 @@ class DetailScreen extends StatefulWidget {
   final Item item;
   final NotesLoader loadNotes;
   final TripChange save;
+  final TripPhotoPicker? pickNotePhoto;
   final TripPhotoPicker? pickPhotos;
 
   @override
@@ -150,7 +152,7 @@ class _DetailScreenState extends State<DetailScreen> {
                 now: widget.now,
               ) : null,
             ),
-            _NotesTab(item: () => _item, load: widget.loadNotes, now: widget.now),
+            TravelNotesTimeline(item: () => _item, load: widget.loadNotes, now: widget.now, pickPhoto: widget.pickNotePhoto),
           ],
         ),
       ),
@@ -281,191 +283,6 @@ class _InfoTab extends StatelessWidget {
             style: TextStyle(fontSize: 12, color: Color(0xFF687775)),
           ),
       ],
-    );
-  }
-}
-
-class _NotesTab extends StatefulWidget {
-  const _NotesTab({required this.item, required this.load, required this.now});
-
-  final Item Function() item;
-  final DateTime Function() now;
-  final NotesLoader load;
-
-  @override
-  State<_NotesTab> createState() => _NotesTabState();
-}
-
-class _NotesTabState extends State<_NotesTab> {
-  late Future<List<Note>> _future = widget.load(widget.item().id);
-
-  void _retry() {
-    setState(() {
-      _future = widget.load(widget.item().id);
-    });
-  }
-
-  bool get _canAdd => canReviewTrip(widget.item(), widget.now());
-
-  Future<void> _addNote() async {
-    if (!_canAdd) return;
-    // STATE: 기록 입력 → 현재 상세 탭의 임시 기록. 다시 조회하면 복구.
-    var draft = '';
-
-    final result = await showDialog<String>(
-      context: context,
-      builder: (dialogContext) => AlertDialog(
-        title: const Text('새로운 여행 기록'),
-        content: TextField(
-          onChanged: (value) => draft = value,
-          maxLines: 4,
-          decoration: const InputDecoration(
-            hintText: '오늘의 여행 순간을 기록해 보세요.',
-            border: OutlineInputBorder(),
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(dialogContext),
-            child: const Text('취소'),
-          ),
-          FilledButton(
-            onPressed: () {
-              if (!_canAdd) { Navigator.pop(dialogContext); return; }
-              Navigator.pop(dialogContext, draft.trim());
-            },
-            child: const Text('저장'),
-          ),
-        ],
-      ),
-    );
-
-    if (!mounted || result == null || result.isEmpty || !_canAdd) return;
-
-    final now = widget.now();
-    final date =
-        '${now.year}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
-
-    setState(() {
-      _future = _future.then(
-        (notes) => !_canAdd ? notes : [
-          ...notes,
-          Note(
-            id: notes.isEmpty
-                ? 1
-                : notes.map((note) => note.id).reduce((a, b) => a > b ? a : b) +
-                      1,
-            itemId: widget.item().id,
-            text: result,
-            date: date,
-          ),
-        ],
-      );
-    });
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('여행 기록이 추가되었습니다. 이 화면에서만 유지됩니다.')),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<List<Note>>(
-      future: _future,
-      builder: (context, snap) {
-        if (snap.connectionState != ConnectionState.done) {
-          return const LoadingView(label: '여행 기록을 불러오는 중…');
-        }
-
-        if (snap.hasError) {
-          return ErrorView(
-            title: '여행 기록을 불러오지 못했어요.',
-            message: '${snap.error}',
-            onRetry: _retry,
-          );
-        }
-
-        final notes = snap.data ?? const <Note>[];
-
-        return ListView(
-          padding: EdgeInsets.symmetric(horizontal: MediaQuery.sizeOf(context).width > 896 ? (MediaQuery.sizeOf(context).width - 860) / 2 : 18, vertical: 18),
-          children: [
-            if (_canAdd) SizedBox(
-              width: double.infinity,
-              child: FilledButton.icon(
-                onPressed: _addNote,
-                icon: const Icon(Icons.add),
-                label: const Text('여행 기록 추가'),
-              ),
-            ),
-            if (!_canAdd) const Text('여행 시작 후 여행 기록을 남길 수 있어요.', key: ValueKey('notes-restricted')),
-            const SizedBox(height: 18),
-
-            if (notes.isEmpty)
-              EmptyView(message: _canAdd ? '아직 기록이 없어요. 여행의 순간을 남겨 보세요.' : '아직 여행 기록이 없어요.')
-            else
-              for (var i = 0; i < notes.length; i++)
-                Padding(
-                  padding: const EdgeInsets.only(bottom: 12),
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Column(
-                        children: [
-                          Container(
-                            width: 12,
-                            height: 12,
-                            decoration: const BoxDecoration(
-                              color: Color(0xFF2D7770),
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          if (i != notes.length - 1)
-                            Container(
-                              width: 2,
-                              height: 86,
-                              color: const Color(0xFFD5E4DE),
-                            ),
-                        ],
-                      ),
-                      const SizedBox(width: 12),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.all(15),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(16),
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                notes[i].date,
-                                style: const TextStyle(
-                                  fontSize: 11,
-                                  color: Color(0xFF2D7770),
-                                  fontWeight: FontWeight.w800,
-                                ),
-                              ),
-                              const SizedBox(height: 7),
-                              Text(
-                                notes[i].text,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  height: 1.45,
-                                  color: Color(0xFF183B3A),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-          ],
-        );
-      },
     );
   }
 }
