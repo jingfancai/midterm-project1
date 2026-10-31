@@ -7,8 +7,11 @@ import 'destinations.dart';
 
 /// The same form and input validation are used for creating and editing trips.
 class TripEditor extends StatefulWidget {
-  const TripEditor({super.key, this.item, required this.save});
+  const TripEditor({super.key, this.item, this.initialTitle, this.initialDestination, this.initialTags = const [], required this.save});
   final Item? item;
+  final String? initialTitle;
+  final String? initialDestination;
+  final List<String> initialTags;
   final TripChange save;
 
   @override
@@ -34,11 +37,11 @@ class _TripEditorState extends State<TripEditor> {
     final item = widget.item;
     final dates = item == null ? null : TripDates.fromItem(item);
     final start = dates?.start ?? DateTime.now().add(const Duration(days: 7));
-    _title = TextEditingController(text: item?.title ?? '');
-    _destination = TextEditingController(text: item?.destinationName ?? '');
+    _title = TextEditingController(text: item?.title ?? widget.initialTitle ?? '');
+    _destination = TextEditingController(text: item?.destinationName ?? widget.initialDestination ?? '');
     _start = TextEditingController(text: _iso(start));
     _end = TextEditingController(text: _iso(dates?.end ?? start));
-    _tags = TextEditingController(text: item?.tags.join(', ') ?? '');
+    _tags = TextEditingController(text: (item?.tags ?? widget.initialTags).join(', '));
     _review = TextEditingController(text: item?.review ?? '');
   }
 

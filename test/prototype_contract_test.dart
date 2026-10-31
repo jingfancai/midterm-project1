@@ -60,13 +60,17 @@ void main() {
     () {
       final guide = File('docs/디자인가이드.md').readAsStringSync();
       for (final name in [
-        'a_list_screen',
-        'b_detail_screen',
-        'c_result_sheet',
+        'lib/screens/a_list_screen.dart',
+        'lib/screens/b_detail_screen.dart',
+        'lib/screens/c_result_sheet.dart',
+        'lib/screens/e_recommendations_dialog.dart',
+        'lib/travel_plans_section.dart',
+        'lib/travel_notes.dart',
+        'lib/travel_memory_card.dart',
       ]) {
-        final source = File('lib/screens/$name.dart').readAsStringSync();
+        final source = File(name).readAsStringSync();
         final headers = RegExp(
-          r'^// ([ABC]-\d+) (.+?) · (.+?) · (P\d+(?: · P\d+)*)$',
+          r'^// ([ABCDE]-\d+) (.+?) · (.+?) · (P\d+(?: · P\d+)*)$',
           multiLine: true,
         ).allMatches(source);
         expect(headers, isNotEmpty);

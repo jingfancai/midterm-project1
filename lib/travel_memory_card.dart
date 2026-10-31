@@ -1,3 +1,4 @@
+// C-10 Wrap + ChoiceChip · 추억 카드 템플릿 · P03 · P06
 import 'dart:math' as math;
 import 'dart:typed_data';
 import 'dart:ui' as ui;
@@ -8,6 +9,11 @@ import 'destinations.dart';
 import 'png_download.dart';
 import 'trip_insights.dart';
 import 'trip_photos.dart';
+
+enum MemoryTemplate { minimal, postcard, collage }
+extension MemoryTemplateLabel on MemoryTemplate {
+  String get label => switch (this) { MemoryTemplate.minimal => '심플', MemoryTemplate.postcard => '엽서', MemoryTemplate.collage => '사진 콜라주' };
+}
 
 typedef PngSaver = Future<void> Function(Uint8List bytes, String filename);
 
@@ -54,6 +60,7 @@ class TravelMemoryDialog extends StatefulWidget {
 class _TravelMemoryDialogState extends State<TravelMemoryDialog> {
   final _cardKey = GlobalKey();
   bool _exporting = false;
+  MemoryTemplate _template = MemoryTemplate.minimal;
   String? _message;
 
   Future<void> _export() async {
@@ -67,10 +74,10 @@ class _TravelMemoryDialogState extends State<TravelMemoryDialog> {
       // Wait for the same cached image used by NetImage before rasterizing.
       // If it fails, wait for its neutral fallback too; never export a loading gap.
       if (widget.item.photos.isNotEmpty) {
-        await precacheImage(
-          MemoryImage(widget.item.photos.first),
-          context,
-        ).timeout(const Duration(seconds: 10));
+        for (final photo in widget.item.photos.take(_template == MemoryTemplate.collage ? 5 : 1)) {
+          if (!mounted) return;
+          await precacheImage(MemoryImage(photo), context).timeout(const Duration(seconds: 10));
+        }
       } else {
         var failed = false;
         await precacheImage(
@@ -88,10 +95,11 @@ class _TravelMemoryDialogState extends State<TravelMemoryDialog> {
       }
       if (!mounted) return;
       await WidgetsBinding.instance.endOfFrame;
+      if (!mounted) return;
       final bytes = await captureMemoryPng(_cardKey);
       await (widget.savePng ?? downloadPng)(
         bytes,
-        'polarsteps-memory-${widget.item.id}.png',
+        'polarsteps-memory-${widget.item.id}${_template == MemoryTemplate.minimal ? '' : '-${_template.name}'}.png',
       );
       if (mounted) {
         setState(() => _message = 'PNG 다운로드를 요청했어요. 브라우저의 다운로드 목록을 확인해 주세요.');
@@ -119,12 +127,20 @@ class _TravelMemoryDialogState extends State<TravelMemoryDialog> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                if (allowed)
+                if (allowed) ...[
+                  Wrap(spacing: 8, runSpacing: 8, children: [for (final template in MemoryTemplate.values)
+                    ChoiceChip(key: ValueKey('memory-select-${template.name}'), label: Text(template.label),
+                      selected: template == _template, onSelected: _exporting ? null : (_) => setState(() {
+                        // STATE: 템플릿 선택 → 동일한 미리보기/PNG 카드.
+                        _template = template; _message = null;
+                      })),
+                  ]),
+                  const SizedBox(height: 14),
                   RepaintBoundary(
                     key: _cardKey,
-                    child: TravelMemoryCard(item: widget.item),
-                  )
-                else
+                    child: TravelMemoryCard(item: widget.item, template: _template),
+                  ),
+                ] else
                   const Text(memoryRestriction),
                 if (!supported) const Text('PNG 다운로드는 웹 브라우저에서 사용할 수 있어요.'),
                 if (_message != null)
@@ -155,27 +171,30 @@ class _TravelMemoryDialogState extends State<TravelMemoryDialog> {
 }
 
 class TravelMemoryCard extends StatelessWidget {
-  const TravelMemoryCard({super.key, required this.item});
+  final MemoryTemplate template;
+  const TravelMemoryCard({super.key, required this.item, this.template = MemoryTemplate.minimal});
   final Item item;
   @override
   Widget build(BuildContext context) => Container(
+    key: ValueKey('memory-template-${template.name}'),
     padding: const EdgeInsets.all(16),
-    color: const Color(0xFFF0F3EF),
+    color: template == MemoryTemplate.postcard ? const Color(0xFFFFF8EB) : const Color(0xFFF0F3EF),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisSize: MainAxisSize.min,
       children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(14),
-          child: SizedBox(
-            height: 180,
-            width: double.infinity,
-            child: tripPhotoImage(
-              item.photos.isEmpty ? null : item.photos.first,
-              item.photoUrl,
-            ),
-          ),
-        ),
+        if (template == MemoryTemplate.postcard) ...[
+          const Row(children: [Expanded(child: Text('POSTCARD', style: TextStyle(letterSpacing: 3, color: Color(0xFF2D7770), fontWeight: FontWeight.w800))), Icon(Icons.local_post_office_outlined, color: Color(0xFF2D7770))]),
+          const SizedBox(height: 14),
+        ],
+        if (template == MemoryTemplate.collage) ...[
+          const Text('PHOTO DIARY', style: TextStyle(letterSpacing: 2, color: Color(0xFF2D7770), fontWeight: FontWeight.w800)),
+          const SizedBox(height: 12),
+          if (item.photos.length > 1) LayoutBuilder(builder: (_, constraints) => Wrap(spacing: 8, runSpacing: 8,
+            children: [for (final photo in item.photos.take(5)) SizedBox(width: (constraints.maxWidth - 8) / 2, height: 125,
+              child: ClipRRect(borderRadius: BorderRadius.circular(12), child: tripPhotoImage(photo, item.photoUrl)))],
+          )) else _hero(),
+        ] else _hero(),
         const SizedBox(height: 12),
         Text(item.title, style: Theme.of(context).textTheme.titleLarge),
         const SizedBox(height: 6),
@@ -202,4 +221,12 @@ class TravelMemoryCard extends StatelessWidget {
       ],
     ),
   );
+  Widget _hero() => Container(
+    padding: template == MemoryTemplate.postcard ? const EdgeInsets.all(7) : EdgeInsets.zero,
+    color: template == MemoryTemplate.postcard ? Colors.white : null,
+    child: ClipRRect(borderRadius: BorderRadius.circular(template == MemoryTemplate.postcard ? 2 : 14),
+      child: SizedBox(height: 180, width: double.infinity,
+        child: tripPhotoImage(item.photos.isEmpty ? null : item.photos.first, item.photoUrl))),
+  );
+
 }
