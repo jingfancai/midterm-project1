@@ -62,23 +62,24 @@ void main() {
     expect(t.widget<CheckboxListTile>(find.byType(CheckboxListTile).first).onChanged, isNull);
     await t.pumpWidget(const SizedBox());
   });
-  testWidgets('multiple trips on a marker select the right detail; single trip navigates directly', (t) async {
+  testWidgets('single and multiple city trips show read-only overviews without navigating', (t) async {
     for (final many in [true, false]) {
-      await t.pumpWidget(MaterialApp(home: Builder(builder: (context) => Scaffold(body: VisitedPlacesMap(
+      await t.pumpWidget(MaterialApp(home: Builder(builder: (_) => Scaffold(body: VisitedPlacesMap(
         items: [trip, if (many) trip.copyWith(id: 2, title: 'Tokyo second')],
-        onSelect: (selected) => Navigator.of(context).push(MaterialPageRoute<void>(builder: (_) => DetailScreen(item: selected, loadNotes: (_) async => []))),
       )))));
       await t.pumpAndSettle(); await tap(t, find.byKey(const ValueKey('map-marker-JP/tokyo')));
       if (many) {
         expect(find.byKey(const ValueKey('map-trip-1')), findsOneWidget);
-        await tap(t, find.byKey(const ValueKey('map-trip-2')));
+        expect(t.widget<ListTile>(find.byKey(const ValueKey('map-trip-2'))).onTap, isNull);
       }
-      expect(find.byType(DetailScreen), findsOneWidget);
-      expect(find.text(many ? 'Tokyo second' : 'Tokyo first'), findsWidgets);
+      expect(find.byType(DetailScreen), findsNothing);
+      expect(find.byType(AlertDialog), findsOneWidget);
+      expect(find.text('• Tokyo first'), findsOneWidget);
+      expect(find.text('여행 ${many ? 2 : 1}개'), findsOneWidget);
       await t.pumpWidget(const SizedBox());
     }
   });
-  testWidgets('A actions match size and align; marker route closes recap before detail', (t) async {
+  testWidgets('A actions align and city overview closes back to the recap map', (t) async {
     t.view.physicalSize = const Size(400, 1000); t.view.devicePixelRatio = 1; addTearDown(t.view.reset);
     await t.pumpWidget(MaterialApp(home: ListScreen(load: () async => [trip, trip.copyWith(id: 2, title: 'Tokyo second')], loadNotes: (_) async => [])));
     await t.pumpAndSettle();
@@ -86,8 +87,11 @@ void main() {
     expect(t.getSize(recap), t.getSize(recs)); expect(t.getCenter(recap).dy, t.getCenter(recs).dy);
     await tap(t, recs); expect(find.text('도시·국가·테마 검색'), findsOneWidget); await tap(t, find.text('닫기'));
     await tap(t, recap); await tap(t, find.byKey(const ValueKey('map-marker-JP/tokyo')));
-    await tap(t, find.byKey(const ValueKey('map-trip-2')));
-    expect(find.byType(DetailScreen), findsOneWidget); expect(find.byType(VisitedPlacesMap), findsNothing);
+    expect(t.widget<ListTile>(find.byKey(const ValueKey('map-trip-2'))).onTap, isNull);
+    expect(find.byType(DetailScreen), findsNothing);
+    await tap(t, find.descendant(of: find.byType(AlertDialog), matching: find.text('닫기')));
+    expect(find.byType(VisitedPlacesMap), findsOneWidget);
+    expect(find.byType(AlertDialog), findsNothing);
     await t.pumpWidget(const SizedBox());
   });
   testWidgets('all three selected templates preview and export distinct complete PNGs', (t) async {

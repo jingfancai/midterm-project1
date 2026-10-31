@@ -107,7 +107,7 @@ class ResultSheet extends StatelessWidget {
                 const SizedBox(height: 20),
 
                 // C-6 P02 · P06
-                VisitedPlacesMap(items: activeItems, onSelect: onSelect),
+                VisitedPlacesMap(items: activeItems),
                 const SizedBox(height: 20),
 
                 const Text(
